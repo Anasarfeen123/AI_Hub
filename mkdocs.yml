@@ -1,10 +1,10 @@
 site_name: AI/ML Resource Hub
-site_description: A community-maintained knowledge base for learning Artificial Intelligence and Machine Learning, from foundations to research.
+site_description: MIC VIT Chennai's knowledge base for learning Artificial Intelligence and Machine Learning, from foundations to research.
 site_author: Microsoft Innovation Club, VIT Chennai
-site_url: https://anasarfeen123.github.io/AI-ML-Resource-Hub/
+site_url: https://anasarfeen123.github.io/AI_Hub/
 
-repo_name: AI-ML-Resource-Hub
-repo_url: https://github.com/Anasarfeen123/AI-ML-Resource-Hub
+repo_name: AI_Hub
+repo_url: https://github.com/Anasarfeen123/AI_Hub
 edit_uri: edit/main/docs/
 
 copyright: Copyright &copy; MIC VITC
@@ -98,7 +98,7 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/Anasarfeen123/AI-ML-Resource-Hub
+      link: https://github.com/Anasarfeen123/AI_Hub
   generator: false
 
 nav:

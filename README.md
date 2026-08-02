@@ -8,7 +8,7 @@ A community-maintained knowledge base for MIC's AI/ML learning track — a singl
 
 Built with [MkDocs](https://www.mkdocs.org/) and the [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) theme, published automatically to GitHub Pages on every merge to `main`.
 
-**Live site:** `https://anasarfeen123.github.io/AI-ML-Resource-Hub/` *(live once GitHub Pages is enabled — see Deployment below)*
+**Live site:** `https://anasarfeen123.github.io/AI_Hub/`
 
 ## What's inside
 
@@ -31,8 +31,8 @@ Built with [MkDocs](https://www.mkdocs.org/) and the [Material for MkDocs](https
 Requirements: Python 3.10+
 
 ```bash
-git clone https://github.com/Anasarfeen123/AI-ML-Resource-Hub.git
-cd AI-ML-Resource-Hub
+git clone https://github.com/Anasarfeen123/AI_Hub.git
+cd AI_Hub
 pip install -r requirements.txt
 mkdocs serve
 ```

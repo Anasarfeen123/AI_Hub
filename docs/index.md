@@ -20,47 +20,188 @@ description: MIC VIT Chennai's knowledge base for learning AI/ML from foundation
 
 ## Interactive Roadmap
 
-Click any node to jump straight to that topic. Each stage builds on the one before it — see the [full written roadmap](roadmap.md) for timing estimates and how to use it.
+Click any node to jump straight to that topic — each stage builds on the one before it. Prefer tables and timing estimates, or the original [roadmap.sh](https://roadmap.sh/) view? See the [full written roadmap](roadmap.md).
 
 <div class="roadmap-flow" markdown>
 
-<div class="roadmap-stage" markdown>
+<div class="roadmap-stage roadmap-stage--beginner" markdown>
+
+<span class="roadmap-stage-num">01</span>
+
+<div class="roadmap-stage-head" markdown>
 <span class="hub-level-badge beginner">Stage 1 · Beginner</span>
+
+<span class="roadmap-duration">6–10 weeks</span>
+</div>
 
 ### Foundations
 
-[Python for AI](foundations/python.md){ .roadmap-node }
-[Mathematics](foundations/mathematics.md){ .roadmap-node }
-[Statistics](foundations/statistics.md){ .roadmap-node }
-[Optimization](foundations/optimization.md){ .roadmap-node }
+<p class="roadmap-goal">Be comfortable writing code and reading the math notation every ML paper and course assumes.</p>
+
+<div class="roadmap-nodes" markdown>
+
+<div class="roadmap-node" markdown>
+
+[Python for AI](foundations/python.md){ .roadmap-node-title }
+
+NumPy, Pandas, and clean scripts
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Mathematics](foundations/mathematics.md){ .roadmap-node-title }
+
+Linear algebra, calculus, probability
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Statistics](foundations/statistics.md){ .roadmap-node-title }
+
+Distributions, bias/variance, evaluation basics
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Optimization](foundations/optimization.md){ .roadmap-node-title }
+
+Gradient descent and why training works
+{: .roadmap-node-desc }
+
+</div>
+
+</div>
 
 </div>
 
 <div class="roadmap-arrow">→</div>
 
-<div class="roadmap-stage" markdown>
+<div class="roadmap-stage roadmap-stage--intermediate" markdown>
+
+<span class="roadmap-stage-num">02</span>
+
+<div class="roadmap-stage-head" markdown>
 <span class="hub-level-badge intermediate">Stage 2 · Intermediate</span>
+
+<span class="roadmap-duration">3–6 months</span>
+</div>
 
 ### Core Toolbox
 
-[Machine Learning](machine-learning/index.md){ .roadmap-node }
-[Deep Learning](deep-learning/index.md){ .roadmap-node }
-[Computer Vision](computer-vision/index.md){ .roadmap-node }
-[Natural Language Processing](natural-language-processing/index.md){ .roadmap-node }
+<p class="roadmap-goal">Understand the full ML lifecycle — framing, data, model, evaluation, iteration.</p>
+
+<div class="roadmap-nodes" markdown>
+
+<div class="roadmap-node" markdown>
+
+[Machine Learning](machine-learning/index.md){ .roadmap-node-title }
+
+Algorithms, evaluation, feature engineering
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Deep Learning](deep-learning/index.md){ .roadmap-node-title }
+
+Neural nets, backprop, PyTorch/TensorFlow
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Computer Vision](computer-vision/index.md){ .roadmap-node-title }
+
+CNNs, detection, segmentation
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Natural Language Processing](natural-language-processing/index.md){ .roadmap-node-title }
+
+Tokenization, embeddings, transformers
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Projects](machine-learning/projects.md){ .roadmap-node-title }
+
+Ship 2–3 end-to-end projects
+{: .roadmap-node-desc }
+
+</div>
+
+</div>
 
 </div>
 
 <div class="roadmap-arrow">→</div>
 
-<div class="roadmap-stage" markdown>
+<div class="roadmap-stage roadmap-stage--advanced" markdown>
+
+<span class="roadmap-stage-num">03</span>
+
+<div class="roadmap-stage-head" markdown>
 <span class="hub-level-badge advanced">Stage 3 · Advanced</span>
+
+<span class="roadmap-duration">Open-ended</span>
+</div>
 
 ### Specialize & Research
 
-[Generative AI](generative-ai/index.md){ .roadmap-node }
-[Reinforcement Learning](reinforcement-learning/index.md){ .roadmap-node }
-[Specializations](specializations/index.md){ .roadmap-node }
-[Research](research/index.md){ .roadmap-node }
+<p class="roadmap-goal">Go from using models to understanding — and contributing to — the frontier.</p>
+
+<div class="roadmap-nodes" markdown>
+
+<div class="roadmap-node" markdown>
+
+[Generative AI](generative-ai/index.md){ .roadmap-node-title }
+
+LLMs, RAG, fine-tuning, agents
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Reinforcement Learning](reinforcement-learning/index.md){ .roadmap-node-title }
+
+MDPs, Q-learning, policy gradients
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Specializations](specializations/index.md){ .roadmap-node-title }
+
+Time series, speech, MLOps, deployment
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Research](research/index.md){ .roadmap-node-title }
+
+Read papers, reproduce results, publish
+{: .roadmap-node-desc }
+
+</div>
+
+</div>
 
 </div>
 

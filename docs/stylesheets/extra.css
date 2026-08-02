@@ -150,69 +150,248 @@
   color: #ef9a9a;
 }
 
-/* Native interactive roadmap: a stage-by-stage flow of clickable nodes,
-   built with our own markup instead of an embedded third-party widget. */
+/* Native interactive roadmap: a stage-by-stage timeline of clickable
+   nodes, built with our own markup instead of an embedded widget.
+   Mobile-first: stacked vertically by default (the sidebar + table of
+   contents Material shows on laptop-width screens leaves surprisingly
+   little room for a 3-column layout), widening to a 3-column row only
+   on genuinely wide viewports. */
 .roadmap-flow {
   display: flex;
+  flex-direction: column;
   align-items: stretch;
   gap: 0.5rem;
-  margin: 1.25rem 0 2rem;
+  margin: 1.5rem 0 2rem;
+  max-width: 100%;
 }
 
 .roadmap-stage {
-  flex: 1;
+  position: relative;
+  flex: none;
+  width: 100%;
   min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
   border: 1px solid var(--md-default-fg-color--lightest);
+  border-top: 3px solid var(--md-default-fg-color--lighter);
   border-radius: 0.75rem;
-  padding: 1.1rem 1.1rem 1.25rem;
+  padding: 1.1rem 1.1rem 1.35rem;
+}
+
+@media (min-width: 100em) {
+  .roadmap-flow {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .roadmap-stage {
+    flex: 1 1 0;
+    width: auto;
+  }
+}
+
+.roadmap-stage--beginner {
+  border-top-color: #2e7d32;
+  background: linear-gradient(180deg, rgba(46, 125, 50, 0.07), transparent 45%);
+}
+
+.roadmap-stage--intermediate {
+  border-top-color: #b8860b;
+  background: linear-gradient(180deg, rgba(184, 134, 11, 0.08), transparent 45%);
+}
+
+.roadmap-stage--advanced {
+  border-top-color: #b71c1c;
+  background: linear-gradient(180deg, rgba(183, 28, 28, 0.07), transparent 45%);
+}
+
+.roadmap-stage > p:first-child:has(> .roadmap-stage-num:only-child) {
+  margin: 0;
+  line-height: 0;
+}
+
+.roadmap-stage-num {
+  position: absolute;
+  top: -0.5rem;
+  right: 0.25rem;
+  z-index: -1;
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--md-default-fg-color);
+  opacity: 0.06;
+}
+
+.roadmap-stage-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.roadmap-stage-head .hub-level-badge {
+  margin-bottom: 0;
+}
+
+.roadmap-duration {
+  flex: 0 0 auto;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--md-default-fg-color--lightest);
+  color: var(--md-default-fg-color--light);
+  white-space: nowrap;
 }
 
 .roadmap-stage h3 {
-  margin: 0.15rem 0 1rem;
-  font-size: 1rem;
+  margin: 0.5rem 0 0.3rem;
+  font-size: 1.05rem;
+}
+
+.roadmap-goal {
+  margin: 0 0 1rem;
+  font-size: 0.78rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.roadmap-nodes {
+  position: relative;
+}
+
+.roadmap-nodes::before {
+  content: "";
+  position: absolute;
+  top: 0.2rem;
+  bottom: 0.2rem;
+  left: 0.8rem;
+  width: 2px;
+  background: var(--md-default-fg-color--lightest);
+}
+
+.roadmap-nodes {
+  counter-reset: roadmap-node;
+}
+
+.roadmap-node {
+  position: relative;
+  counter-increment: roadmap-node;
+  display: grid;
+  grid-template-columns: 1.6rem 1fr;
+  column-gap: 0.65rem;
+  padding: 0.4rem 0;
+}
+
+.roadmap-node > * {
+  grid-column: 2;
+  margin: 0;
+}
+
+.roadmap-node::before {
+  content: counter(roadmap-node);
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+  grid-row: 1 / -1;
+  align-self: start;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--md-primary-fg-color--light);
+  transition: background-color 0.15s ease;
+}
+
+.roadmap-node-title {
+  position: relative;
+  z-index: 1;
+  color: var(--md-default-fg-color) !important;
+  font-weight: 600;
+  font-size: 0.86rem;
+  text-decoration: none !important;
+}
+
+.roadmap-node-title::after {
+  content: "";
+  position: absolute;
+  inset: -0.4rem 0;
+}
+
+.roadmap-node:hover .roadmap-node-title {
+  color: var(--md-accent-fg-color) !important;
+}
+
+.roadmap-node:hover::before {
+  background: var(--md-accent-fg-color);
+}
+
+.roadmap-node > .roadmap-node-desc {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--md-default-fg-color--light);
+  margin: 0.1rem 0 0;
 }
 
 .roadmap-arrow {
+  align-self: center;
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: 1.5rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  margin: -0.15rem 0;
+  border-radius: 50%;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  background: var(--md-default-bg-color);
   color: var(--md-default-fg-color--light);
-  font-size: 1.4rem;
+  font-size: 1.1rem;
+  transform: rotate(90deg);
 }
 
-a.roadmap-node {
-  display: block;
-  padding: 0.5rem 0.7rem;
-  margin: 0 0 0.5rem;
-  border-left: 3px solid var(--md-primary-fg-color--light);
-  border-radius: 0.3rem;
-  background: var(--md-code-bg-color);
-  color: var(--md-default-fg-color) !important;
-  text-decoration: none !important;
-  font-size: 0.82rem;
-  transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+[data-md-color-scheme="slate"] .roadmap-stage--beginner {
+  background: linear-gradient(180deg, rgba(129, 199, 132, 0.1), transparent 45%);
 }
 
-a.roadmap-node:last-child {
-  margin-bottom: 0;
+[data-md-color-scheme="slate"] .roadmap-stage--intermediate {
+  background: linear-gradient(180deg, rgba(255, 213, 79, 0.09), transparent 45%);
 }
 
-a.roadmap-node:hover {
-  transform: translateX(3px);
-  border-left-color: var(--md-accent-fg-color);
-  background: var(--md-accent-fg-color--transparent);
+[data-md-color-scheme="slate"] .roadmap-stage--advanced {
+  background: linear-gradient(180deg, rgba(239, 154, 154, 0.09), transparent 45%);
 }
 
-@media (max-width: 760px) {
-  .roadmap-flow {
-    flex-direction: column;
-  }
-
+@media (min-width: 100em) {
   .roadmap-arrow {
-    width: auto;
-    height: 1.25rem;
-    transform: rotate(90deg);
+    align-self: auto;
+    margin-top: 2.5rem;
+    transform: none;
   }
+}
+
+/* Container for embedded third-party widgets (e.g. the roadmap.sh embed,
+   kept as an alternate view alongside the native roadmap above). */
+.embed-frame {
+  width: 100%;
+  height: 600px;
+  margin: 1.5rem 0;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.embed-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
 }

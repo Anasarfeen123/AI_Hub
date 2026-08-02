@@ -15,8 +15,8 @@ Small contributions (a resource link, a typo fix) are just as welcome as large o
 ## Setup
 
 ```bash
-git clone https://github.com/Anasarfeen123/AI-ML-Resource-Hub.git
-cd AI-ML-Resource-Hub
+git clone https://github.com/Anasarfeen123/AI_Hub.git
+cd AI_Hub
 pip install -r requirements.txt
 mkdocs serve
 ```

@@ -5,7 +5,14 @@ There is no single "right" order to learn AI, but there is a bad one: jumping st
 Treat each stage as a checkpoint, not a wall — most students study foundations and machine learning in parallel once they're past the first few weeks of programming and math.
 
 !!! tip "Prefer a visual view?"
-    This same roadmap is embedded as an interactive diagram on the [homepage](index.md#interactive-roadmap).
+    This same roadmap is embedded as a clickable diagram on the [homepage](index.md#interactive-roadmap).
+
+??? note "Original roadmap.sh embed"
+    Before the native diagram above, this roadmap was tracked on [roadmap.sh](https://roadmap.sh/). Kept here for anyone who prefers it — it lets you check off items and tracks progress across visits (its own, separate from this site).
+
+    <div class="embed-frame" markdown>
+    <iframe src="https://roadmap.sh/r/embed?id=696fcd9372acf1058a73acbb" width="100%" height="100%" frameborder="0"></iframe>
+    </div>
 
 ## Stage 1 — Beginner: Foundations
 
