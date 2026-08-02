@@ -1,7 +1,7 @@
 site_name: AI/ML Resource Hub
 site_description: A community-maintained knowledge base for learning Artificial Intelligence and Machine Learning, from foundations to research.
 site_author: University AI/ML Department
-site_url: https://your-org.github.io/AI-ML-Resource-Hub/
+site_url: https://anasarfeen123.github.io/AI-ML-Resource-Hub/
 
 repo_name: AI-ML-Resource-Hub
 repo_url: https://github.com/Anasarfeen123/AI-ML-Resource-Hub
@@ -96,7 +96,7 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/your-org/AI-ML-Resource-Hub
+      link: https://github.com/Anasarfeen123/AI-ML-Resource-Hub
   generator: false
 
 nav:

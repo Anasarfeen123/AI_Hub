@@ -4,7 +4,7 @@ A community-maintained knowledge base for the university AI/ML department — a 
 
 Built with [MkDocs](https://www.mkdocs.org/) and the [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) theme, published automatically to GitHub Pages on every merge to `main`.
 
-**Live site:** `https://your-org.github.io/AI-ML-Resource-Hub/` *(update this once the repo is on GitHub under your org/user)*
+**Live site:** `https://anasarfeen123.github.io/AI-ML-Resource-Hub/` *(live once GitHub Pages is enabled — see Deployment below)*
 
 ## What's inside
 
