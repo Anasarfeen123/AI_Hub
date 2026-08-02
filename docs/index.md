@@ -1,6 +1,9 @@
 ---
 title: AI/ML Resource Hub
 description: MIC VIT Chennai's knowledge base for learning AI/ML from foundations to research.
+hide:
+  - navigation
+  - toc
 ---
 
 <div class="hub-hero" markdown>

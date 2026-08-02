@@ -1,173 +1,372 @@
-/* Small, purposeful overrides on top of Material's default theme. */
+/* ==========================================================================
+   AI/ML Resource Hub - Universal Cross-Browser & Multi-Device Stylesheet
+   Compatible with: Safari (macOS & iOS WebKit), Chrome, Edge, Firefox (Gecko)
+   Screen Sizes: 320px (compact mobile) to 3840px (4K ultra-wide)
+   ========================================================================== */
 
-/* Brand colors sampled from the MIC (Microsoft Innovation Club) logo's
-   four hexagons: blue for site chrome, orange as the interactive accent. */
+/* --------------------------------------------------------------------------
+   1. Design Tokens & CSS Custom Properties
+   -------------------------------------------------------------------------- */
 :root {
+  /* Brand colors sampled from the Microsoft Innovation Club (MIC) logo */
   --md-primary-fg-color: #1c4f88;
   --md-primary-fg-color--light: #2f6ba8;
   --md-primary-fg-color--dark: #123a66;
   --md-accent-fg-color: #e6501f;
-  --md-accent-fg-color--transparent: #e6501f1a;
+  --md-accent-fg-color--transparent: rgba(230, 80, 31, 0.1);
+
+  /* Elevation & Smooth Transition Tokens */
+  --hub-radius-sm: 0.375rem;
+  --hub-radius-md: 0.5rem;
+  --hub-radius-lg: 0.75rem;
+  --hub-radius-full: 9999px;
+  --hub-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --hub-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --hub-shadow-hover: 0 10px 15px -3px rgba(28, 79, 136, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --hub-transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --hub-transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Smooth scroll offset for sticky header */
+  --hub-scroll-offset: 4.5rem;
 }
 
-/* Homepage hero banner. */
+/* --------------------------------------------------------------------------
+   2. Centered Layout & Symmetrical Grid System (Laptops, Desktops & Ultra-wide)
+   -------------------------------------------------------------------------- */
+.md-grid {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(0.75rem, 3vw, 1.5rem);
+  padding-right: clamp(0.75rem, 3vw, 1.5rem);
+  box-sizing: border-box;
+}
+
+@media (min-width: 60em) {
+  .md-grid {
+    max-width: 86rem; /* 1376px */
+  }
+}
+
+@media (min-width: 90em) {
+  .md-grid {
+    max-width: 92rem; /* 1472px for wide screens & 1080p+ */
+  }
+}
+
+/* Ensure main content is horizontally centered when sidebars are hidden */
+.md-main__inner {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.md-content {
+  flex: 1 1 auto;
+  max-width: 100%;
+  min-width: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.md-content__inner {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+}
+
+/* Eliminate ghost sidebar width when hidden */
+.md-sidebar[hidden],
+.md-sidebar--primary[hidden],
+.md-sidebar--secondary[hidden] {
+  display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Cross-Browser Resets & Core Enhancements
+   -------------------------------------------------------------------------- */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--hub-scroll-offset);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  -webkit-tap-highlight-color: rgba(28, 79, 136, 0.15);
+  overflow-x: hidden;
+}
+
+img, svg, iframe, video {
+  max-width: 100%;
+  height: auto;
+}
+
+@supports (padding: env(safe-area-inset-top)) {
+  .md-header {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .md-footer {
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--md-default-fg-color--lighter) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--md-default-fg-color--lighter);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-default-fg-color--light);
+}
+
+/* --------------------------------------------------------------------------
+   4. Homepage Hero Banner (.hub-hero)
+   -------------------------------------------------------------------------- */
 .hub-hero {
+  position: relative;
   text-align: center;
-  padding: 3rem 1.5rem 2.5rem;
-  margin: 0 0 2rem;
-  border-radius: 0.75rem;
+  padding: clamp(2rem, 5vw, 3.25rem) clamp(1rem, 4vw, 2.5rem);
+  margin: 0 auto clamp(1.5rem, 3vw, 2.25rem);
+  border-radius: var(--hub-radius-lg);
   background: linear-gradient(135deg, var(--md-primary-fg-color--light) 0%, var(--md-primary-fg-color--dark) 100%);
-  color: #fff;
+  color: #ffffff;
+  box-shadow: var(--hub-shadow-md);
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.hub-hero::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(230, 80, 31, 0.22) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
 .hub-hero img {
-  margin: 0 0 1rem;
+  display: inline-block;
+  margin: 0 auto clamp(0.75rem, 2vw, 1rem);
+  width: clamp(72px, 12vw, 92px);
+  height: auto;
   border-radius: 0;
-}
-
-.hub-hero h1 {
-  color: #fff;
-  margin: 0 0 0.5rem;
-  font-size: 2.1rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
 }
 
 .hub-hero .hub-eyebrow {
   display: block;
-  font-size: 0.78rem;
+  font-size: clamp(0.72rem, 1.8vw, 0.82rem);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.85;
-  margin-bottom: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.65rem;
+  line-height: 1.3;
+}
+
+.hub-hero h1 {
+  color: #ffffff !important;
+  margin: 0 0 0.65rem;
+  font-size: clamp(1.6rem, 5vw, 2.35rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .hub-hero p.hub-tagline {
-  max-width: 640px;
-  margin: 0 auto 1.5rem;
-  opacity: 0.95;
-  font-size: 1.05rem;
+  max-width: 680px;
+  margin: 0 auto clamp(1.25rem, 3vw, 1.75rem);
+  color: rgba(255, 255, 255, 0.95);
+  font-size: clamp(0.92rem, 2.4vw, 1.05rem);
+  line-height: 1.55;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
+/* Hero Action Buttons */
 .hub-hero .md-button {
-  margin: 0.25rem 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.5rem 1.35rem;
+  margin: 0.3rem 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: var(--hub-radius-full);
+  box-sizing: border-box;
+  text-decoration: none !important;
+  touch-action: manipulation;
+  transition: all var(--hub-transition-fast);
 }
 
 .hub-hero .md-button--primary {
-  background: #fff;
-  color: var(--md-primary-fg-color--dark);
-  border-color: #fff;
-}
-
-.hub-hero .md-button--primary:hover {
-  background: transparent;
-  color: #fff;
-  border-color: #fff;
+  background: #ffffff;
+  color: var(--md-primary-fg-color--dark) !important;
+  border-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .hub-hero .md-button:not(.md-button--primary) {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.7);
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 }
 
-.hub-hero .md-button:not(.md-button--primary):hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
+@media (hover: hover) and (pointer: fine) {
+  .hub-hero .md-button--primary:hover {
+    background: transparent;
+    color: #ffffff !important;
+    border-color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .hub-hero .md-button:not(.md-button--primary):hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: #ffffff;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+  }
 }
 
-/* Tighter, card-style grid for the homepage section links. */
-.hub-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 0.75rem;
-  margin: 1.5rem 0 2rem;
+.hub-hero .md-button:active {
+  transform: scale(0.98);
 }
 
-.hub-card {
-  display: block;
-  border: 1px solid var(--md-default-fg-color--lightest);
-  border-radius: 0.5rem;
-  padding: 1rem 1.1rem;
-  text-decoration: none !important;
-  color: var(--md-default-fg-color) !important;
-  transition: border-color 0.15s ease, transform 0.15s ease;
+@media (max-width: 25em) {
+  .hub-hero .md-button {
+    display: flex;
+    width: 100%;
+    margin: 0.4rem 0;
+  }
 }
 
-.hub-card:hover {
-  border-color: var(--md-primary-fg-color);
-  transform: translateY(-2px);
-}
-
-.hub-card h3 {
-  margin: 0 0 0.35rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-.hub-card p {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--md-default-fg-color--light);
-}
-
+/* --------------------------------------------------------------------------
+   5. Accessible Level Badges (.hub-level-badge)
+   -------------------------------------------------------------------------- */
 .hub-level-badge {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 0.1rem 0.5rem;
-  border-radius: 999px;
-  margin-bottom: 0.6rem;
+  padding: 0 0.6rem;
+  border-radius: var(--hub-radius-full);
+  margin-bottom: 0.65rem;
+  line-height: 1;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
+/* Light Mode Badges */
 .hub-level-badge.beginner {
-  background: #e3f2e1;
-  color: #2e7d32;
+  background: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #c8e6c9;
 }
 
 .hub-level-badge.intermediate {
-  background: #fff3cd;
-  color: #8a6100;
+  background: #fff8e1;
+  color: #8d5b00;
+  border: 1px solid #ffe082;
 }
 
 .hub-level-badge.advanced {
-  background: #fde0e0;
+  background: #ffebee;
   color: #b71c1c;
+  border: 1px solid #ffcdd2;
 }
 
+/* Dark Mode Badges (Material Slate Theme) */
 [data-md-color-scheme="slate"] .hub-level-badge.beginner {
-  background: #1b3a20;
+  background: #14351a;
   color: #81c784;
+  border: 1px solid #2e7d32;
 }
 
 [data-md-color-scheme="slate"] .hub-level-badge.intermediate {
-  background: #3a2f0f;
+  background: #352a0a;
   color: #ffd54f;
+  border: 1px solid #b8860b;
 }
 
 [data-md-color-scheme="slate"] .hub-level-badge.advanced {
-  background: #3a1a1a;
+  background: #351515;
   color: #ef9a9a;
+  border: 1px solid #c62828;
 }
 
-/* Native interactive roadmap: a stage-by-stage timeline of clickable
-   nodes, built with our own markup instead of an embedded widget.
-   Mobile-first: stacked vertically by default (the sidebar + table of
-   contents Material shows on laptop-width screens leaves surprisingly
-   little room for a 3-column layout), widening to a 3-column row only
-   on genuinely wide viewports. */
+/* --------------------------------------------------------------------------
+   6. Interactive Roadmap Flow (.roadmap-flow) - Perfect Symmetrical Alignment
+   -------------------------------------------------------------------------- */
 .roadmap-flow {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 0.5rem;
-  margin: 1.5rem 0 2rem;
+  gap: 1rem;
+  margin: 1.5rem 0 2.5rem;
+  width: 100%;
   max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .roadmap-stage {
   position: relative;
-  flex: none;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -175,62 +374,113 @@
   overflow: hidden;
   border: 1px solid var(--md-default-fg-color--lightest);
   border-top: 3px solid var(--md-default-fg-color--lighter);
-  border-radius: 0.75rem;
-  padding: 1.1rem 1.1rem 1.35rem;
+  border-radius: var(--hub-radius-lg);
+  padding: clamp(1.1rem, 2.5vw, 1.5rem);
+  background: var(--md-default-bg-color);
+  box-shadow: var(--hub-shadow-sm);
+  transition: transform var(--hub-transition-fast),
+              box-shadow var(--hub-transition-fast);
 }
 
-@media (min-width: 100em) {
+@media (hover: hover) and (pointer: fine) {
+  .roadmap-stage:hover {
+    box-shadow: var(--hub-shadow-md);
+  }
+}
+
+/* Horizontal 3-Column Sequence on Laptop and Desktop Screens */
+@media (min-width: 68em) {
   .roadmap-flow {
     flex-direction: row;
-    align-items: flex-start;
-    gap: 0.5rem;
+    align-items: stretch;
+    gap: 0.85rem;
   }
 
   .roadmap-stage {
     flex: 1 1 0;
+    min-width: 260px;
     width: auto;
+    padding: 1.25rem 1.15rem;
+  }
+
+  .roadmap-stage h3 {
+    min-height: 1.7rem;
+  }
+
+  .roadmap-goal {
+    min-height: 2.75rem;
   }
 }
 
+@media (min-width: 80em) {
+  .roadmap-flow {
+    gap: 1.15rem;
+  }
+
+  .roadmap-stage {
+    padding: 1.45rem 1.35rem;
+  }
+}
+
+/* Stage Variant Styling */
 .roadmap-stage--beginner {
   border-top-color: #2e7d32;
-  background: linear-gradient(180deg, rgba(46, 125, 50, 0.07), transparent 45%);
+  background: linear-gradient(180deg, rgba(46, 125, 50, 0.08) 0%, var(--md-default-bg-color) 45%);
 }
 
 .roadmap-stage--intermediate {
   border-top-color: #b8860b;
-  background: linear-gradient(180deg, rgba(184, 134, 11, 0.08), transparent 45%);
+  background: linear-gradient(180deg, rgba(184, 134, 11, 0.09) 0%, var(--md-default-bg-color) 45%);
 }
 
 .roadmap-stage--advanced {
   border-top-color: #b71c1c;
-  background: linear-gradient(180deg, rgba(183, 28, 28, 0.07), transparent 45%);
+  background: linear-gradient(180deg, rgba(183, 28, 28, 0.08) 0%, var(--md-default-bg-color) 45%);
 }
 
-.roadmap-stage > p:first-child:has(> .roadmap-stage-num:only-child) {
-  margin: 0;
-  line-height: 0;
+[data-md-color-scheme="slate"] .roadmap-stage--beginner {
+  background: linear-gradient(180deg, rgba(129, 199, 132, 0.12) 0%, var(--md-default-bg-color) 45%);
 }
 
+[data-md-color-scheme="slate"] .roadmap-stage--intermediate {
+  background: linear-gradient(180deg, rgba(255, 213, 79, 0.1) 0%, var(--md-default-bg-color) 45%);
+}
+
+[data-md-color-scheme="slate"] .roadmap-stage--advanced {
+  background: linear-gradient(180deg, rgba(239, 154, 154, 0.1) 0%, var(--md-default-bg-color) 45%);
+}
+
+/* Watermark Number in Stage Background */
 .roadmap-stage-num {
   position: absolute;
-  top: -0.5rem;
-  right: 0.25rem;
-  z-index: -1;
-  font-size: 4rem;
-  font-weight: 800;
+  top: -0.4rem;
+  right: 0.35rem;
+  z-index: 0;
+  font-size: clamp(3rem, 6vw, 4.25rem);
+  font-weight: 900;
   line-height: 1;
   color: var(--md-default-fg-color);
-  opacity: 0.06;
+  opacity: 0.07;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.roadmap-stage > p:first-child {
+  margin: 0;
+  line-height: 0;
+  font-size: 0;
 }
 
 .roadmap-stage-head {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
 }
 
 .roadmap-stage-head .hub-level-badge {
@@ -239,51 +489,79 @@
 
 .roadmap-duration {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.35rem;
   font-size: 0.68rem;
   font-weight: 600;
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
+  padding: 0 0.55rem;
+  border-radius: var(--hub-radius-full);
   background: var(--md-default-fg-color--lightest);
   color: var(--md-default-fg-color--light);
   white-space: nowrap;
+  line-height: 1;
 }
 
 .roadmap-stage h3 {
+  position: relative;
+  z-index: 1;
   margin: 0.5rem 0 0.3rem;
-  font-size: 1.05rem;
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  font-weight: 700;
+  color: var(--md-default-fg-color);
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
 }
 
 .roadmap-goal {
-  margin: 0 0 1rem;
-  font-size: 0.78rem;
+  position: relative;
+  z-index: 1;
+  margin: 0 0 1.15rem;
+  font-size: clamp(0.78rem, 1.6vw, 0.84rem);
+  line-height: 1.45;
   color: var(--md-default-fg-color--light);
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
+/* Timeline Nodes Container & Connecting Line */
 .roadmap-nodes {
   position: relative;
+  counter-reset: roadmap-node;
+  padding-left: 0;
+  z-index: 1;
+  flex-grow: 1;
 }
 
 .roadmap-nodes::before {
   content: "";
   position: absolute;
-  top: 0.2rem;
-  bottom: 0.2rem;
-  left: 0.8rem;
+  top: 0.85rem;
+  bottom: 0.85rem;
+  left: 0.775rem;
   width: 2px;
   background: var(--md-default-fg-color--lightest);
+  z-index: 0;
 }
 
-.roadmap-nodes {
-  counter-reset: roadmap-node;
-}
-
+/* Individual Timeline Node */
 .roadmap-node {
   position: relative;
   counter-increment: roadmap-node;
   display: grid;
-  grid-template-columns: 1.6rem 1fr;
-  column-gap: 0.65rem;
-  padding: 0.4rem 0;
+  grid-template-columns: 1.65rem minmax(0, 1fr);
+  column-gap: 0.75rem;
+  padding: 0.35rem 0;
+  min-width: 0;
+  align-items: start;
+}
+
+.roadmap-node p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.35;
 }
 
 .roadmap-node > * {
@@ -298,95 +576,205 @@
   grid-column: 1;
   grid-row: 1 / -1;
   align-self: start;
-  width: 1.6rem;
-  height: 1.6rem;
+  margin-top: 0.05rem;
+  width: 1.65rem;
+  height: 1.65rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.72rem;
   font-weight: 700;
-  color: #fff;
+  color: #ffffff;
   background: var(--md-primary-fg-color--light);
-  transition: background-color 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: background-color var(--hub-transition-fast),
+              transform var(--hub-transition-fast);
 }
 
 .roadmap-node-title {
   position: relative;
   z-index: 1;
+  display: inline-block;
   color: var(--md-default-fg-color) !important;
   font-weight: 600;
-  font-size: 0.86rem;
+  font-size: clamp(0.84rem, 1.6vw, 0.9rem);
+  line-height: 1.35;
   text-decoration: none !important;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
+  white-space: normal;
+  transition: color var(--hub-transition-fast);
 }
 
 .roadmap-node-title::after {
   content: "";
   position: absolute;
-  inset: -0.4rem 0;
+  inset: -0.35rem 0;
+  z-index: 2;
 }
 
-.roadmap-node:hover .roadmap-node-title {
-  color: var(--md-accent-fg-color) !important;
-}
+@media (hover: hover) and (pointer: fine) {
+  .roadmap-node:hover .roadmap-node-title {
+    color: var(--md-accent-fg-color) !important;
+  }
 
-.roadmap-node:hover::before {
-  background: var(--md-accent-fg-color);
+  .roadmap-node:hover::before {
+    background: var(--md-accent-fg-color);
+    transform: scale(1.08);
+  }
 }
 
 .roadmap-node > .roadmap-node-desc {
   display: block;
-  font-size: 0.74rem;
+  font-size: clamp(0.72rem, 1.5vw, 0.77rem);
   color: var(--md-default-fg-color--light);
-  margin: 0.1rem 0 0;
+  margin: 0.15rem 0 0;
+  line-height: 1.35;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
 }
 
+/* Connecting Arrow between Stages */
 .roadmap-arrow {
   align-self: center;
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: 2.1rem;
-  height: 2.1rem;
-  margin: -0.15rem 0;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
   border: 1px solid var(--md-default-fg-color--lightest);
   background: var(--md-default-bg-color);
   color: var(--md-default-fg-color--light);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  box-shadow: var(--hub-shadow-sm);
   transform: rotate(90deg);
+  margin: 0.25rem auto;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-[data-md-color-scheme="slate"] .roadmap-stage--beginner {
-  background: linear-gradient(180deg, rgba(129, 199, 132, 0.1), transparent 45%);
-}
-
-[data-md-color-scheme="slate"] .roadmap-stage--intermediate {
-  background: linear-gradient(180deg, rgba(255, 213, 79, 0.09), transparent 45%);
-}
-
-[data-md-color-scheme="slate"] .roadmap-stage--advanced {
-  background: linear-gradient(180deg, rgba(239, 154, 154, 0.09), transparent 45%);
-}
-
-@media (min-width: 100em) {
+@media (min-width: 68em) {
   .roadmap-arrow {
-    align-self: auto;
-    margin-top: 2.5rem;
     transform: none;
+    margin: auto -0.25rem;
   }
 }
 
-/* Container for embedded third-party widgets (e.g. the roadmap.sh embed,
-   kept as an alternate view alongside the native roadmap above). */
+/* --------------------------------------------------------------------------
+   7. Explore the Hub Card Grid (.hub-grid & .hub-card)
+   -------------------------------------------------------------------------- */
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: clamp(0.75rem, 2vw, 1.15rem);
+  margin: 1.5rem 0 2.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.hub-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: var(--hub-radius-md);
+  padding: clamp(0.95rem, 2vw, 1.25rem);
+  text-decoration: none !important;
+  color: var(--md-default-fg-color) !important;
+  background: var(--md-default-bg-color);
+  box-shadow: var(--hub-shadow-sm);
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
+  transition: border-color var(--hub-transition-fast),
+              transform var(--hub-transition-fast),
+              box-shadow var(--hub-transition-fast);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hub-card:hover {
+    border-color: var(--md-primary-fg-color);
+    transform: translateY(-2px);
+    box-shadow: var(--hub-shadow-hover);
+  }
+
+  .hub-card:hover h3 {
+    color: var(--md-primary-fg-color);
+  }
+}
+
+.hub-card:active {
+  transform: scale(0.99);
+}
+
+.hub-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: clamp(0.94rem, 2vw, 1.05rem);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--md-default-fg-color);
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
+  transition: color var(--hub-transition-fast);
+}
+
+.hub-card p {
+  margin: 0;
+  font-size: clamp(0.78rem, 1.8vw, 0.85rem);
+  line-height: 1.45;
+  color: var(--md-default-fg-color--light);
+  flex-grow: 1;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+/* --------------------------------------------------------------------------
+   8. Tables, Embeds & Code Blocks Responsiveness
+   -------------------------------------------------------------------------- */
+.md-typeset__table {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.5rem 0;
+  border-radius: var(--hub-radius-md);
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset table:not([class]) {
+  width: 100%;
+  min-width: 480px;
+  margin: 0;
+  border: 0;
+  border-collapse: collapse;
+}
+
+.md-typeset table:not([class]) th,
+.md-typeset table:not([class]) td {
+  padding: 0.75rem 1rem;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
 .embed-frame {
   width: 100%;
-  height: 600px;
+  height: clamp(380px, 60vh, 600px);
+  max-height: 80vh;
+  min-height: 320px;
   margin: 1.5rem 0;
   border: 1px solid var(--md-default-fg-color--lightest);
-  border-radius: 0.5rem;
+  border-radius: var(--hub-radius-md);
   overflow: hidden;
+  box-shadow: var(--hub-shadow-sm);
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 }
 
 .embed-frame iframe {
@@ -394,4 +782,65 @@
   height: 100%;
   border: 0;
   display: block;
+}
+
+.md-typeset pre > code {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+  font-size: 0.85em;
+  border-radius: var(--hub-radius-sm);
+}
+
+/* --------------------------------------------------------------------------
+   9. Accessibility & Accessibility Utilities
+   -------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 2px;
+}
+
+:-moz-focusring {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. Print Stylesheet
+   -------------------------------------------------------------------------- */
+@media print {
+  .hub-hero {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #cccccc !important;
+    box-shadow: none !important;
+  }
+
+  .hub-hero h1,
+  .hub-hero .hub-eyebrow,
+  .hub-hero p.hub-tagline {
+    color: #000000 !important;
+  }
+
+  .hub-hero .md-button {
+    display: none !important;
+  }
+
+  .hub-card,
+  .roadmap-stage {
+    box-shadow: none !important;
+    border: 1px solid #cccccc !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 }
