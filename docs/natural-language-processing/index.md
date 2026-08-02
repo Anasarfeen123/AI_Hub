@@ -21,6 +21,7 @@ Before embeddings, NLP represented words as arbitrary, unrelated symbols (one-ho
 - [Hugging Face — NLP Course](https://huggingface.co/learn/nlp-course) — practical, code-first, covers tokenization, transformers, and fine-tuning with the `transformers` library.
 - [The Illustrated Word2Vec](https://jalammar.github.io/illustrated-word2vec/) and [The Illustrated BERT](https://jalammar.github.io/illustrated-bert/) by Jay Alammar — the clearest visual explanations of these two foundational ideas.
 - ["BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"](https://arxiv.org/abs/1810.04805) — the original paper, worth reading after the illustrated guide.
+- [Stanford CS224n lecture recordings](https://www.youtube.com/playlist?list=PLoROMvodv4rPt5D0zs3YhbWSZA8Q_DyiJ) — the video companion to the course above.
 
 ## Recommended practice
 

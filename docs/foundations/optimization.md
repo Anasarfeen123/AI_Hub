@@ -20,6 +20,7 @@ Optimization is the math that answers: "given a model with parameters and a loss
 - Andrej Karpathy's [Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html) — builds backpropagation and a neural network from scratch in Python, live, starting from first principles (the `micrograd` project).
 - [Sebastian Ruder — An overview of gradient descent optimization algorithms](https://www.ruder.io/optimizing-gradient-descent/) — the standard reference comparing SGD, momentum, RMSProp, Adam, and more.
 - [PyTorch — Autograd tutorial](https://pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html) for seeing these ideas expressed in the framework you'll actually use.
+- [MIT — Information Theory (6.441)](https://ocw.mit.edu/courses/6-441-information-theory-spring-2016/) — entropy and information-theoretic ideas underpin loss functions like cross-entropy; useful once the basics of optimization are solid.
 
 ## Recommended practice
 

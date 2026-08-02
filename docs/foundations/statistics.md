@@ -23,6 +23,8 @@ The bias-variance tradeoff specifically is the single most useful mental model i
 - *Practical Statistics for Data Scientists* by Bruce, Bruce, and Gedeck — statistics specifically framed for data science work rather than pure theory.
 - [Seeing Theory](https://seeing-theory.brown.edu/) — an interactive visual introduction to probability and statistics from Brown University.
 - Google's [Machine Learning Crash Course — Bias/Variance and Generalization](https://developers.google.com/machine-learning/crash-course) sections.
+- Allen Downey — [Think Stats](https://allendowney.github.io/ThinkStats/) — a free, programmer-friendly statistics book that teaches concepts through code rather than proofs.
+- [OpenIntro Statistics](https://biostat.jhsph.edu/~iruczins/teaching/books/2019.openintro.statistics.pdf) (Johns Hopkins) — a free, thorough introductory statistics textbook.
 
 ## Recommended practice
 

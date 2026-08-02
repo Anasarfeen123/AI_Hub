@@ -21,6 +21,11 @@ You don't need to derive theorems from scratch, but you do need to read them. Pa
 - [Khan Academy: Linear Algebra](https://www.khanacademy.org/math/linear-algebra), [Multivariable Calculus](https://www.khanacademy.org/math/multivariable-calculus), and [Probability](https://www.khanacademy.org/math/statistics-probability) — free, structured, with practice problems.
 - *Mathematics for Machine Learning* by Deisenroth, Faisal, and Ong (free PDF available from the authors) — written specifically to bridge math and ML.
 - [Immersive Linear Algebra](https://immersivemath.com/ila/index.html) — an interactive online linear algebra textbook.
+- [MIT OCW — Linear Algebra (18.06)](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/) — Gilbert Strang's full course, the standard university-level treatment if you want more rigor than the visual introductions above.
+- [MIT OCW — Matrix Calculus for Machine Learning and Beyond](https://ocw.mit.edu/courses/18-s096-matrix-calculus-for-machine-learning-and-beyond-january-iap-2023/) — bridges scalar calculus and the matrix/vector derivatives used throughout ML.
+- [MIT — Optimization for Machine Learning](https://optml.mit.edu/teach/6881/) — a more advanced course once gradient descent (see [Optimization](optimization.md)) feels routine.
+- Jason Brownlee — [Linear Algebra for Machine Learning](https://github.com/Sana-AI-ML/ML-Books-Jason-Brownlee/blob/master/01.%20Linear%20Algebra%20for%20Machine%20Learning.pdf) — a linear algebra treatment focused specifically on ML applications rather than pure theory.
+- [mathematicsforai.com](https://www.mathematicsforai.com/) — a curated, one-stop starting point for the math this page covers.
 
 ## Recommended practice
 

@@ -21,6 +21,7 @@ Vision is one of the clearest illustrations of deep learning's core promise: ins
 - [Ultralytics YOLO documentation](https://docs.ultralytics.com/) — the most widely used practical entry point for real-time object detection.
 - [Hugging Face — Computer Vision Course](https://huggingface.co/learn/computer-vision-course) — covers CNNs through Vision Transformers with runnable code.
 - [Papers With Code — Computer Vision](https://paperswithcode.com/area/computer-vision) to see current state-of-the-art models and benchmarks by task.
+- [Stanford CS231n lecture recordings](https://www.youtube.com/playlist?list=PLoROMvodv4rOmsNzYBMe0gJY2XS8AQg16) — the video companion to the course notes above, useful if you prefer watching lectures to reading.
 
 ## Recommended practice
 

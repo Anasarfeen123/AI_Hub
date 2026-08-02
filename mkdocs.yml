@@ -1,6 +1,6 @@
 site_name: AI/ML Resource Hub
 site_description: A community-maintained knowledge base for learning Artificial Intelligence and Machine Learning, from foundations to research.
-site_author: University AI/ML Department
+site_author: Microsoft Innovation Club, VIT Chennai
 site_url: https://anasarfeen123.github.io/AI-ML-Resource-Hub/
 
 repo_name: AI-ML-Resource-Hub
@@ -29,6 +29,8 @@ theme:
   font:
     text: Roboto
     code: Roboto Mono
+  logo: assets/images/mic-logo.png
+  favicon: assets/images/favicon.png
   icon:
     repo: fontawesome/brands/github
   features:
@@ -128,10 +130,17 @@ nav:
       - generative-ai/index.md
   - Reinforcement Learning:
       - reinforcement-learning/index.md
+  - Specializations:
+      - specializations/index.md
+      - Time Series Forecasting: specializations/time-series-forecasting.md
+      - Speech & Audio AI: specializations/speech-audio-ai.md
+      - MLOps: specializations/mlops.md
+      - AI Deployment: specializations/ai-deployment.md
   - Research:
       - research/index.md
   - Resource Library:
       - resources/index.md
   - Project Ideas:
       - projects/index.md
+  - Careers & Internships: careers/index.md
   - Contributing: contribution.md

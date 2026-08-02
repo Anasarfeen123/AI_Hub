@@ -21,6 +21,8 @@ RL is the right framework whenever a problem is about *sequential decision-makin
 - [David Silver's Reinforcement Learning course (DeepMind/UCL)](https://www.davidsilver.uk/teaching/) — lecture videos that closely follow Sutton & Barto and are widely considered the best free video course on the subject.
 - [OpenAI Spinning Up in Deep RL](https://spinningup.openai.com/) — a practical, code-first introduction to modern deep RL algorithms including DQN and PPO.
 - [Gymnasium documentation](https://gymnasium.farama.org/) (the maintained successor to OpenAI Gym) for standard RL environments to train and benchmark agents in.
+- [DeepMind x UCL — Reinforcement Learning course](https://www.youtube.com/playlist?list=PLqYmG7hTraZBKeNJ-JE_eyJHZ7XgBoAyb) — the video playlist version of David Silver's course above.
+- [Hugging Face — Deep RL Course](https://huggingface.co/learn/deep-rl-course) — a free, interactive course pairing theory with hands-on implementation.
 
 ## Recommended practice
 

@@ -75,3 +75,13 @@ See [Research](../research/index.md) for how to find, read, and evaluate papers 
 - [DrivenData](https://www.drivendata.org/) — competitions focused on social-impact applications of data science.
 - [AIcrowd](https://www.aicrowd.com/) — research-oriented challenges, often tied to academic benchmarks.
 - Conference-affiliated challenges (e.g. workshop competitions at NeurIPS/CVPR) — see [Research](../research/index.md) for how to find these.
+
+## AI Tools
+
+Tools that use AI to help you build, learn, and work — distinct from the ML *frameworks* above, which you use to build models yourself.
+
+- [ChatGPT](https://chatgpt.com/) and [Claude](https://claude.ai/) — general-purpose assistants useful for explaining concepts, debugging, and drafting — verify anything technical against a primary source before relying on it.
+- [GitHub Copilot](https://github.com/features/copilot) and [Cursor](https://www.cursor.com/) — AI-assisted coding directly in your editor.
+- [NotebookLM](https://notebooklm.google/) — summarizing and querying a set of documents/papers you upload, useful when working through a stack of research papers (see [Research](../research/index.md)).
+- [Perplexity](https://www.perplexity.ai/) — search-oriented AI assistant with cited sources, useful for fast literature/tool discovery.
+- [Hugging Face Spaces](https://huggingface.co/spaces) — try out thousands of published models directly in the browser before deciding whether to integrate one into a project.

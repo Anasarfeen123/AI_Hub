@@ -26,6 +26,13 @@ Generative AI is the fastest-moving part of this hub's content and the area most
 - [LangChain documentation](https://python.langchain.com/) and [LlamaIndex documentation](https://docs.llamaindex.ai/) for building RAG pipelines and agents in practice.
 - [The Annotated LoRA paper / original LoRA paper](https://arxiv.org/abs/2106.09685) for the technique behind efficient fine-tuning.
 - [Ollama](https://ollama.com/) documentation for running open-weight LLMs locally.
+- [Google — Introduction to Large Language Models](https://developers.google.com/machine-learning/resources/intro-llms) — a short conceptual primer.
+- [Stanford CS324: Large Language Models](https://www.youtube.com/playlist?list=PLoROMvodv4rObv1FMizXqumgVVdzX4_05) — a full course on LLM theory, training, and deployment.
+- [OpenAI Cookbook](https://cookbook.openai.com/) — practical, runnable examples for working with LLM APIs (prompting patterns, RAG, function calling).
+- [Hugging Face — AI Agents Course](https://huggingface.co/learn/agents-course) — a free, structured introduction to building agents.
+- Anthropic — [Building Effective AI Agents](https://www.anthropic.com/engineering/building-effective-agents) — a widely-cited, practical guide to agent design patterns from a leading AI lab.
+- [DeepLearning.AI — Generative AI for Everyone](https://www.deeplearning.ai/courses/generative-ai-for-everyone/) — a non-technical/beginner-friendly foundation if you want the concepts before the code.
+- [Google Cloud Skills Boost — Generative AI learning path](https://www.cloudskillsboost.google/paths/118) — a structured, hands-on path through generative AI fundamentals.
 
 ## Recommended practice
 

@@ -26,6 +26,18 @@ Similarly, real datasets are messy. Most of the actual work in a machine learnin
 - [Matplotlib Quick Start Guide](https://matplotlib.org/stable/users/explain/quick_start.html).
 - *Python for Data Analysis* by Wes McKinney (creator of Pandas) — the standard reference for the Pandas/NumPy workflow.
 - [Kaggle's free "Python" and "Pandas" micro-courses](https://www.kaggle.com/learn) — short, hands-on, and directly aimed at data work.
+- [CS50's Introduction to Programming with Python](https://cs50.harvard.edu/python/) (Harvard) — a thorough, well-produced starting course if you're new to programming entirely.
+- [Python for Everybody](https://www.py4e.com/html3/) — a free, beginner-friendly course and textbook.
+- [Real Python](https://realpython.com/) — good for going deep on one specific function, module, or pattern once you're past the basics.
+- [Corey Schafer's YouTube channel](https://www.youtube.com/@coreyms) — clear, focused tutorials on individual Python modules and patterns.
+- [freeCodeCamp](https://www.youtube.com/@freecodecamp) — long-form, comprehensive video courses covering Python and the AI/data stack.
+
+**Data collection and processing**, once you're ready to work with real (messy, external) data:
+
+- [Scrapy documentation](https://docs.scrapy.org/) and [Selenium documentation](https://www.selenium.io/docs/) for web scraping.
+- [Seaborn](https://seaborn.pydata.org/) and [Plotly](https://plotly.com/python/getting-started/) documentation — statistical and interactive plotting libraries that complement Matplotlib.
+- [Alex The Analyst's YouTube channel](https://www.youtube.com/@AlexTheAnalyst) — practical data cleaning and analysis workflows.
+- [Storytelling with Data](https://www.storytellingwithdata.com/) — how to turn analysis into a report people actually understand, a skill every project in this hub eventually needs.
 
 ## Recommended practice
 

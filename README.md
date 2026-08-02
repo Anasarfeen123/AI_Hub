@@ -1,6 +1,10 @@
+<img src="docs/assets/images/mic-logo.png" alt="MIC logo" width="72" />
+
 # AI/ML Resource Hub
 
-A community-maintained knowledge base for the university AI/ML department — a single place to learn Artificial Intelligence from beginner foundations through to advanced research, and to find curated, vetted resources instead of scattered links.
+**Microsoft Innovation Club (MIC), VIT Chennai**
+
+A community-maintained knowledge base for MIC's AI/ML learning track — a single place to learn Artificial Intelligence from beginner foundations through to advanced research, and to find curated, vetted resources instead of scattered links.
 
 Built with [MkDocs](https://www.mkdocs.org/) and the [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) theme, published automatically to GitHub Pages on every merge to `main`.
 
@@ -55,7 +59,7 @@ One-time repository setup for a new fork/copy:
 
 ## Contributing
 
-This hub is built by and for students — pull requests adding resources, fixing errors, or writing new topic pages are welcome. See [`docs/contribution.md`](docs/contribution.md) for the full guide, including page templates and style conventions. In short:
+This hub is built by and for MIC members — pull requests adding resources, fixing errors, or writing new topic pages are welcome. See [`docs/contribution.md`](docs/contribution.md) for the full guide, including page templates and style conventions. In short:
 
 1. Fork the repo and create a branch.
 2. Add or edit a Markdown page under `docs/`.
@@ -64,4 +68,4 @@ This hub is built by and for students — pull requests adding resources, fixing
 
 ## License
 
-Content is shared for educational use by the department community. Add a license file here if your department requires a specific one (e.g. CC-BY-4.0 for content, MIT for any code snippets).
+Content is shared for educational use by the MIC VIT Chennai community. Add a license file here if a specific one is required (e.g. CC-BY-4.0 for content, MIT for any code snippets).

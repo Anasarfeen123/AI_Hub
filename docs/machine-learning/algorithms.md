@@ -35,6 +35,10 @@ Feature engineering deserves special attention because it's consistently underra
 - [StatQuest — Decision Trees, Random Forests, SVMs, PCA, clustering playlists](https://www.youtube.com/@statquest) — the best intuition-building video series for each individual algorithm.
 - [XGBoost documentation](https://xgboost.readthedocs.io/) and [LightGBM documentation](https://lightgbm.readthedocs.io/) for gradient boosting specifics.
 - [Kaggle Learn: Feature Engineering](https://www.kaggle.com/learn/feature-engineering) — short, practical course.
+- [scikit-learn — Supervised learning guide](https://scikit-learn.org/stable/supervised_learning.html) and [Unsupervised learning guide](https://scikit-learn.org/stable/unsupervised_learning.html) — the reference for every algorithm's parameters and assumptions, split by learning type.
+- [Google's Machine Learning Crash Course — Clustering](https://developers.google.com/machine-learning/clustering) for a focused treatment of clustering specifically.
+- Krish Naik — [Feature Engineering playlist](https://www.youtube.com/playlist?list=PLZoTAELRMXVPwYGE2PXD3x0bfKnR0cJjN) — a thorough video walkthrough of feature engineering techniques.
+- IBM — [Feature Engineering](https://www.ibm.com/think/topics/feature-engineering) — a concise conceptual overview.
 
 ## Recommended practice
 

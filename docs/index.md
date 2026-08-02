@@ -1,11 +1,72 @@
 ---
 title: AI/ML Resource Hub
-description: A university department's knowledge base for learning AI/ML from foundations to research.
+description: MIC VIT Chennai's knowledge base for learning AI/ML from foundations to research.
 ---
+
+<div class="hub-hero" markdown>
+
+![MIC logo](assets/images/mic-logo.png){ width="88" }
+
+<span class="hub-eyebrow">Microsoft Innovation Club — VIT Chennai</span>
 
 # AI/ML Resource Hub
 
-A single, maintained place to learn Artificial Intelligence — from your first line of Python to reading and writing research papers. Built and kept up to date by students and faculty in the department, not a static list of bookmarks.
+<p class="hub-tagline" markdown>A single, maintained place to learn Artificial Intelligence — from your first line of Python to reading and writing research papers. Built and kept current by MIC students and faculty, not a static list of bookmarks.</p>
+
+[Start with the Roadmap](#interactive-roadmap){ .md-button .md-button--primary }
+[Browse Foundations](foundations/index.md){ .md-button }
+
+</div>
+
+## Interactive Roadmap
+
+Click any node to jump straight to that topic. Each stage builds on the one before it — see the [full written roadmap](roadmap.md) for timing estimates and how to use it.
+
+<div class="roadmap-flow" markdown>
+
+<div class="roadmap-stage" markdown>
+<span class="hub-level-badge beginner">Stage 1 · Beginner</span>
+
+### Foundations
+
+[Python for AI](foundations/python.md){ .roadmap-node }
+[Mathematics](foundations/mathematics.md){ .roadmap-node }
+[Statistics](foundations/statistics.md){ .roadmap-node }
+[Optimization](foundations/optimization.md){ .roadmap-node }
+
+</div>
+
+<div class="roadmap-arrow">→</div>
+
+<div class="roadmap-stage" markdown>
+<span class="hub-level-badge intermediate">Stage 2 · Intermediate</span>
+
+### Core Toolbox
+
+[Machine Learning](machine-learning/index.md){ .roadmap-node }
+[Deep Learning](deep-learning/index.md){ .roadmap-node }
+[Computer Vision](computer-vision/index.md){ .roadmap-node }
+[Natural Language Processing](natural-language-processing/index.md){ .roadmap-node }
+
+</div>
+
+<div class="roadmap-arrow">→</div>
+
+<div class="roadmap-stage" markdown>
+<span class="hub-level-badge advanced">Stage 3 · Advanced</span>
+
+### Specialize & Research
+
+[Generative AI](generative-ai/index.md){ .roadmap-node }
+[Reinforcement Learning](reinforcement-learning/index.md){ .roadmap-node }
+[Specializations](specializations/index.md){ .roadmap-node }
+[Research](research/index.md){ .roadmap-node }
+
+</div>
+
+</div>
+
+## Explore the hub
 
 <div class="hub-grid" markdown>
 
@@ -13,7 +74,7 @@ A single, maintained place to learn Artificial Intelligence — from your first 
 <span class="hub-level-badge beginner">Start here</span>
 
 ### [Roadmap](roadmap.md)
-The guided path through this hub — what to learn first, second, and third.
+Stage-by-stage tables, timing estimates, and how to use this hub.
 </div>
 
 <div class="hub-card" markdown>
@@ -68,6 +129,13 @@ MDPs, Q-learning, policy gradients, robotics and simulation.
 <div class="hub-card" markdown>
 <span class="hub-level-badge advanced">Advanced</span>
 
+### [Specializations](specializations/index.md)
+Time series forecasting, speech & audio AI, MLOps, and AI deployment.
+</div>
+
+<div class="hub-card" markdown>
+<span class="hub-level-badge advanced">Advanced</span>
+
 ### [Research](research/index.md)
 Reading papers, conferences, datasets, and current trends.
 </div>
@@ -83,6 +151,11 @@ Categorized project briefs, beginner through advanced.
 </div>
 
 <div class="hub-card" markdown>
+### [Careers & Internships](careers/index.md)
+Portfolios, interviews, and turning projects into a track record.
+</div>
+
+<div class="hub-card" markdown>
 ### [Contributing](contribution.md)
 How to add a resource, fix a page, or write a new topic.
 </div>
@@ -95,11 +168,11 @@ Content runs along a single difficulty axis so you always know where you are:
 
 - **Foundations** — the math and programming every AI course assumes you already know.
 - **Machine Learning & Deep Learning** — the core toolbox: algorithms, architectures, training.
-- **Computer Vision, NLP, Generative AI, Reinforcement Learning** — applied specializations, each buildable once you have the core toolbox.
-- **Research** — how to go from consuming knowledge to producing it.
+- **Computer Vision, NLP, Generative AI, Reinforcement Learning, Specializations** — applied tracks, each buildable once you have the core toolbox.
+- **Research & Careers** — how to go from consuming knowledge to producing it, and turning that work into a track record.
 
 Every topic page follows the same structure: an explanation, why it matters, learning resources, recommended practice, and project ideas — so studying one section teaches you how to navigate all the others.
 
 ## Why this exists
 
-Course syllabi go stale, forum links rot, and "just Google it" scatters students across resources of wildly inconsistent quality. This hub is a single, version-controlled source of truth that the department keeps current, and that any student can improve with a pull request. See [Contributing](contribution.md) to add something you wish had existed when you were learning it.
+Course syllabi go stale, forum links rot, and "just Google it" scatters students across resources of wildly inconsistent quality. This hub is a single, version-controlled source of truth that MIC keeps current, and that any member can improve with a pull request. See [Contributing](contribution.md) to add something you wish had existed when you were learning it.

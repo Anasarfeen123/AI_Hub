@@ -4,6 +4,9 @@ There is no single "right" order to learn AI, but there is a bad one: jumping st
 
 Treat each stage as a checkpoint, not a wall — most students study foundations and machine learning in parallel once they're past the first few weeks of programming and math.
 
+!!! tip "Prefer a visual view?"
+    This same roadmap is embedded as an interactive diagram on the [homepage](index.md#interactive-roadmap).
+
 ## Stage 1 — Beginner: Foundations
 
 Goal: be comfortable writing code and reading the mathematical notation used in every ML paper and course.

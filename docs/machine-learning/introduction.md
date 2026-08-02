@@ -30,7 +30,9 @@ The supervised/unsupervised distinction also determines which tools apply: you c
 - [Google's Machine Learning Crash Course](https://developers.google.com/machine-learning/crash-course) — free, practical, and framework-agnostic in its concepts.
 - *Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow* by Aurélien Géron — the standard practical reference, code-first.
 - [scikit-learn's own tutorial](https://scikit-learn.org/stable/tutorial/index.html) — a good way to see the ML workflow expressed directly in code.
-- [StatQuest with Josh Starmer](https://www.youtube.com/@statquest) for intuition on any specific algorithm or concept you get stuck on.
+- [StatQuest with Josh Starmer](https://www.youtube.com/@statquest) for intuition on any specific algorithm or concept you get stuck on, or the channel's dedicated [machine learning playlist](https://youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF) for a structured run-through.
+- [scikit-learn — Getting Started](https://scikit-learn.org/stable/getting_started.html) — a shorter quickstart than the full tutorial above, useful as a quick refresher.
+- Andrew Ng — [Supervised Machine Learning](https://www.youtube.com/playlist?list=PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU) video playlist, covering both supervised and unsupervised foundations.
 
 ## Recommended practice
 
