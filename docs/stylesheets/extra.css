@@ -150,232 +150,123 @@
   color: #ef9a9a;
 }
 
-/* Native interactive roadmap: a stage-by-stage timeline of clickable
-   nodes, built with our own markup instead of an embedded widget.
-   Mobile-first: stacked vertically by default (the sidebar + table of
-   contents Material shows on laptop-width screens leaves surprisingly
-   little room for a 3-column layout), widening to a 3-column row only
-   on genuinely wide viewports. */
-.roadmap-flow {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.5rem;
+/* Native interactive roadmap: a hand-drawn SVG diagram (stage boxes,
+   node boxes, connecting arrows) instead of CSS cards or a third-party
+   embed. Rendered at a fixed pixel size so text never gets crushed by
+   the sidebar/TOC squeezing available width; the wrapper scrolls
+   horizontally on narrow screens instead of trying to reflow the
+   diagram, the same way roadmap.sh's own canvas behaves. */
+.roadmap-svg-wrap {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
   margin: 1.5rem 0 2rem;
-  max-width: 100%;
-}
-
-.roadmap-stage {
-  position: relative;
-  flex: none;
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-  border: 1px solid var(--md-default-fg-color--lightest);
-  border-top: 3px solid var(--md-default-fg-color--lighter);
   border-radius: 0.75rem;
-  padding: 1.1rem 1.1rem 1.35rem;
+  background: var(--md-code-bg-color);
+  padding: 1.25rem;
+  -webkit-overflow-scrolling: touch;
 }
 
-@media (min-width: 100em) {
-  .roadmap-flow {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .roadmap-stage {
-    flex: 1 1 0;
-    width: auto;
-  }
-}
-
-.roadmap-stage--beginner {
-  border-top-color: #2e7d32;
-  background: linear-gradient(180deg, rgba(46, 125, 50, 0.07), transparent 45%);
-}
-
-.roadmap-stage--intermediate {
-  border-top-color: #b8860b;
-  background: linear-gradient(180deg, rgba(184, 134, 11, 0.08), transparent 45%);
-}
-
-.roadmap-stage--advanced {
-  border-top-color: #b71c1c;
-  background: linear-gradient(180deg, rgba(183, 28, 28, 0.07), transparent 45%);
-}
-
-.roadmap-stage > p:first-child:has(> .roadmap-stage-num:only-child) {
-  margin: 0;
-  line-height: 0;
-}
-
-.roadmap-stage-num {
-  position: absolute;
-  top: -0.5rem;
-  right: 0.25rem;
-  z-index: -1;
-  font-size: 4rem;
-  font-weight: 800;
-  line-height: 1;
-  color: var(--md-default-fg-color);
-  opacity: 0.06;
-}
-
-.roadmap-stage-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 0.25rem;
-}
-
-.roadmap-stage-head .hub-level-badge {
-  margin-bottom: 0;
-}
-
-.roadmap-duration {
-  flex: 0 0 auto;
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-  background: var(--md-default-fg-color--lightest);
-  color: var(--md-default-fg-color--light);
-  white-space: nowrap;
-}
-
-.roadmap-stage h3 {
-  margin: 0.5rem 0 0.3rem;
-  font-size: 1.05rem;
-}
-
-.roadmap-goal {
-  margin: 0 0 1rem;
-  font-size: 0.78rem;
-  color: var(--md-default-fg-color--light);
-}
-
-.roadmap-nodes {
-  position: relative;
-}
-
-.roadmap-nodes::before {
-  content: "";
-  position: absolute;
-  top: 0.2rem;
-  bottom: 0.2rem;
-  left: 0.8rem;
-  width: 2px;
-  background: var(--md-default-fg-color--lightest);
-}
-
-.roadmap-nodes {
-  counter-reset: roadmap-node;
-}
-
-.roadmap-node {
-  position: relative;
-  counter-increment: roadmap-node;
-  display: grid;
-  grid-template-columns: 1.6rem 1fr;
-  column-gap: 0.65rem;
-  padding: 0.4rem 0;
-}
-
-.roadmap-node > * {
-  grid-column: 2;
-  margin: 0;
-}
-
-.roadmap-node::before {
-  content: counter(roadmap-node);
-  position: relative;
-  z-index: 1;
-  grid-column: 1;
-  grid-row: 1 / -1;
-  align-self: start;
-  width: 1.6rem;
-  height: 1.6rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #fff;
-  background: var(--md-primary-fg-color--light);
-  transition: background-color 0.15s ease;
-}
-
-.roadmap-node-title {
-  position: relative;
-  z-index: 1;
-  color: var(--md-default-fg-color) !important;
-  font-weight: 600;
-  font-size: 0.86rem;
-  text-decoration: none !important;
-}
-
-.roadmap-node-title::after {
-  content: "";
-  position: absolute;
-  inset: -0.4rem 0;
-}
-
-.roadmap-node:hover .roadmap-node-title {
-  color: var(--md-accent-fg-color) !important;
-}
-
-.roadmap-node:hover::before {
-  background: var(--md-accent-fg-color);
-}
-
-.roadmap-node > .roadmap-node-desc {
+/* Fixed pixel size, scaled up for legibility, regardless of the column
+   width Material leaves us (sidebar + table of contents eat a lot of
+   it) — the wrapper scrolls horizontally instead of the diagram
+   shrinking to fit, the same way roadmap.sh's own canvas behaves. This
+   has to beat Material's own `.md-typeset svg { max-width: 100% }`
+   reset, hence the extra specificity + !important. */
+.md-typeset .roadmap-svg-wrap .roadmap-svg {
   display: block;
-  font-size: 0.74rem;
-  color: var(--md-default-fg-color--light);
-  margin: 0.1rem 0 0;
+  width: 1360px !important;
+  max-width: none !important;
+  height: auto !important;
+  font-family: var(--md-text-font, sans-serif);
 }
 
-.roadmap-arrow {
-  align-self: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  width: 2.1rem;
-  height: 2.1rem;
-  margin: -0.15rem 0;
-  border-radius: 50%;
-  border: 1px solid var(--md-default-fg-color--lightest);
-  background: var(--md-default-bg-color);
-  color: var(--md-default-fg-color--light);
-  font-size: 1.1rem;
-  transform: rotate(90deg);
+.roadmap-svg-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
 }
 
-[data-md-color-scheme="slate"] .roadmap-stage--beginner {
-  background: linear-gradient(180deg, rgba(129, 199, 132, 0.1), transparent 45%);
+.roadmap-svg-duration {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--md-default-fg-color--light);
 }
 
-[data-md-color-scheme="slate"] .roadmap-stage--intermediate {
-  background: linear-gradient(180deg, rgba(255, 213, 79, 0.09), transparent 45%);
+.roadmap-svg-title {
+  font-size: 20px;
+  font-weight: 700;
+  fill: var(--md-default-fg-color);
 }
 
-[data-md-color-scheme="slate"] .roadmap-stage--advanced {
-  background: linear-gradient(180deg, rgba(239, 154, 154, 0.09), transparent 45%);
+.roadmap-svg-goal {
+  font-size: 12px;
+  fill: var(--md-default-fg-color--light);
 }
 
-@media (min-width: 100em) {
-  .roadmap-arrow {
-    align-self: auto;
-    margin-top: 2.5rem;
-    transform: none;
-  }
+.roadmap-svg-watermark {
+  font-size: 56px;
+  font-weight: 800;
+  fill: var(--md-default-fg-color);
+  opacity: 0.05;
+}
+
+.roadmap-svg-connector {
+  stroke: var(--md-default-fg-color--lighter);
+  stroke-width: 2;
+}
+
+.roadmap-svg-arrowhead {
+  fill: var(--md-default-fg-color--lighter);
+}
+
+.roadmap-svg-node-bg {
+  fill: var(--md-default-bg-color);
+  stroke: var(--md-default-fg-color--lightest);
+  stroke-width: 1;
+  transition: stroke 0.15s ease, filter 0.15s ease;
+}
+
+.roadmap-svg-node-index {
+  transition: fill 0.15s ease;
+}
+
+.roadmap-svg-node-num {
+  font-size: 10px;
+  font-weight: 700;
+  fill: #fff;
+  pointer-events: none;
+}
+
+.roadmap-svg-node-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  fill: var(--md-default-fg-color);
+  pointer-events: none;
+  transition: fill 0.15s ease;
+}
+
+.roadmap-svg-node-desc {
+  font-size: 10.5px;
+  fill: var(--md-default-fg-color--light);
+  pointer-events: none;
+}
+
+a.roadmap-svg-node {
+  cursor: pointer;
+}
+
+a.roadmap-svg-node:hover .roadmap-svg-node-bg {
+  stroke: var(--md-accent-fg-color);
+}
+
+a.roadmap-svg-node:hover .roadmap-svg-node-title {
+  fill: var(--md-accent-fg-color);
+}
+
+a.roadmap-svg-node:focus-visible .roadmap-svg-node-bg {
+  stroke: var(--md-accent-fg-color);
+  stroke-width: 2;
 }
 
 /* Container for embedded third-party widgets (e.g. the roadmap.sh embed,
