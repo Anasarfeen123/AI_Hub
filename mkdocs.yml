@@ -4,10 +4,10 @@ site_author: University AI/ML Department
 site_url: https://your-org.github.io/AI-ML-Resource-Hub/
 
 repo_name: AI-ML-Resource-Hub
-repo_url: https://github.com/your-org/AI-ML-Resource-Hub
+repo_url: https://github.com/Anasarfeen123/AI-ML-Resource-Hub
 edit_uri: edit/main/docs/
 
-copyright: Copyright &copy; AI/ML Department — maintained by student and faculty contributors
+copyright: Copyright &copy; MIC VITC
 
 theme:
   name: material

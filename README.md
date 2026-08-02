@@ -27,7 +27,7 @@ Built with [MkDocs](https://www.mkdocs.org/) and the [Material for MkDocs](https
 Requirements: Python 3.10+
 
 ```bash
-git clone https://github.com/your-org/AI-ML-Resource-Hub.git
+git clone https://github.com/Anasarfeen123/AI-ML-Resource-Hub.git
 cd AI-ML-Resource-Hub
 pip install -r requirements.txt
 mkdocs serve
