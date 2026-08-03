@@ -1,6 +1,9 @@
 ---
 title: AI/ML Resource Hub
 description: MIC VIT Chennai's knowledge base for learning AI/ML from foundations to research.
+hide:
+  - navigation
+  - toc
 ---
 
 <div class="hub-hero" markdown>
@@ -20,138 +23,191 @@ description: MIC VIT Chennai's knowledge base for learning AI/ML from foundation
 
 ## Interactive Roadmap
 
-Click any node to jump straight to that topic — each stage builds on the one before it. On a narrow screen, scroll the diagram sideways. Prefer tables and timing estimates, or the original [roadmap.sh](https://roadmap.sh/) view? See the [full written roadmap](roadmap.md).
+Click any node to jump straight to that topic — each stage builds on the one before it. Prefer tables and timing estimates, or the original [roadmap.sh](https://roadmap.sh/) view? See the [full written roadmap](roadmap.md).
 
-<div class="roadmap-svg-wrap">
-<svg class="roadmap-svg" viewBox="0 0 1088 472" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AI/ML learning roadmap">
+<div class="roadmap-flow" markdown>
 
-  <defs>
-    <marker id="rmArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" class="roadmap-svg-arrowhead" />
-    </marker>
-  </defs>
+<div class="roadmap-stage roadmap-stage--beginner" markdown>
 
-<g class="roadmap-svg-stage">
-<rect x="20" y="20" width="320" height="432" rx="14" fill="rgba(46,125,50,0.055)" stroke="var(--md-default-fg-color--lightest)" stroke-width="1.5" />
-<rect x="20" y="20" width="320" height="7" rx="3.5" fill="#2e7d32" />
-<text x="326" y="90" text-anchor="end" class="roadmap-svg-watermark">01</text>
-<text x="38" y="48" class="roadmap-svg-label" fill="#2e7d32">STAGE 1 · BEGINNER</text>
-<text x="322" y="48" text-anchor="end" class="roadmap-svg-duration">6–10 weeks</text>
-<text x="38" y="80" class="roadmap-svg-title">Foundations</text>
-<text x="38" y="102" class="roadmap-svg-goal">Code fluency + reading ML math notation</text>
-<a href="foundations/python/" class="roadmap-svg-node">
-<rect x="38" y="170" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="52" cy="193.0" r="11" class="roadmap-svg-node-index" fill="#2e7d32" />
-<text x="52" y="197.0" text-anchor="middle" class="roadmap-svg-node-num">1</text>
-<text x="74" y="189.0" class="roadmap-svg-node-title">Python for AI</text>
-<text x="74" y="206.0" class="roadmap-svg-node-desc">NumPy, Pandas, and clean scripts</text>
-</a>
-<a href="foundations/mathematics/" class="roadmap-svg-node">
-<rect x="38" y="224" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="52" cy="247.0" r="11" class="roadmap-svg-node-index" fill="#2e7d32" />
-<text x="52" y="251.0" text-anchor="middle" class="roadmap-svg-node-num">2</text>
-<text x="74" y="243.0" class="roadmap-svg-node-title">Mathematics</text>
-<text x="74" y="260.0" class="roadmap-svg-node-desc">Algebra, calculus, probability</text>
-</a>
-<a href="foundations/statistics/" class="roadmap-svg-node">
-<rect x="38" y="278" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="52" cy="301.0" r="11" class="roadmap-svg-node-index" fill="#2e7d32" />
-<text x="52" y="305.0" text-anchor="middle" class="roadmap-svg-node-num">3</text>
-<text x="74" y="297.0" class="roadmap-svg-node-title">Statistics</text>
-<text x="74" y="314.0" class="roadmap-svg-node-desc">Distributions and bias/variance</text>
-</a>
-<a href="foundations/optimization/" class="roadmap-svg-node">
-<rect x="38" y="332" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="52" cy="355.0" r="11" class="roadmap-svg-node-index" fill="#2e7d32" />
-<text x="52" y="359.0" text-anchor="middle" class="roadmap-svg-node-num">4</text>
-<text x="74" y="351.0" class="roadmap-svg-node-title">Optimization</text>
-<text x="74" y="368.0" class="roadmap-svg-node-desc">Gradient descent and training</text>
-</a>
-</g>
-<line x1="344" y1="236.0" x2="380" y2="236.0" class="roadmap-svg-connector" marker-end="url(#rmArrow)" />
-<g class="roadmap-svg-stage">
-<rect x="384" y="20" width="320" height="432" rx="14" fill="rgba(184,134,11,0.055)" stroke="var(--md-default-fg-color--lightest)" stroke-width="1.5" />
-<rect x="384" y="20" width="320" height="7" rx="3.5" fill="#b8860b" />
-<text x="690" y="90" text-anchor="end" class="roadmap-svg-watermark">02</text>
-<text x="402" y="48" class="roadmap-svg-label" fill="#b8860b">STAGE 2 · INTERMEDIATE</text>
-<text x="686" y="48" text-anchor="end" class="roadmap-svg-duration">3–6 months</text>
-<text x="402" y="80" class="roadmap-svg-title">Core Toolbox</text>
-<text x="402" y="102" class="roadmap-svg-goal">Full ML lifecycle: data, model, eval</text>
-<a href="machine-learning/" class="roadmap-svg-node">
-<rect x="402" y="170" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="416" cy="193.0" r="11" class="roadmap-svg-node-index" fill="#b8860b" />
-<text x="416" y="197.0" text-anchor="middle" class="roadmap-svg-node-num">1</text>
-<text x="438" y="189.0" class="roadmap-svg-node-title">Machine Learning</text>
-<text x="438" y="206.0" class="roadmap-svg-node-desc">Algorithms, evaluation, features</text>
-</a>
-<a href="deep-learning/" class="roadmap-svg-node">
-<rect x="402" y="224" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="416" cy="247.0" r="11" class="roadmap-svg-node-index" fill="#b8860b" />
-<text x="416" y="251.0" text-anchor="middle" class="roadmap-svg-node-num">2</text>
-<text x="438" y="243.0" class="roadmap-svg-node-title">Deep Learning</text>
-<text x="438" y="260.0" class="roadmap-svg-node-desc">Neural nets, backprop, PyTorch</text>
-</a>
-<a href="computer-vision/" class="roadmap-svg-node">
-<rect x="402" y="278" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="416" cy="301.0" r="11" class="roadmap-svg-node-index" fill="#b8860b" />
-<text x="416" y="305.0" text-anchor="middle" class="roadmap-svg-node-num">3</text>
-<text x="438" y="297.0" class="roadmap-svg-node-title">Computer Vision</text>
-<text x="438" y="314.0" class="roadmap-svg-node-desc">CNNs, detection, segmentation</text>
-</a>
-<a href="natural-language-processing/" class="roadmap-svg-node">
-<rect x="402" y="332" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="416" cy="355.0" r="11" class="roadmap-svg-node-index" fill="#b8860b" />
-<text x="416" y="359.0" text-anchor="middle" class="roadmap-svg-node-num">4</text>
-<text x="438" y="351.0" class="roadmap-svg-node-title">Natural Language Processing</text>
-<text x="438" y="368.0" class="roadmap-svg-node-desc">Tokenization and embeddings</text>
-</a>
-<a href="machine-learning/projects/" class="roadmap-svg-node">
-<rect x="402" y="386" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="416" cy="409.0" r="11" class="roadmap-svg-node-index" fill="#b8860b" />
-<text x="416" y="413.0" text-anchor="middle" class="roadmap-svg-node-num">5</text>
-<text x="438" y="405.0" class="roadmap-svg-node-title">Projects</text>
-<text x="438" y="422.0" class="roadmap-svg-node-desc">Ship 2–3 end-to-end projects</text>
-</a>
-</g>
-<line x1="708" y1="236.0" x2="744" y2="236.0" class="roadmap-svg-connector" marker-end="url(#rmArrow)" />
-<g class="roadmap-svg-stage">
-<rect x="748" y="20" width="320" height="432" rx="14" fill="rgba(183,28,28,0.055)" stroke="var(--md-default-fg-color--lightest)" stroke-width="1.5" />
-<rect x="748" y="20" width="320" height="7" rx="3.5" fill="#b71c1c" />
-<text x="1054" y="90" text-anchor="end" class="roadmap-svg-watermark">03</text>
-<text x="766" y="48" class="roadmap-svg-label" fill="#b71c1c">STAGE 3 · ADVANCED</text>
-<text x="1050" y="48" text-anchor="end" class="roadmap-svg-duration">Open-ended</text>
-<text x="766" y="80" class="roadmap-svg-title">Specialize &amp; Research</text>
-<text x="766" y="102" class="roadmap-svg-goal">From using models to contributing</text>
-<a href="generative-ai/" class="roadmap-svg-node">
-<rect x="766" y="170" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="780" cy="193.0" r="11" class="roadmap-svg-node-index" fill="#b71c1c" />
-<text x="780" y="197.0" text-anchor="middle" class="roadmap-svg-node-num">1</text>
-<text x="802" y="189.0" class="roadmap-svg-node-title">Generative AI</text>
-<text x="802" y="206.0" class="roadmap-svg-node-desc">LLMs, RAG, fine-tuning, agents</text>
-</a>
-<a href="reinforcement-learning/" class="roadmap-svg-node">
-<rect x="766" y="224" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="780" cy="247.0" r="11" class="roadmap-svg-node-index" fill="#b71c1c" />
-<text x="780" y="251.0" text-anchor="middle" class="roadmap-svg-node-num">2</text>
-<text x="802" y="243.0" class="roadmap-svg-node-title">Reinforcement Learning</text>
-<text x="802" y="260.0" class="roadmap-svg-node-desc">MDPs and Q-learning</text>
-</a>
-<a href="specializations/" class="roadmap-svg-node">
-<rect x="766" y="278" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="780" cy="301.0" r="11" class="roadmap-svg-node-index" fill="#b71c1c" />
-<text x="780" y="305.0" text-anchor="middle" class="roadmap-svg-node-num">3</text>
-<text x="802" y="297.0" class="roadmap-svg-node-title">Specializations</text>
-<text x="802" y="314.0" class="roadmap-svg-node-desc">Time series, speech, MLOps</text>
-</a>
-<a href="research/" class="roadmap-svg-node">
-<rect x="766" y="332" width="284" height="46" rx="8" class="roadmap-svg-node-bg" />
-<circle cx="780" cy="355.0" r="11" class="roadmap-svg-node-index" fill="#b71c1c" />
-<text x="780" y="359.0" text-anchor="middle" class="roadmap-svg-node-num">4</text>
-<text x="802" y="351.0" class="roadmap-svg-node-title">Research</text>
-<text x="802" y="368.0" class="roadmap-svg-node-desc">Read papers, reproduce results</text>
-</a>
-</g>
-</svg>
+<span class="roadmap-stage-num">01</span>
+
+<div class="roadmap-stage-head" markdown>
+<span class="hub-level-badge beginner">Stage 1 · Beginner</span>
+
+<span class="roadmap-duration">6–10 weeks</span>
+</div>
+
+### Foundations
+
+<p class="roadmap-goal">Be comfortable writing code and reading the math notation every ML paper and course assumes.</p>
+
+<div class="roadmap-nodes" markdown>
+
+<div class="roadmap-node" markdown>
+
+[Python for AI](foundations/python.md){ .roadmap-node-title }
+
+NumPy, Pandas, and clean scripts
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Mathematics](foundations/mathematics.md){ .roadmap-node-title }
+
+Linear algebra, calculus, probability
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Statistics](foundations/statistics.md){ .roadmap-node-title }
+
+Distributions, bias/variance, evaluation basics
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Optimization](foundations/optimization.md){ .roadmap-node-title }
+
+Gradient descent and why training works
+{: .roadmap-node-desc }
+
+</div>
+
+</div>
+
+</div>
+
+<div class="roadmap-arrow">→</div>
+
+<div class="roadmap-stage roadmap-stage--intermediate" markdown>
+
+<span class="roadmap-stage-num">02</span>
+
+<div class="roadmap-stage-head" markdown>
+<span class="hub-level-badge intermediate">Stage 2 · Intermediate</span>
+
+<span class="roadmap-duration">3–6 months</span>
+</div>
+
+### Core Toolbox
+
+<p class="roadmap-goal">Understand the full ML lifecycle — framing, data, model, evaluation, iteration.</p>
+
+<div class="roadmap-nodes" markdown>
+
+<div class="roadmap-node" markdown>
+
+[Machine Learning](machine-learning/index.md){ .roadmap-node-title }
+
+Algorithms, evaluation, feature engineering
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Deep Learning](deep-learning/index.md){ .roadmap-node-title }
+
+Neural nets, backprop, PyTorch/TensorFlow
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Computer Vision](computer-vision/index.md){ .roadmap-node-title }
+
+CNNs, detection, segmentation
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Natural Language Processing](natural-language-processing/index.md){ .roadmap-node-title }
+
+Tokenization, embeddings, transformers
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Projects](machine-learning/projects.md){ .roadmap-node-title }
+
+Ship 2–3 end-to-end projects
+{: .roadmap-node-desc }
+
+</div>
+
+</div>
+
+</div>
+
+<div class="roadmap-arrow">→</div>
+
+<div class="roadmap-stage roadmap-stage--advanced" markdown>
+
+<span class="roadmap-stage-num">03</span>
+
+<div class="roadmap-stage-head" markdown>
+<span class="hub-level-badge advanced">Stage 3 · Advanced</span>
+
+<span class="roadmap-duration">Open-ended</span>
+</div>
+
+### Specialize & Research
+
+<p class="roadmap-goal">Go from using models to understanding — and contributing to — the frontier.</p>
+
+<div class="roadmap-nodes" markdown>
+
+<div class="roadmap-node" markdown>
+
+[Generative AI](generative-ai/index.md){ .roadmap-node-title }
+
+LLMs, RAG, fine-tuning, agents
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Reinforcement Learning](reinforcement-learning/index.md){ .roadmap-node-title }
+
+MDPs, Q-learning, policy gradients
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Specializations](specializations/index.md){ .roadmap-node-title }
+
+Time series, speech, MLOps, deployment
+{: .roadmap-node-desc }
+
+</div>
+
+<div class="roadmap-node" markdown>
+
+[Research](research/index.md){ .roadmap-node-title }
+
+Read papers, reproduce results, publish
+{: .roadmap-node-desc }
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 ## Explore the hub
