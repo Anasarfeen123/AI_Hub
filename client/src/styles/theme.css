@@ -1,0 +1,2084 @@
+/* ==========================================================================
+   AI/ML Resource Hub — "MIC Black" theme
+   Dark, MIC-branded theme for the members-only React app.
+   ========================================================================== */
+
+:root {
+  --mic-orange: #f2711c;
+  --mic-yellow: #f4c430;
+  --mic-green: #2e8b3d;
+  --mic-blue: #1c5fa8;
+
+  /* --- Dark is the hub's native look and stays the default. --------------- */
+  --bg: #08090b;
+  --surface: #0d0f13;
+  --surface-raised: #14171d;
+  --surface-deep: #0b0d10;
+  --header-bg: #050608;
+
+  --fg: #eef0f3;
+  --fg-strong: #ffffff;
+  --fg-light: #a7adb8;
+  --fg-lighter: #7c8492;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --tint-1: rgba(255, 255, 255, 0.04);
+  --tint-2: rgba(255, 255, 255, 0.06);
+  --tint-3: rgba(255, 255, 255, 0.1);
+  --tint-4: rgba(255, 255, 255, 0.25);
+
+  --link: #5ea1e6;
+  --danger: #ff6b6b;
+
+  /* The brand orange at 2.94:1 on white is unreadable as text. It stays the
+     fill and border colour in both themes; this is the version used for words,
+     darkened in the light theme until it passes AA. */
+  --accent-text: #f2711c;
+
+  /* Ink for text sitting ON a brand colour. Dark in both themes, because the
+     brand colours themselves do not change. */
+  --on-accent: #0b0d10;
+
+  --level-beginner: #6fd684;
+  --level-intermediate: #ffd54f;
+  --level-advanced: #ff9d5c;
+  --level-beginner-soft: #b7e9c2;
+  --level-advanced-soft: #ffc8a3;
+
+  /* Google's brand guidelines fix these regardless of the page theme. */
+  --google-bg: #ffffff;
+  --google-fg: #1f1f1f;
+  --google-bg-hover: #f2f2f2;
+
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------------
+   Light theme
+   Only the tokens are redefined -- every component below reads through them,
+   so nothing else in this file needs a light-specific rule.
+
+   The greys carry a slight cool bias to match the MIC blue rather than sitting
+   on a dead neutral, and the level colours are darkened until they pass
+   contrast on white (the dark theme's mint and amber are unreadable there).
+   -------------------------------------------------------------------------- */
+:root[data-theme="light"] {
+  --bg: #ffffff;
+  --surface: #f6f7f9;
+  --surface-raised: #ffffff;
+  --surface-deep: #eef1f5;
+  --header-bg: #ffffff;
+
+  --fg: #14171c;
+  --fg-strong: #000000;
+  --fg-light: #515966;
+  --fg-lighter: #636b78;
+
+  --border: rgba(11, 13, 16, 0.14);
+  --border-strong: rgba(11, 13, 16, 0.22);
+  --tint-1: rgba(11, 13, 16, 0.03);
+  --tint-2: rgba(11, 13, 16, 0.05);
+  --tint-3: rgba(11, 13, 16, 0.08);
+  --tint-4: rgba(11, 13, 16, 0.2);
+
+  --link: #12539e;
+  --danger: #c62828;
+  --accent-text: #ab450b;
+
+  --level-beginner: #16682a;
+  --level-intermediate: #8a5d00;
+  --level-advanced: #9c3b07;
+  --level-beginner-soft: #10551f;
+  --level-advanced-soft: #863206;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--link);
+}
+
+a:hover {
+  color: var(--accent-text);
+}
+
+.hub-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: var(--fg-light);
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+.hub-header {
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.hub-header-inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.hub-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  min-width: 0;
+  color: var(--fg);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+
+.hub-brand:hover {
+  color: var(--fg);
+  opacity: 0.75;
+}
+
+.hub-brand img {
+  height: 24px;
+  width: auto;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.hub-brand span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hub-header-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--fg-light);
+  flex: 0 0 auto;
+}
+
+.hub-header-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.hub-header-name-text {
+  max-width: 9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 26em) {
+  .hub-brand span {
+    display: none;
+  }
+
+  .hub-header-name {
+    max-width: 5rem;
+  }
+}
+
+.hub-header-signout {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.hub-header-signout:hover {
+  border-color: var(--mic-orange);
+  color: var(--accent-text);
+}
+
+/* --------------------------------------------------------------------------
+   Login screen — flat, minimal, logo-led
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 56em) {
+}
+
+.login-error {
+  margin: 0 0 1.5rem;
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--mic-orange);
+  color: var(--fg-light);
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.login-error code {
+  color: var(--fg);
+}
+
+@media (min-width: 56em) {
+}
+
+.google-signin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--google-bg);
+  color: var(--google-fg) !important;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 0.3rem;
+  border: 1px solid var(--google-bg);
+  text-decoration: none;
+}
+
+.google-signin-btn:hover {
+  background: var(--google-bg-hover);
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+.hub-hero {
+  text-align: center;
+  padding: clamp(2.5rem, 6vw, 3.5rem) 1.5rem clamp(1.75rem, 4vw, 2.25rem);
+  max-width: 34rem;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.hub-hero img {
+  width: 56px;
+  margin-bottom: 1.1rem;
+}
+
+.hub-eyebrow {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-lighter);
+  margin-bottom: 0.6rem;
+}
+
+.hub-hero h1 {
+  margin: 0 0 0.65rem;
+  font-size: clamp(1.5rem, 4.5vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.hub-hero p {
+  max-width: 30rem;
+  margin: 0 auto;
+  color: var(--fg-light);
+  line-height: 1.6;
+}
+
+.roadmap-credit {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--fg-light);
+}
+
+.hub-section {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 3rem;
+}
+
+.hub-section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.4rem;
+}
+
+/* --------------------------------------------------------------------------
+   Level badges
+   -------------------------------------------------------------------------- */
+.hub-level-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 1.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0 0.6rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.hub-level-badge.beginner {
+  background: rgba(46, 139, 61, 0.14);
+  color: var(--level-beginner);
+  border: 1px solid rgba(111, 214, 132, 0.35);
+}
+
+.hub-level-badge.intermediate {
+  background: rgba(244, 196, 48, 0.14);
+  color: var(--level-intermediate);
+  border: 1px solid rgba(255, 213, 79, 0.35);
+}
+
+.hub-level-badge.advanced {
+  background: rgba(242, 113, 28, 0.14);
+  color: var(--level-advanced);
+  border: 1px solid rgba(255, 157, 92, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   Roadmap
+   -------------------------------------------------------------------------- */
+.roadmap-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--fg-light);
+}
+
+.roadmap-reset {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.roadmap-reset:hover {
+  border-color: var(--mic-orange);
+  color: var(--accent-text);
+}
+
+.roadmap-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (min-width: 68em) {
+  .roadmap-flow {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .roadmap-stage {
+    flex: 1 1 0;
+  }
+}
+
+.roadmap-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--stage-color, var(--mic-blue));
+  border-radius: var(--radius-md);
+  padding: clamp(1.1rem, 2.5vw, 1.5rem);
+  background: var(--surface);
+  transition: border-color var(--transition-normal);
+}
+
+.roadmap-stage:hover {
+  border-color: var(--stage-color, var(--mic-blue));
+}
+
+.roadmap-stage--beginner {
+  --stage-color: var(--level-beginner);
+}
+
+.roadmap-stage--intermediate {
+  --stage-color: var(--level-intermediate);
+}
+
+.roadmap-stage--advanced {
+  --stage-color: var(--level-advanced);
+}
+
+.roadmap-stage-num {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--tint-1);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.roadmap-stage-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.roadmap-duration {
+  display: inline-flex;
+  align-items: center;
+  height: 1.35rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0 0.55rem;
+  border-radius: var(--radius-full);
+  background: var(--tint-2);
+  border: 1px solid var(--tint-3);
+  color: var(--fg-light);
+}
+
+.roadmap-stage h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+}
+
+.roadmap-goal {
+  color: var(--fg-light);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+
+.roadmap-progress {
+  position: relative;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--border);
+  overflow: hidden;
+  margin: 0 0 0.3rem;
+}
+
+.roadmap-progress-fill {
+  height: 100%;
+  background: var(--stage-color, var(--mic-blue));
+  border-radius: var(--radius-full);
+  transition: width var(--transition-normal);
+}
+
+.roadmap-progress-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--fg-light);
+  margin: 0 0 0.9rem;
+}
+
+.roadmap-nodes {
+  position: relative;
+  counter-reset: roadmap-node;
+}
+
+.roadmap-nodes::before {
+  content: "";
+  position: absolute;
+  top: 0.85rem;
+  bottom: 0.85rem;
+  left: 0.775rem;
+  width: 1px;
+  background: var(--border);
+}
+
+.roadmap-node {
+  position: relative;
+  counter-increment: roadmap-node;
+  display: grid;
+  grid-template-columns: 1.65rem minmax(0, 1fr);
+  column-gap: 0.75rem;
+  padding: 0.6rem 0;
+  align-items: start;
+  min-width: 0;
+}
+
+.roadmap-node > * {
+  grid-column: 2;
+  margin: 0;
+}
+
+.roadmap-node::before {
+  content: counter(roadmap-node);
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+  grid-row: 1 / -1;
+  align-self: start;
+  margin-top: 0.05rem;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--on-accent);
+  background: var(--stage-color, var(--mic-blue));
+}
+
+.roadmap-node-title {
+  font-weight: 600;
+  text-decoration: none !important;
+}
+
+.roadmap-node:hover .roadmap-node-title {
+  color: var(--stage-color, var(--mic-orange)) !important;
+}
+
+.roadmap-node-desc {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: var(--fg-light);
+}
+
+.roadmap-node.is-done::before {
+  content: "✓";
+  background: var(--stage-color, #2e8b3d);
+}
+
+.roadmap-node.is-done .roadmap-node-title {
+  color: var(--fg-light) !important;
+  text-decoration: line-through !important;
+}
+
+.roadmap-node-check {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.4rem 0 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--fg-light);
+  cursor: pointer;
+  user-select: none;
+}
+
+.roadmap-node-check input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  border: 1.5px solid var(--tint-4);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.roadmap-node-check input:hover {
+  border-color: var(--stage-color, var(--mic-orange));
+}
+
+.roadmap-node-check input:checked {
+  border-color: var(--stage-color, #2e8b3d);
+  background: var(--stage-color, #2e8b3d);
+  transform: scale(1.05);
+}
+
+.roadmap-checkmark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--on-accent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.roadmap-node-check input:checked ~ .roadmap-checkmark {
+  opacity: 1;
+}
+
+.roadmap-arrow {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--fg-lighter);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 auto;
+}
+
+@media (min-width: 68em) {
+  .roadmap-arrow {
+    transform: rotate(0deg);
+  }
+}
+
+@media (max-width: 67.99em) {
+  .roadmap-arrow {
+    transform: rotate(90deg);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Top nav (section tabs)
+   -------------------------------------------------------------------------- */
+.hub-topnav {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 57px;
+  z-index: 9;
+}
+
+.hub-topnav-wrap {
+  position: relative;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.hub-topnav-inner {
+  display: flex;
+  gap: 1.25rem;
+  padding: 0 1.25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+.hub-topnav-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.hub-topnav-inner a {
+  flex: 0 0 auto;
+  padding: 0.75rem 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--fg-light);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.hub-topnav-inner a:hover {
+  color: var(--fg);
+}
+
+.hub-topnav-inner a.active {
+  color: var(--accent-text);
+  border-bottom-color: var(--mic-orange);
+}
+
+/* --------------------------------------------------------------------------
+   Content layout (sidebar + article)
+   -------------------------------------------------------------------------- */
+.content-layout {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+}
+
+.section-sidebar {
+  flex: 0 0 14rem;
+  position: sticky;
+  top: 7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.section-sidebar-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-lighter);
+  margin: 0 0 0.5rem;
+}
+
+.section-sidebar a {
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--fg-light);
+  text-decoration: none;
+}
+
+.section-sidebar a:hover {
+  color: var(--fg);
+  background: var(--tint-1);
+}
+
+.section-sidebar a.active {
+  color: var(--accent-text);
+  background: rgba(242, 113, 28, 0.1);
+}
+
+@media (max-width: 60em) {
+  .content-layout {
+    flex-direction: column;
+  }
+
+  .section-sidebar {
+    flex: none;
+    position: static;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+
+  .section-sidebar-title {
+    flex: 0 0 auto;
+    margin: 0 0.5rem 0 0;
+  }
+
+  .section-sidebar a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Markdown content typography (.md-content)
+   -------------------------------------------------------------------------- */
+.md-content {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 46rem;
+  line-height: 1.7;
+}
+
+.md-content h1 {
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 800;
+  margin: 0 0 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.md-content h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 2.2rem 0 0.9rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.md-content h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.md-content h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 1.6rem 0 0.6rem;
+}
+
+.md-content h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 1.3rem 0 0.5rem;
+  color: var(--fg-light);
+}
+
+.md-content p,
+.md-content ul,
+.md-content ol {
+  margin: 0 0 1rem;
+  color: var(--fg);
+}
+
+.md-content ul,
+.md-content ol {
+  padding-left: 1.4rem;
+}
+
+.md-content li {
+  margin-bottom: 0.4rem;
+}
+
+.md-content li > ul,
+.md-content li > ol {
+  margin-top: 0.4rem;
+}
+
+.md-content strong {
+  color: var(--fg-strong);
+  font-weight: 700;
+}
+
+.md-content a {
+  text-decoration: underline;
+  text-decoration-color: rgba(94, 161, 230, 0.4);
+  text-underline-offset: 2px;
+}
+
+.md-content code {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.4rem;
+}
+
+.md-content pre {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  margin: 0 0 1.25rem;
+}
+
+.md-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.md-content blockquote {
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1.1rem;
+  border-left: 3px solid var(--mic-orange);
+  background: rgba(242, 113, 28, 0.06);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  color: var(--fg-light);
+}
+
+.md-content blockquote p {
+  margin: 0 0 0.4rem;
+}
+
+.md-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.md-content hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+.md-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.5rem;
+  font-size: 0.88rem;
+  display: block;
+  overflow-x: auto;
+}
+
+.md-content th,
+.md-content td {
+  border: 1px solid var(--border);
+  padding: 0.55rem 0.8rem;
+  text-align: left;
+}
+
+.md-content th {
+  background: var(--surface-raised);
+  font-weight: 700;
+}
+
+.md-content img {
+  max-width: 100%;
+  border-radius: var(--radius-md);
+}
+
+/* --------------------------------------------------------------------------
+   Editing, review queue, and revision history
+   -------------------------------------------------------------------------- */
+.hub-header-link {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--fg-light);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.hub-header-link:hover {
+  color: var(--accent-text);
+}
+
+.md-status {
+  color: var(--fg-lighter);
+  font-size: 0.88rem;
+}
+
+.md-content-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.md-content-head h1 {
+  margin-bottom: 1.25rem;
+}
+
+.md-edit-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--fg-light);
+  text-decoration: none !important;
+}
+
+.md-edit-btn:hover {
+  border-color: var(--mic-orange);
+  color: var(--accent-text);
+}
+
+/* --- Editor ------------------------------------------------------------- */
+.editor-wrap {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.editor-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.editor-eyebrow {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-lighter);
+}
+
+.editor-wrap h1 {
+  margin: 0.25rem 0 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.editor-note {
+  color: var(--fg-light);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+}
+
+.editor-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.editor-tabs button {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg-light);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.editor-tabs button.active {
+  border-color: var(--mic-orange);
+  color: var(--accent-text);
+}
+
+.editor-textarea {
+  width: 100%;
+  min-height: 24rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg);
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.editor-textarea:focus {
+  outline: none;
+  border-color: var(--mic-orange);
+}
+
+.editor-preview {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  padding: 1.25rem;
+  min-height: 24rem;
+}
+
+.editor-summary {
+  display: block;
+  margin: 1.25rem 0;
+}
+
+.editor-summary span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--fg-light);
+  margin-bottom: 0.4rem;
+}
+
+.editor-summary input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.editor-summary input:focus {
+  outline: none;
+  border-color: var(--mic-orange);
+}
+
+.editor-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.editor-btn {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--mic-orange);
+  background: var(--mic-orange);
+  color: var(--on-accent) !important;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-decoration: none !important;
+}
+
+.editor-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.editor-cancel {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg-light) !important;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+
+.editor-cancel:hover {
+  border-color: var(--mic-orange);
+  color: var(--accent-text) !important;
+}
+
+.editor-done {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.editor-done p {
+  color: var(--fg-light);
+  margin-bottom: 1.5rem;
+}
+
+/* --- Review queue ------------------------------------------------------- */
+.review-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  padding: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.review-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.review-slug {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.review-meta {
+  margin: 0.25rem 0 0;
+  font-size: 0.75rem;
+  color: var(--fg-lighter);
+}
+
+.review-summary {
+  margin: 0.75rem 0;
+  font-size: 0.88rem;
+  color: var(--fg-light);
+  font-style: italic;
+}
+
+.review-status {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  color: var(--fg-light);
+}
+
+.review-status--approved {
+  color: var(--level-beginner);
+  border-color: rgba(111, 214, 132, 0.4);
+}
+
+.review-status--rejected {
+  color: var(--level-advanced);
+  border-color: rgba(255, 157, 92, 0.4);
+}
+
+.review-history {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.review-history-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-lighter);
+  margin: 0 0 0.75rem;
+}
+
+.review-rev {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  font-size: 0.82rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.review-rev:last-child {
+  border-bottom: none;
+}
+
+/* --- Diff --------------------------------------------------------------- */
+.diff {
+  margin: 0.75rem 0 1rem;
+}
+
+.diff-stat {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.diff-plus {
+  color: var(--level-beginner);
+}
+
+.diff-minus {
+  color: var(--level-advanced);
+}
+
+.diff-body {
+  margin: 0;
+  max-height: 22rem;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-deep);
+  padding: 0.6rem 0;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1.55;
+}
+
+.diff-line {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.diff-marker {
+  flex: 0 0 auto;
+  width: 0.8rem;
+  color: var(--fg-lighter);
+}
+
+.diff-add {
+  background: rgba(46, 139, 61, 0.16);
+  color: var(--level-beginner-soft);
+}
+
+.diff-del {
+  background: rgba(242, 113, 28, 0.14);
+  color: var(--level-advanced-soft);
+}
+
+.diff-gap {
+  color: var(--fg-lighter);
+  font-style: italic;
+  padding: 0.2rem 0.8rem;
+}
+
+.review-head-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  flex: 0 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Roadmap tree — a central spine with topics branching off it
+   -------------------------------------------------------------------------- */
+.tree {
+  position: relative;
+  padding: 1rem 0 2rem;
+}
+
+/* The spine itself. Sits behind everything and runs the full height. */
+.tree::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--border) 4%,
+    var(--border) 96%,
+    transparent
+  );
+}
+
+.tree-stage {
+  position: relative;
+  --stage-color: var(--mic-blue);
+}
+
+.tree-stage--beginner { --stage-color: var(--level-beginner); }
+.tree-stage--intermediate { --stage-color: var(--level-intermediate); }
+.tree-stage--advanced { --stage-color: var(--level-advanced); }
+
+/* Stage marker: centred on the spine, like roadmap.sh's section headings. */
+.tree-stage-marker {
+  position: relative;
+  z-index: 1;
+  width: min(30rem, 100%);
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--stage-color);
+  border-radius: var(--radius-md);
+}
+
+.tree-stage-badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--stage-color);
+}
+
+.tree-stage-marker h3 {
+  margin: 0.4rem 0 0.35rem;
+  font-size: 1.15rem;
+}
+
+.tree-stage-goal {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--fg-light);
+}
+
+.tree-stage-meta {
+  margin: 0.5rem 0 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--fg-lighter);
+}
+
+.tree-branches {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tree-branch {
+  position: relative;
+  width: 50%;
+  padding: 1.1rem 2.25rem;
+  box-sizing: border-box;
+}
+
+.tree-branch--left {
+  margin-right: auto;
+  text-align: right;
+}
+
+.tree-branch--right {
+  margin-left: auto;
+  text-align: left;
+}
+
+/* The horizontal twig joining a card to the spine. */
+.tree-branch::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 1.75rem;
+  height: 2px;
+  background: var(--border);
+}
+
+.tree-branch--left::before { right: 0; }
+.tree-branch--right::before { left: 0; }
+
+/* The dot where the twig meets the spine. */
+.tree-branch::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-top: -4.5px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--stage-color);
+}
+
+.tree-branch--left::after { right: -5px; }
+.tree-branch--right::after { left: -5px; }
+
+.tree-branch.is-done::after {
+  background: var(--stage-color);
+}
+
+.tree-node {
+  display: inline-block;
+  max-width: 100%;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--stage-color);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast);
+}
+
+.tree-node:hover {
+  border-color: var(--stage-color);
+}
+
+.tree-node-title {
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none !important;
+}
+
+.tree-branch.is-done .tree-node-title {
+  color: var(--fg-light) !important;
+  text-decoration: line-through !important;
+}
+
+.tree-node-desc {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--fg-light);
+}
+
+.tree-node-check {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--fg-lighter);
+  cursor: pointer;
+  user-select: none;
+}
+
+.tree-node-check input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  flex: 0 0 auto;
+  border: 1.5px solid var(--tint-4);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.tree-node-check input:hover {
+  border-color: var(--stage-color);
+}
+
+.tree-node-check input:checked {
+  background: var(--stage-color);
+  border-color: var(--stage-color);
+}
+
+/* Generated content on <input> isn't reliable across browsers, so the tick is
+   a sibling span revealed on :checked. */
+.tree-checkmark {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  margin-top: -7px;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 900;
+  color: var(--on-accent);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.tree-node-check input:checked ~ .tree-checkmark {
+  opacity: 1;
+}
+
+.tree-branch.is-done .tree-node-check {
+  color: var(--stage-color);
+}
+
+/* Below this width the two-sided layout gets too cramped, so everything
+   stacks against a spine pushed to the left edge. */
+@media (max-width: 46em) {
+  .tree::before {
+    left: 0.5rem;
+    margin-left: 0;
+  }
+
+  .tree-stage-marker {
+    width: auto;
+    margin-left: 2rem;
+    text-align: left;
+  }
+
+  .tree-branch,
+  .tree-branch--left,
+  .tree-branch--right {
+    width: auto;
+    margin: 0 0 0 2rem;
+    padding: 0.85rem 0 0.85rem 1.25rem;
+    text-align: left;
+  }
+
+  .tree-branch--left::before,
+  .tree-branch--right::before {
+    left: -0.75rem;
+    right: auto;
+    width: 1rem;
+  }
+
+  .tree-branch--left::after,
+  .tree-branch--right::after {
+    left: -1.25rem;
+    right: auto;
+  }
+
+  .tree-node {
+    display: block;
+  }
+}
+
+/* The roadmap page needs more room than prose — the tree branches both ways. */
+.md-content--wide {
+  max-width: 58rem;
+}
+
+.tree-stage-toggle {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0 1.25rem;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: center;
+}
+
+.tree-stage-toggle h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.tree-stage-toggle:hover h3 {
+  color: var(--stage-color);
+}
+
+.tree-stage-chevron {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  color: var(--fg-lighter);
+}
+
+.tree-stage-marker h3 {
+  margin: 0.4rem 0 0.35rem;
+}
+
+.tree-stage-progress {
+  height: 4px;
+  margin: 0.75rem 0 0.4rem;
+  border-radius: var(--radius-full);
+  background: var(--border);
+  overflow: hidden;
+}
+
+.tree-stage-progress-fill {
+  height: 100%;
+  background: var(--stage-color);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-normal);
+}
+
+/* --------------------------------------------------------------------------
+   Admin: member management
+   -------------------------------------------------------------------------- */
+.admin-nav {
+  display: flex;
+  gap: 1.25rem;
+  margin: 0 0 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-nav a {
+  padding: 0 0 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--fg-light);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.admin-nav a:hover { color: var(--fg); }
+
+.admin-nav a.active {
+  color: var(--accent-text);
+  border-bottom-color: var(--mic-orange);
+}
+
+.admin-notice {
+  border: 1px solid rgba(111, 214, 132, 0.35);
+  border-left: 2px solid var(--level-beginner);
+  color: var(--level-beginner-soft);
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+  margin: 0 0 1.25rem;
+}
+
+.member-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.member-add input {
+  flex: 1 1 12rem;
+  min-width: 0;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.member-add input:focus,
+.member-bulk textarea:focus,
+.member-search:focus {
+  outline: none;
+  border-color: var(--mic-orange);
+}
+
+.member-bulk {
+  margin-bottom: 1.25rem;
+}
+
+.member-bulk span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--fg-light);
+  margin-bottom: 0.4rem;
+}
+
+.member-bulk textarea {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.member-search {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.member-table {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.member-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.member-row:last-child { border-bottom: none; }
+
+.member-row.is-inactive { opacity: 0.5; }
+
+.member-identity {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.member-identity strong {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  font-size: 0.88rem;
+}
+
+.member-email {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: var(--fg-lighter);
+  word-break: break-all;
+}
+
+.member-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.12rem 0.45rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 157, 92, 0.4);
+  color: var(--level-advanced);
+}
+
+.member-badge--off {
+  border-color: var(--border);
+  color: var(--fg-lighter);
+}
+
+.member-you {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fg-lighter);
+}
+
+.member-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  flex: 0 0 auto;
+}
+
+.member-actions button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.page-move {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.page-move-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fg-lighter);
+  margin-right: 0.1rem;
+}
+
+/* --------------------------------------------------------------------------
+   Admin: page management
+   -------------------------------------------------------------------------- */
+.page-create { margin-bottom: 1.25rem; }
+
+.page-create-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.page-create input,
+.page-create select,
+.prow-actions select {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.82rem;
+}
+
+.page-create input { flex: 1 1 16rem; min-width: 0; }
+.page-create select { flex: 0 1 13rem; }
+
+.page-create input:focus,
+.page-create select:focus { outline: none; border-color: var(--mic-orange); }
+
+/* A section (nav) or a stage (roadmap) and everything inside it. */
+.pgroup {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.85rem;
+  overflow: hidden;
+}
+
+.pgroup-head { background: var(--surface-raised); }
+
+.pgroup-stage {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 0.6rem 0.9rem;
+  background: var(--surface-raised);
+  border-bottom: 1px solid var(--border);
+  border-left: 3px solid var(--stage-color, var(--border));
+}
+
+.pgroup--beginner { --stage-color: var(--level-beginner); }
+.pgroup--intermediate { --stage-color: var(--level-intermediate); }
+.pgroup--advanced { --stage-color: var(--level-advanced); }
+
+.pgroup-stage .tree-stage-badge { color: var(--stage-color, var(--fg-lighter)); }
+
+.pgroup-count {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--fg-lighter);
+}
+
+.pgroup-body { background: var(--surface); }
+.pgroup-empty { padding: 0.7rem 0.9rem; margin: 0; }
+
+/* One page row. */
+.prow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.4s ease;
+}
+
+.prow:last-child { border-bottom: none; }
+.prow--child { padding-left: 1.6rem; }
+
+/* Confirms an action visibly instead of the list silently reloading. */
+.prow--flash { background: rgba(242, 113, 28, 0.16); }
+
+.prow-pos {
+  flex: 0 0 1.5rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: var(--fg-lighter);
+  text-align: right;
+}
+
+.prow-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.prow-title {
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none !important;
+}
+
+.prow-slug {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.68rem;
+  color: var(--fg-lighter);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prow-tags { display: flex; gap: 0.35rem; flex: 0 0 auto; }
+
+.prow-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex: 0 0 auto;
+}
+
+.iconbtn {
+  min-width: 1.9rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--fg-light);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.iconbtn:hover:not(:disabled) { border-color: var(--mic-orange); color: var(--accent-text); }
+.iconbtn:disabled { opacity: 0.25; cursor: not-allowed; }
+.iconbtn--danger:hover:not(:disabled) { border-color: var(--danger); color: var(--danger); }
+
+@media (max-width: 40em) {
+  .prow { flex-wrap: wrap; }
+  .prow-main { flex: 1 1 100%; }
+}
+
+.editor-linkpicker {
+  margin-left: auto;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg-light);
+  font: inherit;
+  font-size: 0.78rem;
+  max-width: 16rem;
+  cursor: pointer;
+}
+
+.editor-linkpicker:hover { border-color: var(--mic-orange); color: var(--accent-text); }
+.editor-linkpicker:focus { outline: none; border-color: var(--mic-orange); }
+
+/* Fade edges hint that the nav continues past the visible area. They're
+   pointer-events:none so they never block a tab underneath. */
+.hub-topnav-wrap::before,
+.hub-topnav-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  z-index: 1;
+}
+
+.hub-topnav-wrap::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--bg) 30%, transparent);
+}
+
+.hub-topnav-wrap::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--bg) 30%, transparent);
+}
+
+.hub-topnav.is-left .hub-topnav-wrap::before,
+.hub-topnav.is-right .hub-topnav-wrap::after {
+  opacity: 1;
+}
+
+.hub-topnav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface-raised);
+  color: var(--fg-light);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.hub-topnav-arrow:hover {
+  border-color: var(--mic-orange);
+  color: var(--accent-text);
+}
+
+.hub-topnav-arrow--left { left: 0.15rem; }
+.hub-topnav-arrow--right { right: 0.15rem; }
+
+/* Arrows only exist when there's actually something to scroll to. */
+.hub-topnav.is-left .hub-topnav-arrow--left,
+.hub-topnav.is-right .hub-topnav-arrow--right {
+  display: block;
+}
+
+/* Touch devices scroll by swiping, so the arrows are just clutter there. */
+@media (hover: none) {
+  .hub-topnav-arrow { display: none !important; }
+}

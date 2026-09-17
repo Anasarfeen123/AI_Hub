@@ -1,0 +1,186 @@
+/* --------------------------------------------------------------------------
+   Mobile pass
+   The hub is read on phones between classes, so the small-screen layout is a
+   first-class target rather than a fallback.
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  /* The header wraps to two rows instead of squeezing every control onto one. */
+  .hub-header-inner {
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+
+  .hub-brand span {
+    font-size: 0.92rem;
+  }
+
+  .hub-header-user {
+    width: 100%;
+    order: 3;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  /* The signed-in name is the first thing to go — the avatar and role badge
+     already identify the member, and the links matter more. */
+  .hub-header-name {
+    display: none;
+  }
+
+  .hub-header-link {
+    font-size: 0.82rem;
+  }
+
+  /* Tap targets: 44px is the accessibility floor for a finger. */
+  .hub-header-link,
+  .hub-header-signout,
+  .md-edit-btn,
+  .editor-btn,
+  .editor-cancel {
+    min-height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .theme-toggle {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  /* Content gets the full width back. */
+  .editor-wrap,
+  .hub-section,
+  .content-layout {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .md-content {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .md-content h1 {
+    font-size: 1.6rem;
+    line-height: 1.2;
+  }
+
+  .md-content h2 {
+    font-size: 1.25rem;
+  }
+
+  /* Long tables and code blocks scroll inside themselves rather than pushing
+     the whole page sideways. */
+  .md-content table,
+  .md-content pre {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .md-content pre {
+    font-size: 0.82rem;
+  }
+
+  /* Stack the member rows: name over controls, controls full width. */
+  .member-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .member-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .member-actions button {
+    flex: 1 1 8rem;
+    justify-content: center;
+  }
+
+  .member-add,
+  .member-bulk {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .member-add input,
+  .member-add button,
+  .member-bulk input,
+  .member-bulk button {
+    width: 100%;
+  }
+
+  /* The Pages panel's create form is four controls in a row on desktop. */
+  .page-create-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .page-create-row > * {
+    width: 100%;
+  }
+
+  .prow {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .prow-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .prow-actions .iconbtn {
+    min-width: 2.4rem;
+    min-height: 2.4rem;
+  }
+
+  .hub-hero h1 {
+    font-size: 1.9rem;
+  }
+
+  .hub-hero p {
+    font-size: 0.95rem;
+  }
+
+  .page-byline {
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .login-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .login-stats dd {
+    font-size: 1.1rem;
+  }
+
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hub-hero h1 {
+    font-size: 1.6rem;
+  }
+}
+
+/* Nothing should force a sideways scroll of the document itself.
+   This deliberately avoids `overflow-x: hidden` on html/body: with the
+   `height: 100%` those elements already carry, hiding one axis computes the
+   other to `auto`, which makes BODY the scroll container instead of the
+   document. window.scrollY then reads 0 forever and scroll restoration breaks.
+   `clip` is the one value that constrains an axis without creating a scroll
+   container, so the document keeps scrolling normally. */
+#root {
+  max-width: 100%;
+  overflow-x: clip;
+}

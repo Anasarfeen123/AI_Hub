@@ -1,0 +1,50 @@
+{
+  "stages": [
+    {
+      "id": "beginner",
+      "num": "01",
+      "label": "Stage 1 · Beginner",
+      "levelClass": "beginner",
+      "title": "Foundations",
+      "duration": "6–10 weeks",
+      "goal": "Be comfortable writing code and reading the math notation every ML paper and course assumes.",
+      "nodes": [
+        { "id": "python", "title": "Python for AI", "desc": "NumPy, Pandas, and clean scripts", "href": "foundations/python/" },
+        { "id": "mathematics", "title": "Mathematics", "desc": "Linear algebra, calculus, probability", "href": "foundations/mathematics/" },
+        { "id": "statistics", "title": "Statistics", "desc": "Distributions, bias/variance, evaluation basics", "href": "foundations/statistics/" },
+        { "id": "optimization", "title": "Optimization", "desc": "Gradient descent and why training works", "href": "foundations/optimization/" }
+      ]
+    },
+    {
+      "id": "intermediate",
+      "num": "02",
+      "label": "Stage 2 · Intermediate",
+      "levelClass": "intermediate",
+      "title": "Core Toolbox",
+      "duration": "3–6 months",
+      "goal": "Understand the full ML lifecycle — framing, data, model, evaluation, iteration.",
+      "nodes": [
+        { "id": "machine-learning", "title": "Machine Learning", "desc": "Algorithms, evaluation, feature engineering", "href": "machine-learning/" },
+        { "id": "deep-learning", "title": "Deep Learning", "desc": "Neural nets, backprop, PyTorch/TensorFlow", "href": "deep-learning/" },
+        { "id": "computer-vision", "title": "Computer Vision", "desc": "CNNs, detection, segmentation", "href": "computer-vision/" },
+        { "id": "nlp", "title": "Natural Language Processing", "desc": "Tokenization, embeddings, transformers", "href": "natural-language-processing/" },
+        { "id": "ml-projects", "title": "Projects", "desc": "Ship 2–3 end-to-end projects", "href": "machine-learning/projects/" }
+      ]
+    },
+    {
+      "id": "advanced",
+      "num": "03",
+      "label": "Stage 3 · Advanced",
+      "levelClass": "advanced",
+      "title": "Specialize & Research",
+      "duration": "Open-ended",
+      "goal": "Go from using models to understanding — and contributing to — the frontier.",
+      "nodes": [
+        { "id": "generative-ai", "title": "Generative AI", "desc": "LLMs, RAG, fine-tuning, agents", "href": "generative-ai/" },
+        { "id": "reinforcement-learning", "title": "Reinforcement Learning", "desc": "MDPs, Q-learning, policy gradients", "href": "reinforcement-learning/" },
+        { "id": "specializations", "title": "Specializations", "desc": "Time series, speech, MLOps, deployment", "href": "specializations/" },
+        { "id": "research", "title": "Research", "desc": "Read papers, reproduce results, publish", "href": "research/" }
+      ]
+    }
+  ]
+}

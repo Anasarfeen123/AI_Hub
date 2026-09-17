@@ -1,0 +1,306 @@
+/* --------------------------------------------------------------------------
+   Theme toggle
+   -------------------------------------------------------------------------- */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--fg-light);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  color: var(--fg);
+  border-color: var(--border-strong);
+}
+
+.theme-toggle svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Page byline — who last touched this page, and when
+   -------------------------------------------------------------------------- */
+.page-byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: -0.35rem 0 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+  color: var(--fg-light);
+}
+
+.page-byline-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  flex: none;
+  border-radius: var(--radius-full);
+  background: var(--tint-2);
+  border: 1px solid var(--border);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--fg);
+  letter-spacing: 0.02em;
+}
+
+.page-byline strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.page-byline time {
+  color: var(--fg-lighter);
+}
+
+.page-byline-sep {
+  color: var(--fg-lighter);
+}
+
+/* --------------------------------------------------------------------------
+   Role badges
+   -------------------------------------------------------------------------- */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1rem 0.42rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-strong);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fg-light);
+  white-space: nowrap;
+}
+
+.role-badge--admin {
+  border-color: var(--mic-blue);
+  color: var(--link);
+}
+
+.role-badge--superadmin {
+  border-color: var(--mic-orange);
+  color: var(--accent-text);
+}
+
+/* --------------------------------------------------------------------------
+   Contributions — leaderboard and personal stats
+   -------------------------------------------------------------------------- */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.stat-cell {
+  background: var(--surface);
+  padding: 1rem 1.1rem;
+}
+
+.stat-cell dt {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-lighter);
+  margin-bottom: 0.4rem;
+}
+
+.stat-cell dd {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-cell dd small {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--fg-lighter);
+}
+
+.lb-list {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.lb-row {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.lb-row:last-child {
+  border-bottom: none;
+}
+
+.lb-row--me {
+  background: rgba(242, 113, 28, 0.1);
+}
+
+.lb-rank {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--fg-lighter);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+/* The top three carry the brand colours rather than medal clip-art. */
+.lb-row--1 .lb-rank { color: var(--accent-text); }
+.lb-row--2 .lb-rank { color: var(--fg); }
+.lb-row--3 .lb-rank { color: var(--mic-yellow); }
+
+.lb-who {
+  min-width: 0;
+}
+
+.lb-name {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 600;
+  color: var(--fg);
+  font-size: 0.94rem;
+}
+
+.lb-name span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lb-meta {
+  font-size: 0.76rem;
+  color: var(--fg-lighter);
+  margin-top: 0.15rem;
+}
+
+.lb-score {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.lb-words {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+
+.lb-words small {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--fg-lighter);
+  margin-left: 0.2rem;
+}
+
+.lb-bar {
+  height: 3px;
+  margin-top: 0.4rem;
+  border-radius: var(--radius-full);
+  background: var(--mic-orange);
+  min-width: 2px;
+}
+
+.you-pill {
+  display: inline-block;
+  padding: 0.05rem 0.38rem;
+  border-radius: var(--radius-full);
+  background: var(--mic-orange);
+  color: var(--on-accent);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 560px) {
+  .lb-row {
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    gap: 0.6rem;
+    padding: 0.75rem 0.7rem;
+  }
+  .lb-words { font-size: 0.95rem; }
+  .lb-meta { font-size: 0.72rem; }
+}
+
+/* Respect a reduced-motion preference across everything added above. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Admin bar — a single way in to member management, above the nav
+   -------------------------------------------------------------------------- */
+.adminbar {
+  display: flex;
+  justify-content: flex-end;
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: 0.6rem 1.5rem 0;
+}
+
+.adminbar-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.adminbar-btn:hover {
+  border-color: var(--mic-orange);
+  color: var(--accent-text);
+}
+
+@media (max-width: 720px) {
+  .adminbar {
+    padding: 0.5rem 1rem 0;
+  }
+
+  .adminbar-btn {
+    min-height: 2.4rem;
+  }
+}

@@ -1,0 +1,332 @@
+/* ==========================================================================
+   Landing page (signed-out)
+   A scrolling page rather than a single card: it has to explain what the hub
+   is to a member who has never seen it, then ask them to sign in.
+   ========================================================================== */
+
+.lp {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--fg);
+  overflow-x: hidden;
+}
+
+/* The MIC mark tiled behind everything, held well back so it reads as texture
+   rather than as content.
+   On black the logo's own colours turn muddy, so the dark theme desaturates it
+   and leans on shape alone. The light theme keeps the real MIC colours — they
+   read cleanly on white, which is where the brand mark was designed to sit. */
+.lp-watermark {
+  position: fixed;
+  inset: 0;
+  background-image: url("../assets/mic-logo.png");
+  background-repeat: repeat;
+  background-size: 120px;
+  filter: grayscale(1) brightness(0.9);
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 0;
+}
+
+:root[data-theme="light"] .lp-watermark {
+  filter: none;
+  opacity: 0.07;
+}
+
+/* --- Top bar -------------------------------------------------------------- */
+.lp-topbar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 68rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.1rem 1.5rem;
+}
+
+.lp-topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+.lp-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* A quieter second entry point than the hero button — someone returning to the
+   hub shouldn't have to read the page again to find the way in. */
+.lp-topbar-signin {
+  display: inline-flex;
+  align-items: center;
+  height: 2rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--fg);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.lp-topbar-signin:hover {
+  border-color: var(--mic-orange);
+  color: var(--accent-text);
+}
+
+.lp-topbar-brand img {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+
+/* --- Layout --------------------------------------------------------------- */
+.lp-main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  width: 100%;
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.lp-section {
+  padding: 3.5rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.lp-h2 {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-lighter);
+  margin: 0 0 1.75rem;
+}
+
+/* --- Hero ----------------------------------------------------------------- */
+.lp-hero {
+  padding: 4rem 0 3.5rem;
+  max-width: 44rem;
+}
+
+.lp-eyebrow {
+  margin: 0 0 1.25rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+.lp-hero h1 {
+  margin: 0 0 1.25rem;
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  color: var(--fg);
+  text-wrap: balance;
+}
+
+.lp-lede {
+  margin: 0 0 2rem;
+  font-size: 1.08rem;
+  line-height: 1.6;
+  color: var(--fg-light);
+  max-width: 36rem;
+}
+
+.lp-error {
+  margin-bottom: 1.5rem;
+  max-width: 36rem;
+}
+
+.lp-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+
+.lp-cta-note {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--fg-lighter);
+}
+
+/* --- The path ------------------------------------------------------------- */
+.lp-path {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.lp-path li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.35rem 1.25rem;
+  background: var(--surface);
+}
+
+.lp-path-num {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--mic-orange);
+  color: var(--accent-text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.lp-path-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.lp-path-body strong {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+}
+
+.lp-path-body span {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--fg-light);
+}
+
+/* --- Pillars -------------------------------------------------------------- */
+.lp-pillars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 2rem 2.5rem;
+}
+
+.lp-pillar h3 {
+  margin: 0 0 0.55rem;
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+.lp-pillar p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.62;
+  color: var(--fg-light);
+}
+
+/* --- Footer --------------------------------------------------------------- */
+.lp-footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem 2.5rem;
+  text-align: center;
+}
+
+.lp-footer-socials {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.lp-footer-socials a {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--fg-light);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.lp-footer-socials a:hover {
+  color: var(--accent-text);
+}
+
+.lp-footer-note {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--fg-lighter);
+}
+
+/* --- Small screens -------------------------------------------------------- */
+@media (max-width: 640px) {
+  .lp-topbar,
+  .lp-main {
+    padding-left: 1.15rem;
+    padding-right: 1.15rem;
+  }
+
+  .lp-topbar-brand span {
+    font-size: 0.78rem;
+  }
+
+  .lp-hero {
+    padding: 2.5rem 0 2.5rem;
+  }
+
+  /* The two-line break in the headline is a desktop composition; on a phone it
+     produces an awkward orphan, so it collapses back to normal wrapping. */
+  .lp-hero h1 br {
+    display: none;
+  }
+
+  .lp-lede {
+    font-size: 1rem;
+  }
+
+  .lp-cta {
+    align-items: stretch;
+  }
+
+  .lp-cta .google-signin-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .lp-section {
+    padding: 2.5rem 0;
+  }
+
+  .lp-footer-socials {
+    gap: 1.5rem;
+  }
+}
