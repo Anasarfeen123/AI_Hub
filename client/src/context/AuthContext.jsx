@@ -30,6 +30,14 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     await apiLogout();
+    // Offline copies of members-only pages shouldn't outlive the session,
+    // especially on a shared computer.
+    try {
+      navigator.serviceWorker?.controller?.postMessage("clear-data");
+      await window.caches?.delete("aihub-data");
+    } catch {
+      // No service worker or cache support: nothing was stored.
+    }
     setUser(null);
   };
 

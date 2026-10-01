@@ -1,0 +1,37 @@
+# Weekly jobs for the live hub: reminder emails to quiet members, and a check
+# of every external link. Render's free tier sleeps, so the app can't keep its
+# own timer; this wakes it and asks it to run them.
+#
+# Enable by adding two repository secrets (Settings → Secrets → Actions):
+#   SITE_URL     the hub's address, e.g. https://mic-ai-ml-resource-hub-g66e.onrender.com
+#   CRON_SECRET  the same long random value as CRON_SECRET in Render's environment
+name: Weekly jobs
+
+on:
+  schedule:
+    - cron: "30 3 * * 1" # Mondays 09:00 India time
+  workflow_dispatch: {}
+
+permissions: {}
+
+jobs:
+  weekly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Wake the site and run the weekly jobs
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$SITE_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "SITE_URL / CRON_SECRET secrets aren't set — skipping."
+            exit 0
+          fi
+          # A sleeping free instance takes up to a minute to start.
+          for i in $(seq 1 8); do
+            if curl -sf --max-time 30 "$SITE_URL/api/health" > /dev/null; then break; fi
+            sleep 15
+          done
+          curl -sf --max-time 120 -X POST -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/weekly"
+          echo

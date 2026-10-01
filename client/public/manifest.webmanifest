@@ -1,0 +1,20 @@
+{
+  "name": "AI/ML Resource Hub — MIC VIT Chennai",
+  "short_name": "AI/ML Hub",
+  "description": "The Microsoft Innovations Club's AI/ML learning hub: a guided roadmap, wiki pages and discussion.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#08090b",
+  "theme_color": "#08090b",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Roadmap", "url": "/roadmap" },
+    { "name": "Saved pages", "url": "/saved" },
+    { "name": "My notes", "url": "/notes" }
+  ]
+}
