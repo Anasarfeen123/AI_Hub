@@ -21,19 +21,19 @@ export default function LandingDecor() {
     <svg className="lp-decor" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient id="lpd-orange" x1="0" y1="0" x2="0.35" y2="1">
-          <stop offset="0" stopColor="#ff3d2e" />
-          <stop offset="0.45" stopColor="#ff8a1f" />
-          <stop offset="1" stopColor="#ffc93a" stopOpacity="0" />
+          <stop offset="0" stopColor="#d9482a" />
+          <stop offset="0.45" stopColor="#e0862a" />
+          <stop offset="1" stopColor="#e0a83a" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="lpd-blue" x1="1" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#5fc8ff" />
-          <stop offset="0.6" stopColor="#1f6bff" />
-          <stop offset="1" stopColor="#1f6bff" stopOpacity="0.15" />
+          <stop offset="0" stopColor="#4a9fd0" />
+          <stop offset="0.6" stopColor="#3a62c8" />
+          <stop offset="1" stopColor="#3a62c8" stopOpacity="0.15" />
         </linearGradient>
         <linearGradient id="lpd-teal" x1="1" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#18b6c8" />
-          <stop offset="0.55" stopColor="#3ad6a0" stopOpacity="0.7" />
-          <stop offset="1" stopColor="#3ad6a0" stopOpacity="0" />
+          <stop offset="0" stopColor="#2a92a8" />
+          <stop offset="0.55" stopColor="#3cb07a" stopOpacity="0.7" />
+          <stop offset="1" stopColor="#3cb07a" stopOpacity="0" />
         </linearGradient>
       </defs>
 

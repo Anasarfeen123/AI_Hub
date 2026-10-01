@@ -1777,9 +1777,10 @@
 }
 
 /* --- Brand: mark + wordmark ----------------------------------------------------- */
-/* The brand spectrum, from the hexagons: red-orange, yellow, green, cyan-blue. */
+/* The brand spectrum, from the hexagons: red-orange, gold, green, blue — in the
+   mark's deeper "jewel" tones rather than neon. */
 :root {
-  --brand-gradient: linear-gradient(100deg, #ff4d1c 0%, #ffb41f 28%, #c7f03a 46%, #2fe07a 64%, #18c8f0 82%, #2f6bff 100%);
+  --brand-gradient: linear-gradient(100deg, #e0532a 0%, #e09a2a 30%, #a8b83a 47%, #3cb06a 64%, #2a9fc0 82%, #3a6ad0 100%);
 }
 
 .wordmark {
@@ -1887,7 +1888,7 @@
 }
 
 .lpd-slab {
-  opacity: 0.9;
+  opacity: 0.7;
 }
 
 .lpd-line--blue,

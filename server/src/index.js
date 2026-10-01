@@ -141,14 +141,52 @@ async function main() {
       if (!publicStats.body || Date.now() - publicStats.at > 5 * 60 * 1000) {
         const Page = require("./models/Page");
         const RoadmapStage = require("./models/RoadmapStage");
-        const [pages, topics, stages] = await Promise.all([
+        const Member = require("./models/Member");
+        const [pages, topics, stages, members] = await Promise.all([
           Page.countDocuments({ hidden: false }),
           Page.countDocuments({ hidden: false, roadmapStage: { $ne: "" } }),
           RoadmapStage.countDocuments(),
+          Member.countDocuments({ active: true }),
         ]);
-        publicStats = { at: Date.now(), body: { pages, topics, stages } };
+        publicStats = { at: Date.now(), body: { pages, topics, stages, members } };
       }
       res.json(publicStats.body);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // The roadmap's outline — stage and topic titles only, never page content —
+  // so the landing page can show newcomers exactly what they'll learn. It's
+  // the same curriculum outline the public repository already contains.
+  let publicRoadmap = { at: 0, body: null };
+  app.get("/api/public/roadmap", async (_req, res, next) => {
+    try {
+      if (!publicRoadmap.body || Date.now() - publicRoadmap.at > 5 * 60 * 1000) {
+        const Page = require("./models/Page");
+        const RoadmapStage = require("./models/RoadmapStage");
+        const [stages, pages] = await Promise.all([
+          RoadmapStage.find().sort({ order: 1 }).lean(),
+          Page.find({ roadmapStage: { $ne: "" }, hidden: false })
+            .sort({ roadmapOrder: 1, title: 1 })
+            .select("title roadmapStage roadmapDesc")
+            .lean(),
+        ]);
+        publicRoadmap = {
+          at: Date.now(),
+          body: {
+            stages: stages.map((s) => ({
+              title: s.title,
+              label: s.label,
+              level: s.levelClass,
+              duration: s.duration,
+              goal: s.goal,
+              topics: pages.filter((p) => p.roadmapStage === s.key).map((p) => ({ title: p.title, desc: p.roadmapDesc })),
+            })),
+          },
+        };
+      }
+      res.json(publicRoadmap.body);
     } catch (err) {
       next(err);
     }

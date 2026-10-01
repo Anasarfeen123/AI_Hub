@@ -7,15 +7,8 @@ import useDocumentTitle from "../hooks/useDocumentTitle";
 import hubMark from "../assets/hub-mark.png";
 import Wordmark from "../components/Wordmark";
 import LandingDecor from "../components/LandingDecor";
-
-// The learning path is the product, so the landing page shows the actual
-// sequence rather than describing it in prose.
-const PATH = [
-  { label: "Foundations", detail: "Python, maths, statistics, optimization", level: "beginner" },
-  { label: "Machine Learning", detail: "Algorithms, evaluation, first projects", level: "intermediate" },
-  { label: "Deep Learning", detail: "CNNs, transformers, frameworks", level: "intermediate" },
-  { label: "Specializations", detail: "CV, NLP, GenAI, RL, MLOps, research", level: "advanced" },
-];
+import { HeroShot, RoadmapOutline, ProductTour, HowItWorks, Faq } from "../components/LandingSections";
+import useReveal from "../hooks/useReveal";
 
 const icon = (d) => (
   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -106,62 +99,6 @@ function GoogleButton({ large = false }) {
   );
 }
 
-// A small, static picture of the signed-in hub: what a member is about to get.
-// Built from markup rather than a screenshot so it stays crisp and follows the
-// theme.
-function HubPreview({ stats }) {
-  const stages = [
-    { label: "Beginner", title: "Foundations", done: 3, total: 4, level: "beginner" },
-    { label: "Intermediate", title: "Core Toolbox", done: 2, total: 5, level: "intermediate" },
-    { label: "Advanced", title: "Specialize & Research", done: 0, total: 4, level: "advanced" },
-  ];
-  return (
-    <div className="lp-preview" aria-hidden="true">
-      <div className="lp-preview-bar">
-        <span className="lp-preview-dots">
-          <i />
-          <i />
-          <i />
-        </span>
-        <span className="lp-preview-search">
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.2">
-            <circle cx="11" cy="11" r="7" />
-            <path d="m20 20-3.5-3.5" />
-          </svg>
-          transformers
-          <kbd>/</kbd>
-        </span>
-      </div>
-      <div className="lp-preview-body">
-        <p className="lp-preview-kicker">Your roadmap</p>
-        <p className="lp-preview-total">
-          <strong>5</strong> of {stats?.topics || 13} topics done
-        </p>
-        {stages.map((s) => (
-          <div className={`lp-preview-stage lp-preview-stage--${s.level}`} key={s.title}>
-            <div className="lp-preview-stage-top">
-              <span className="lp-preview-badge">{s.label}</span>
-              <span className="lp-preview-count">
-                {s.done}/{s.total}
-              </span>
-            </div>
-            <strong>{s.title}</strong>
-            <span className="lp-preview-track">
-              <span style={{ width: `${(s.done / s.total) * 100}%` }} />
-            </span>
-          </div>
-        ))}
-        <div className="lp-preview-comment">
-          <span className="lp-preview-avatar">RM</span>
-          <span>
-            <strong>Ravi</strong> CS231n's notes made CNNs click for me — start with lecture 5.
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // "Request access" for people not on the list yet. Goes to the leads, who
 // approve it from the Members page. The hidden "website" field is a trap for
 // bots; people never see it.
@@ -240,6 +177,7 @@ export default function Login() {
   const deniedEmail = params.get("email") || "";
   const [requesting, setRequesting] = useState(false);
   const [stats, setStats] = useState(null);
+  useReveal();
 
   useEffect(() => {
     fetchPublicStats()
@@ -263,6 +201,11 @@ export default function Login() {
             <small>by Microsoft Innovations Club · VIT Chennai</small>
           </span>
         </a>
+        <nav className="lp-topbar-nav" aria-label="On this page">
+          <a href="#path">The path</a>
+          <a href="#inside">Inside the hub</a>
+          <a href="#faq">FAQ</a>
+        </nav>
         <div className="lp-topbar-actions">
           <ThemeToggle />
           <a className="lp-topbar-signin" href={googleLoginUrl()}>
@@ -329,9 +272,11 @@ export default function Login() {
                 they can't be fetched, rather than showing made-up numbers. */}
             {stats && (
               <ul className="lp-facts">
-                <li>
-                  <strong>{stats.stages}</strong> stages
-                </li>
+                {stats.members > 0 && (
+                  <li>
+                    <strong>{stats.members}</strong> members
+                  </li>
+                )}
                 <li>
                   <strong>{stats.topics}</strong> roadmap topics
                 </li>
@@ -342,33 +287,46 @@ export default function Login() {
             )}
           </div>
 
-          <HubPreview stats={stats} />
+          <HeroShot />
         </section>
 
-        {/* --- The path ---------------------------------------------------- */}
-        <section className="lp-section" aria-labelledby="lp-path-title">
-          <p className="lp-kicker">The path</p>
-          <h2 className="lp-h2" id="lp-path-title">
-            Four stages, each one built on the last.
-          </h2>
-          <ol className="lp-path">
-            {PATH.map((step, i) => (
-              <li key={step.label} className={`lp-path-step lp-path-step--${step.level}`}>
-                <span className="lp-path-num">{String(i + 1).padStart(2, "0")}</span>
-                <strong>{step.label}</strong>
-                <span>{step.detail}</span>
-              </li>
-            ))}
-          </ol>
+        {/* --- The path: the real roadmap ------------------------------- */}
+        <section className="lp-section" id="path" aria-labelledby="lp-path-title">
+          <div className="lp-section-head reveal">
+            <p className="lp-kicker">The path</p>
+            <h2 className="lp-h2" id="lp-path-title">
+              Three stages, each one built on the last.
+            </h2>
+            <p className="lp-section-lede">
+              This is the actual roadmap inside the hub — every topic has an explanation, the resources worth your time,
+              and projects to try.
+            </p>
+          </div>
+          <RoadmapOutline />
+        </section>
+
+        {/* --- A look inside -------------------------------------------- */}
+        <section className="lp-section" id="inside" aria-labelledby="lp-inside-title">
+          <div className="lp-section-head reveal">
+            <p className="lp-kicker">Inside the hub</p>
+            <h2 className="lp-h2" id="lp-inside-title">
+              Built for actually learning, not just bookmarking.
+            </h2>
+          </div>
+          <div className="reveal">
+            <ProductTour />
+          </div>
         </section>
 
         {/* --- Features ---------------------------------------------------- */}
         <section className="lp-section" aria-labelledby="lp-features-title">
-          <p className="lp-kicker">Why this exists</p>
-          <h2 className="lp-h2" id="lp-features-title">
-            Everything you need to actually learn it, in one place.
-          </h2>
-          <div className="lp-features">
+          <div className="lp-section-head reveal">
+            <p className="lp-kicker">Why this exists</p>
+            <h2 className="lp-h2" id="lp-features-title">
+              Everything you need to actually learn it, in one place.
+            </h2>
+          </div>
+          <div className="lp-features reveal">
             {FEATURES.map((f) => (
               <div className="lp-feature" key={f.title}>
                 <span className="lp-feature-icon">{f.icon}</span>
@@ -379,8 +337,32 @@ export default function Login() {
           </div>
         </section>
 
+        {/* --- How it works ---------------------------------------------- */}
+        <section className="lp-section" aria-labelledby="lp-how-title">
+          <div className="lp-section-head reveal">
+            <p className="lp-kicker">How it works</p>
+            <h2 className="lp-h2" id="lp-how-title">
+              Three steps. No setup.
+            </h2>
+          </div>
+          <HowItWorks />
+        </section>
+
+        {/* --- FAQ -------------------------------------------------------- */}
+        <section className="lp-section lp-section--faq" id="faq" aria-labelledby="lp-faq-title">
+          <div className="lp-section-head reveal">
+            <p className="lp-kicker">Questions</p>
+            <h2 className="lp-h2" id="lp-faq-title">
+              Good to know.
+            </h2>
+          </div>
+          <div className="reveal">
+            <Faq />
+          </div>
+        </section>
+
         {/* --- Closing call to action ------------------------------------- */}
-        <section className="lp-final">
+        <section className="lp-final reveal">
           <img src={hubMark} alt="" width="96" height="72" />
           <h2>Ready when you are.</h2>
           <p>Sign in with your MIC Google account and pick up right where you left off.</p>

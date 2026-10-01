@@ -18,6 +18,13 @@ export async function fetchPublicStats() {
   return res.json();
 }
 
+// The roadmap's outline (stage and topic titles) for the signed-out landing page.
+export async function fetchPublicRoadmap() {
+  const res = await fetch(`${API_URL}/api/public/roadmap`);
+  if (!res.ok) throw new Error("roadmap unavailable");
+  return res.json();
+}
+
 export function googleLoginUrl() {
   return `${API_URL}/auth/google`;
 }
