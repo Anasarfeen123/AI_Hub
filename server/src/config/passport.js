@@ -2,6 +2,7 @@ const passport = require("passport");
 const { Strategy: GoogleStrategy } = require("passport-google-oauth20");
 const Member = require("../models/Member");
 const { recordLogin } = require("../lib/recordLogin");
+const { dayKey } = require("../lib/days");
 
 passport.use(
   new GoogleStrategy(
@@ -22,7 +23,9 @@ passport.use(
         // personal address can be added to the list when someone needs it.
         const member = await Member.findOne({ collegeEmail: email, active: true });
         if (!member) {
-          return done(null, false, { message: "This email isn't on the MIC member list." });
+          // The address goes back to the landing page so "request access"
+          // can be pre-filled with the exact account they tried.
+          return done(null, false, { message: "This email isn't on the MIC member list.", email });
         }
 
         recordLogin(member.collegeEmail);
@@ -44,8 +47,11 @@ passport.deserializeUser(async (email, done) => {
     const member = await Member.findOne({ collegeEmail: email, active: true });
     if (!member) return done(null, false);
     // At most one write an hour per member, so this costs nothing per request.
-    if (!member.lastActiveAt || Date.now() - member.lastActiveAt.getTime() > 60 * 60 * 1000) {
-      Member.updateOne({ _id: member._id }, { $set: { lastActiveAt: new Date() } }).catch(() => {});
+    // The same write records today as an active day, which drives streaks.
+    const today = dayKey();
+    const stale = !member.lastActiveAt || Date.now() - member.lastActiveAt.getTime() > 60 * 60 * 1000;
+    if (stale || !member.activeDays.includes(today)) {
+      Member.updateOne({ _id: member._id }, { $set: { lastActiveAt: new Date() }, $addToSet: { activeDays: today } }).catch(() => {});
     }
     return done(null, { email: member.collegeEmail, name: member.name, role: member.role });
   } catch (err) {

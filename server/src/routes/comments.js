@@ -7,6 +7,7 @@ const { rankOf } = require("../models/Member");
 const { ensureMember } = require("../middleware/ensureMember");
 const { isSlug } = require("../lib/validate");
 const { audit } = require("../lib/audit");
+const { notify } = require("../lib/notify");
 
 const router = express.Router();
 router.use(ensureMember);
@@ -70,12 +71,14 @@ router.post("/comments", async (req, res, next) => {
     if (!(await Page.exists({ slug }))) return res.status(404).json({ error: "Page not found." });
 
     let parentId = null;
+    let parentAuthor = null;
     if (req.body.parentId) {
       if (!mongoose.isValidObjectId(req.body.parentId)) return res.status(400).json({ error: "Malformed id." });
       const parent = await Comment.findById(req.body.parentId);
       if (!parent || parent.slug !== slug) return res.status(404).json({ error: "That comment no longer exists." });
       // Replies to a reply attach to its top-level comment, keeping one level.
       parentId = parent.parentId || parent._id;
+      parentAuthor = parent.deleted ? null : parent.authorEmail;
     }
 
     const comment = await Comment.create({
@@ -85,6 +88,14 @@ router.post("/comments", async (req, res, next) => {
       authorEmail: req.user.email,
       authorName: req.user.name,
     });
+    if (parentAuthor && parentAuthor !== req.user.email) {
+      const page = await Page.findOne({ slug }).select("title").lean();
+      await notify(parentAuthor, {
+        type: "reply",
+        text: `${req.user.name} replied to your comment on "${page?.title || slug}"`,
+        link: `/${slug}#comment-${comment._id}`,
+      });
+    }
     const roles = new Map([[req.user.email, req.user.role]]);
     res.status(201).json({ comment: present(comment.toObject(), roles) });
   } catch (err) {

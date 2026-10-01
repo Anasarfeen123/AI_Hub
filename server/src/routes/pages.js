@@ -6,6 +6,7 @@ const Bookmark = require("../models/Bookmark");
 const Comment = require("../models/Comment");
 const { isSlug } = require("../lib/validate");
 const { audit } = require("../lib/audit");
+const { publishEdit } = require("../lib/publish");
 const { computeStats } = require("../lib/diffStats");
 const { ensureMember, ensureAdmin } = require("../middleware/ensureMember");
 
@@ -94,21 +95,11 @@ router.post("/edits", async (req, res, next) => {
       });
     }
 
-    // Measure against what was live a moment ago, before the page is updated.
-    const stats = computeStats(page.body, body);
-
-    page.body = body;
-    page.updatedBy = req.user.email;
-    await page.save();
-
-    const revision = await Revision.create({
-      slug: page.slug,
+    const revision = await publishEdit({
+      page,
       body,
-      authorEmail: req.user.email,
-      authorName: req.user.name,
-      publishedBy: req.user.email,
-      note: (summary || "").slice(0, 300),
-      ...stats,
+      summary,
+      author: { email: req.user.email, name: req.user.name },
     });
 
     res.status(201).json({ revisionId: revision._id, updatedAt: page.updatedAt });

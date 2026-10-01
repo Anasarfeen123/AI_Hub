@@ -35,6 +35,14 @@ const memberSchema = new mongoose.Schema(
     // would undercount). Lets leads see who to nudge.
     lastActiveAt: { type: Date, default: null },
     loginCount: { type: Number, default: 0 },
+    // Calendar days (YYYY-MM-DD, India time) the member used the hub. Drives
+    // weekly streaks; a few hundred short strings at most.
+    activeDays: { type: [String], default: [] },
+    // Member-controlled preferences.
+    shareProgress: { type: Boolean, default: false },
+    emailReminders: { type: Boolean, default: true },
+    // So a reminder can't be sent more than once a fortnight.
+    lastReminderAt: { type: Date, default: null },
   },
   { timestamps: true }
 );

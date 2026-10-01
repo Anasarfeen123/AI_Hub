@@ -21,6 +21,10 @@ const statsRoutes = require("./routes/stats");
 const libraryRoutes = require("./routes/library");
 const commentRoutes = require("./routes/comments");
 const adminRoutes = require("./routes/admin");
+const meRoutes = require("./routes/me");
+const communityRoutes = require("./routes/community");
+const mediaRoutes = require("./routes/media");
+const opsRoutes = require("./routes/ops");
 const { ensureMember } = require("./middleware/ensureMember");
 
 const PORT = process.env.PORT || 4000;
@@ -55,6 +59,9 @@ async function main() {
       },
       // Google's sign-in redirect needs the referrer origin.
       referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+      // Same-site rather than same-origin: still refuses every other website,
+      // but lets the local dev client (another port) show uploaded images.
+      crossOriginResourcePolicy: { policy: "same-site" },
     })
   );
   app.use(compression());
@@ -112,7 +119,10 @@ async function main() {
       windowMs: 10 * 60 * 1000,
       limit: 120,
       keyGenerator,
-      skip: (req) => req.method === "GET" || skipInDev(),
+      // A member's own reading position, notes and progress save often by
+      // design (autosave, scroll tracking); they still count toward the
+      // per-minute limit above.
+      skip: (req) => req.method === "GET" || req.path.startsWith("/me/") || skipInDev(),
       standardHeaders: "draft-8",
       legacyHeaders: false,
       message: { error: "You're saving very quickly — wait a few minutes and try again." },
@@ -144,6 +154,11 @@ async function main() {
     }
   });
 
+  // These two hold the only public routes (an access request from the landing
+  // page, and the scheduled-job hook). Their member routes check sign-in one
+  // by one, so they're mounted ahead of the routers that guard everything.
+  app.use("/api", communityRoutes);
+  app.use("/api", opsRoutes);
   app.use("/api", pageRoutes);
   app.use("/api/members", memberRoutes);
   app.use("/api", structureRoutes);
@@ -151,6 +166,8 @@ async function main() {
   app.use("/api", libraryRoutes);
   app.use("/api", commentRoutes);
   app.use("/api", adminRoutes);
+  app.use("/api", meRoutes);
+  app.use("/api", mediaRoutes);
 
   // An unmatched /api/* must not fall through to the SPA fallback below —
   // fetch() would then parse index.html as JSON and fail with a syntax error
@@ -172,6 +189,17 @@ async function main() {
       "/assets",
       express.static(path.join(clientDist, "assets"), { immutable: true, maxAge: "1y", index: false })
     );
+    // The service worker must be re-checked on every load, or a deploy could
+    // leave members on an old app for a long time.
+    app.get("/sw.js", (_req, res) => {
+      res.set("Cache-Control", "no-cache");
+      res.set("Service-Worker-Allowed", "/");
+      res.sendFile(path.join(clientDist, "sw.js"));
+    });
+    app.get("/manifest.webmanifest", (_req, res) => {
+      res.type("application/manifest+json");
+      res.sendFile(path.join(clientDist, "manifest.webmanifest"));
+    });
     app.use(express.static(clientDist, { maxAge: "1h", index: false }));
     app.get("*", (_req, res) => {
       res.set("Cache-Control", "no-cache");

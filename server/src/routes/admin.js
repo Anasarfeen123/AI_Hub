@@ -8,6 +8,7 @@ const AuditLog = require("../models/AuditLog");
 const Announcement = require("../models/Announcement");
 const { ensureMember, ensureAdmin } = require("../middleware/ensureMember");
 const { audit } = require("../lib/audit");
+const { notify } = require("../lib/notify");
 
 const router = express.Router();
 const DAY = 24 * 60 * 60 * 1000;
@@ -58,6 +59,11 @@ router.post("/announcements", ensureAdmin, async (req, res, next) => {
       createdByName: req.user.name,
     });
     await audit(req, "Posted announcement", text.slice(0, 120));
+    const everyone = await Member.find({ active: true, collegeEmail: { $ne: req.user.email } }).select("collegeEmail").lean();
+    await notify(
+      everyone.map((m) => m.collegeEmail),
+      { type: "announcement", text: `📣 ${text.slice(0, 200)}`, link: link || "/", key: "announcement" }
+    );
     res.status(201).json({ announcement: a });
   } catch (err) {
     next(err);

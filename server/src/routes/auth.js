@@ -12,15 +12,17 @@ router.get(
   })
 );
 
-router.get(
-  "/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: `${CLIENT_URL}/login?error=not_allowed`,
-  }),
-  (req, res) => {
-    res.redirect(CLIENT_URL);
-  }
-);
+router.get("/google/callback", (req, res, next) => {
+  passport.authenticate("google", (err, user, info) => {
+    if (err) return next(err);
+    if (!user) {
+      const q = new URLSearchParams({ error: "not_allowed" });
+      if (info?.email) q.set("email", info.email);
+      return res.redirect(`${CLIENT_URL}/login?${q}`);
+    }
+    req.logIn(user, (loginErr) => (loginErr ? next(loginErr) : res.redirect(CLIENT_URL)));
+  })(req, res, next);
+});
 
 // Local development only: signs in as any active member without Google, so the
 // app can be run against a local database with no OAuth client. It needs BOTH
@@ -33,7 +35,7 @@ if (process.env.NODE_ENV === "development" && process.env.DEV_LOGIN === "1") {
     try {
       const email = String(req.query.email || "").toLowerCase();
       const member = await Member.findOne({ collegeEmail: email, active: true });
-      if (!member) return res.redirect(`${CLIENT_URL}/login?error=not_allowed`);
+      if (!member) return res.redirect(`${CLIENT_URL}/login?${new URLSearchParams({ error: "not_allowed", email })}`);
       req.login({ email: member.collegeEmail, name: member.name, role: member.role }, (err) => {
         if (err) return next(err);
         require("../lib/recordLogin").recordLogin(member.collegeEmail);
