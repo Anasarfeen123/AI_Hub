@@ -339,8 +339,10 @@ router.post("/admin/reminders/send", ensureAdmin, async (req, res, next) => {
 // shared secret. Without CRON_SECRET set, the endpoint doesn't exist at all.
 router.post("/cron/:job(weekly)", async (req, res, next) => {
   try {
-    const secret = process.env.CRON_SECRET || "";
-    const given = String(req.get("authorization") || "").replace(/^Bearer\s+/i, "");
+    // Trimmed on both sides: a stray space or newline from pasting the value
+    // into Render or GitHub shouldn't make the two silently disagree.
+    const secret = (process.env.CRON_SECRET || "").trim();
+    const given = String(req.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
     const ok =
       secret.length >= 16 &&
       given.length === secret.length &&
