@@ -1,126 +1,281 @@
-<img src="client/src/assets/mic-logo.png" alt="MIC logo" width="72" />
+<div align="center">
+
+<img src="client/src/assets/mic-logo.png" alt="MIC logo" width="84" />
 
 # AI/ML Resource Hub
 
-**Microsoft Innovations Club (MIC), VIT Chennai**
+**Microsoft Innovations Club (MIC) · VIT Chennai**
 
-A members-only knowledge base for MIC's AI/ML learning track — a single place to learn Artificial Intelligence from beginner foundations through to advanced research, with curated, vetted resources instead of scattered links.
+One maintained path to learn AI, from your first line of Python to reading and writing research papers.<br />
+Members-only, edited wiki-style by the whole club.
 
-Members sign in with Google, read and edit every page wiki-style, and track their own progress through the roadmap. Leads can review every change and restore earlier versions.
+[**Open the hub →**](https://mic-ai-ml-resource-hub-g66e.onrender.com)
 
-What members get:
+<img src="docs/screenshots/landing.png" alt="The AI/ML Resource Hub landing page" width="860" />
 
-- **Search** — press `/` or `Ctrl K` anywhere to search every page's title and text.
-- **Saved pages** — bookmark any page; saved pages show on the home page and at `/saved`.
-- **Discussion** — a comment thread with replies under every page. Authors can edit or delete their own comments; admins and leads can remove any.
-- **Safe editing** — split write/preview view, `Ctrl S` to save, a warning before leaving with unsaved changes, and a refusal (instead of a silent overwrite) when someone else saved the page while you were editing.
+</div>
 
-**Live site:** https://mic-ai-ml-resource-hub.onrender.com
+---
 
-## Stack
+## Contents
 
-| Part | What it is |
+- [What it does](#what-it-does)
+- [Roles and permissions](#roles-and-permissions)
+- [How it's built](#how-its-built)
+- [Running it locally](#running-it-locally)
+- [Managing members](#managing-members)
+- [Deploying](#deploying)
+- [Security notes](#security-notes)
+- [Contributing](#contributing)
+
+## What it does
+
+### For every member
+
+| | |
 |---|---|
-| `client/` | React (Vite) — the whole front end |
-| `server/` | Express + Passport (Google OAuth) + Mongoose |
-| MongoDB Atlas | Members, page content, and revision history |
+| **A learning roadmap** | Three stages and their topics in order. Tick topics off as you go; the home page shows your progress and what's **up next**. |
+| **Search** | Press <kbd>/</kbd> or <kbd>Ctrl</kbd> <kbd>K</kbd> anywhere to search every page's title and text. |
+| **Wiki editing** | Any member can edit any page. Split write/preview view, <kbd>Ctrl</kbd> <kbd>S</kbd> to save, a warning before leaving unsaved work, and a refusal (not a silent overwrite) if someone else saved the page while you were editing. |
+| **Discussion** | A comment thread with replies under every page. Comments support a safe subset of Markdown. |
+| **Saved pages** | Bookmark pages to come back to; they show on your home page and at `/saved`. |
+| **Contributors board** | Ranks members by words written, not by how often they hit save. |
+| **Light and dark themes** | Follows your system by default; the toggle in the header overrides it. |
 
-In production the Express server also serves the built React app, so the API and the site share one origin — which keeps the session cookie first-party.
+<table>
+  <tr>
+    <td><img src="docs/screenshots/home.png" alt="Home page with progress and up-next topic" /></td>
+    <td><img src="docs/screenshots/page.png" alt="A topic page with contents sidebar" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Home: progress, what's next, saved pages</sub></td>
+    <td align="center"><sub>A topic page with its "On this page" contents</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/search.png" alt="Search palette with highlighted results" /></td>
+    <td align="center"><img src="docs/screenshots/mobile.png" alt="Landing page on a phone" width="220" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Search across every page</sub></td>
+    <td align="center"><sub>Works on phones too</sub></td>
+  </tr>
+</table>
 
-## How access works
+### For admins and leads
 
-There is no public sign-up. A Google account can sign in **only if its email is on the member list** in MongoDB. That list is the sole access check, so a personal address works fine if a lead adds it.
+Everything lives under the account menu → **Admin**.
 
-The allowlist is re-checked on *every request*, not just at login — so adding or revoking someone takes effect on their next page load, with no redeploy.
+<p align="center"><img src="docs/screenshots/admin.png" alt="The admin Overview screen" width="860" /></p>
 
-## Running locally
+| Screen | What it's for |
+|---|---|
+| **Overview** `/admin/overview` | Members, weekly activity, edits and comments at a glance. Lists who **hasn't signed in yet**, with one click to copy their emails for a reminder. Shows the most-discussed and most-saved pages, and the **admin activity log**. |
+| **Announcements** (on Overview) | Post a notice that appears at the top of every member's home page, with an optional link and an expiry. Members can dismiss it; a new one always shows. |
+| **Recent changes** `/admin` | Every edit across the hub, with diffs and one-click restore. |
+| **Pages** `/admin/pages` | Create, reorder, hide or delete pages and place them on the roadmap. Deleting a page that others link to asks first and names the links that would break. |
+| **Members** `/admin/members` | Add members one at a time or in bulk, filter by *not signed in* / *active this week* / *deactivated*, see when each person was last active, change roles, deactivate, and export the list as CSV. |
+| **Comments** `/admin/comments` | The latest comments from every page in one feed, with delete. |
 
-Requires Node 18+ and a MongoDB connection string.
+Every administrative action (role changes, deactivations, removals, page deletions, restores, comment removals, announcements, exports) is written to an **audit log** shown on the Overview, so leads can always see who did what.
+
+## Roles and permissions
+
+Three ranks. Every check compares ranks, so the rule is always *you can act on someone you outrank*.
+
+| | Member | Admin | Lead |
+|---|:---:|:---:|:---:|
+| Read, search, comment, save pages | ✅ | ✅ | ✅ |
+| **Edit any page** (publishes immediately) | ✅ | ✅ | ✅ |
+| See history and the contributors board | ✅ | ✅ | ✅ |
+| Restore an earlier version of a page | — | ✅ | ✅ |
+| Create, reorder, hide, delete pages | — | ✅ | ✅ |
+| Add and deactivate members, export the list | — | ✅ | ✅ |
+| Post announcements, moderate comments, see the audit log | — | ✅ | ✅ |
+| Promote or demote an **admin** | — | — | ✅ |
+| Appoint or remove a **lead** | — | — | ✅ |
+| **Permanently remove** a member | — | — | ✅ |
+
+`admin` is meant for sub-leads and volunteers; `superadmin` (shown as **Lead** in the app) is for the board.
+
+- **Admins can't manage each other or create admins.** Equal ranks don't outrank, so delegating access can never lock the board out.
+- **Leads can manage each other**, so a board handover happens entirely in the app.
+- **Two guards prevent lock-out:** nobody can demote, deactivate or remove themselves, and the last active lead can't be removed.
+
+### How access works
+
+There's no public sign-up. A Google account can sign in **only if its email is on the member list**, and that list is the only access check, so a personal Gmail works if a lead adds it.
+
+The list is re-checked on **every request**, not just at sign-in. Adding, deactivating or removing someone takes effect on their next page load, with no redeploy.
+
+## How it's built
+
+| Part | Tech |
+|---|---|
+| `client/` | React 19 + Vite, React Router, react-markdown. No UI framework; one token-based stylesheet set with light and dark themes. |
+| `server/` | Express, Passport (Google OAuth 2.0), Mongoose, Helmet, express-rate-limit. |
+| Database | MongoDB Atlas: members, pages, revisions, comments, bookmarks, announcements, audit log. |
+
+In production the Express server also serves the built React app, so the site and the API share one origin and the session cookie stays first-party.
+
+<details>
+<summary><strong>Design notes</strong></summary>
+
+- **Structure is data, not code.** The nav and roadmap are derived from the pages themselves: a page's `section` and `order` place it in the nav, and an optional `roadmapStage` puts it on the roadmap. There's no separate nav table to fall out of sync.
+- **Contributions are measured, not counted.** Each save is diffed against the previous version (line-level LCS) and the word and line counts are stored on the revision, so the leaderboard is a cheap aggregation. The original Markdown import, blank-line reformatting and restores don't count. Restoring someone's words credits them once, not again.
+- **Bylines follow people.** "Last edited by" looks the editor up live, so it shows their current name and falls back to their email if they've left.
+- **Progress is per-browser.** Roadmap ticks live in `localStorage` and sync live across tabs; nothing about a member's learning pace is stored on the server.
+- **Small bundles.** Each screen is its own chunk, so a member reading a page never downloads the admin tools.
+
+</details>
+
+<details>
+<summary><strong>Project layout</strong></summary>
+
+```
+client/
+  src/pages/        one file per screen (Home, ContentPage, EditPage, OverviewPage, …)
+  src/components/   header, search palette, comments, roadmap, admin frame, …
+  src/hooks/        shared roadmap progress, document titles
+  src/styles/       theme tokens + per-area stylesheets
+  src/content/      the original Markdown, used only to seed a new database
+server/
+  src/routes/       auth, pages, members, structure, stats, library (search + bookmarks), comments, admin
+  src/models/       Member, Page, Revision, Comment, Bookmark, Announcement, AuditLog, RoadmapStage
+  scripts/          seeding and member-management tools (see below)
+docs/screenshots/   images used in this README
+```
+
+</details>
+
+## Running it locally
+
+Needs **Node 18+** and a MongoDB database.
 
 ```bash
-# 1. Configure
-cp server/.env.example server/.env     # fill in Mongo + Google OAuth credentials
-cp client/.env.example client/.env
-
-# 2. Install
+# 1. Install
 npm install --prefix server
 npm install --prefix client
 
-# 3. Seed content and members (first run only)
-cd server
-node scripts/seedPages.js              # loads client/src/content/*.md into MongoDB
-npm run import-members -- members.csv  # your own CSV of name,email
-node scripts/setRole.js you@example.com admin
+# 2. Configure
+cp server/.env.example server/.env
+cp client/.env.example client/.env
 ```
 
-### Without Google credentials or Atlas
+### Option A: no Google or Atlas account needed
 
-To try the app with no Google OAuth client and no Atlas cluster, run MongoDB locally and turn on the dev-only login:
+Run MongoDB in a container and use the built-in development sign-in:
 
 ```bash
-podman run -d --name aihub-mongo -p 27017:27017 docker.io/library/mongo:7   # or docker
+docker run -d --name aihub-mongo -p 27017:27017 mongo:7      # or: podman run …
 ```
 
-In `server/.env` set `MONGODB_URI=mongodb://127.0.0.1:27017/ai-hub`, any placeholder for the two `GOOGLE_*` values, and:
+In `server/.env`:
 
 ```bash
+MONGODB_URI=mongodb://127.0.0.1:27017/ai-hub
+GOOGLE_CLIENT_ID=placeholder
+GOOGLE_CLIENT_SECRET=placeholder
 NODE_ENV=development
 DEV_LOGIN=1
 ```
 
-Seed as above, then sign in by visiting `http://localhost:4000/auth/dev-login?email=you@example.com` (any active member's email). The route only exists when **both** `NODE_ENV=development` and `DEV_LOGIN=1` are set, so it can't appear in production.
+`DEV_LOGIN` adds `/auth/dev-login?email=…`, which signs you in as any active member without Google. It only exists when **both** `NODE_ENV=development` and `DEV_LOGIN=1` are set, so it can't appear in production.
 
-Then run both halves, in separate terminals:
+### Option B: real Google sign-in
+
+Fill `server/.env` with an Atlas connection string and a Google OAuth client, and add `http://localhost:4000/auth/google/callback` to the client's authorised redirect URIs.
+
+> ⚠️ `server/.env` points at whatever database you give it. If that's the production cluster, local testing writes to live data.
+
+### Seed and start
+
+```bash
+cd server
+node scripts/seedPages.js                              # the pages, from client/src/content
+node scripts/seedStructure.js                          # nav order + roadmap stages
+printf 'name,email\nYour Name,you@example.com\n' > members.csv
+npm run import-members -- members.csv
+node scripts/setRole.js you@example.com superadmin     # the first lead
+```
+
+The first lead has to be made from the terminal, because changing a lead is itself lead-only. Then run each half in its own terminal:
 
 ```bash
 cd server && npm run dev     # API on :4000
 cd client && npm run dev     # app on :5173
 ```
 
-Open http://localhost:5173.
+Open http://localhost:5173 (with Option A, visit `http://localhost:4000/auth/dev-login?email=you@example.com` first).
 
-## Content
+## Managing members
 
-Page content lives in **MongoDB**, not in this repo — members edit it in the browser and every save is versioned.
-
-The Markdown in `client/src/content/` is the **initial seed** used by `scripts/seedPages.js`. Editing those files does not change the live site; `seedPages.js` skips pages that already exist so a redeploy never overwrites members' work. Pass `--force` only if you deliberately want to reset pages back to the repo copies.
-
-## Administration
-
-Admins get a **Changes** link in the header:
-
-- **`/admin`** — every edit across the hub, with diffs and one-click restore
-- **`/admin/members`** — add members individually or in bulk, promote admins, deactivate accounts
-
-Equivalent command-line tools remain as a fallback:
+The **Members** screen covers day-to-day work. These scripts are for bootstrapping and bulk changes, and run against whatever `MONGODB_URI` points at:
 
 ```bash
-node scripts/setRole.js <email> admin   # promote
-node scripts/setRole.js --list          # list admins
-npm run import-members -- members.csv   # bulk import
+cd server
+
+node scripts/setRole.js                                  # list everyone above "member"
+node scripts/setRole.js <email> <member|admin|superadmin>
+
+npm run import-members -- members.csv                    # add/update from a CSV (name,email)
+node scripts/resetMembers.js members.csv                 # preview: replace everyone except leads
+node scripts/resetMembers.js members.csv --write         # …and apply it
+
+node scripts/backfillStats.js --write                    # recompute contribution stats
+node scripts/excludeFromStats.js <email> --write         # keep test edits off the board
+node scripts/excludeFromStats.js <email> --undo --write  # put them back
 ```
 
-## Deployment
+Scripts that change data preview first and only apply with `--write`. `resetMembers.js` never touches leads, so it can't lock you out. **`members.csv` is git-ignored**: a roster is personal data and this repo is public.
 
-Hosted on Render, deploying automatically on every push to `main`.
+## Deploying
 
-- **Build:** `npm install --prefix client --include=dev && npm run build --prefix client && npm install --prefix server`
-- **Start:** `node server/src/index.js`
+The live hub runs on **Render** as a Web Service connected to this repo, and redeploys on every push to `main`.
 
-`--include=dev` is required because `NODE_ENV=production` otherwise makes npm skip the dev dependencies that Vite needs to build.
+| Setting | Value |
+|---|---|
+| Build command | `npm install --prefix client --include=dev && npm run build --prefix client && npm install --prefix server` |
+| Start command | `node server/src/index.js` |
+| Health check path | `/api/health` |
 
-The server sends security headers (Helmet, including a Content-Security-Policy), gzips responses, caches the fingerprinted `/assets` files for a year, and rate-limits the API per member. Don't set `VITE_API_URL` on Render: the client must call its own origin, and the CSP blocks requests to any other.
+`--include=dev` is needed because `NODE_ENV=production` would otherwise skip the dev dependencies Vite builds with.
 
-Environment variables: `MONGODB_URI`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `SESSION_SECRET`, `SERVER_URL`, `CLIENT_URL`, `NODE_ENV`. Set `SERVER_URL` and `CLIENT_URL` to the same deployed URL, and register `<that URL>/auth/google/callback` as an authorised redirect URI in Google Cloud Console.
+| Environment variable | Value |
+|---|---|
+| `NODE_ENV` | `production` |
+| `MONGODB_URI` | Atlas connection string, with the database name: `…mongodb.net/ai-hub?…` |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | From Google Cloud Console → Credentials |
+| `SESSION_SECRET` | A long random string: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+| `SERVER_URL` and `CLIENT_URL` | Both the site's own URL, no trailing slash |
 
-Adding members is a database change, not a code change — it needs no deploy.
+Don't set `DEV_LOGIN` or `VITE_API_URL` in production.
+
+Two things outside Render have to be set up too:
+
+1. **Atlas → Network Access:** allow `0.0.0.0/0`. Render has no fixed outbound IP, and without this the server can't reach the database and exits on start.
+2. **Google Cloud → Credentials → your OAuth client:** add `<site URL>/auth/google/callback` under *Authorized redirect URIs*.
+
+Adding or removing members is a database change, not a code change, so it never needs a deploy.
+
+## Security notes
+
+- **Headers:** Helmet sets a strict Content-Security-Policy (scripts only from the site itself), HSTS, and frame protection.
+- **Rate limits** are per member, not per IP, because a whole campus can share one address. Writes have a tighter budget than reads.
+- **Input checks:** page slugs are validated as plain strings everywhere, so query-string objects can't become database operators. Announcement links must be `https://` or in-app. The CSV export neutralises spreadsheet formulas.
+- **`SESSION_SECRET` is a password.** Anyone with it can forge a signed-in session. Never commit or screenshot it, and rotate it if it leaks (that signs everyone out once). The same goes for the Atlas password and the Google client secret.
+- **Never commit `.env` or `members.csv`.** Both are git-ignored.
 
 ## Contributing
 
-Every member can edit any page directly from the site: open a page and hit **Edit**. Changes go live immediately and are recorded in the history, so a lead can restore an earlier version if something goes wrong.
+**Content:** open any page on the site and hit **Edit**. Changes go live immediately and every save is versioned, so a lead can restore an earlier version if needed. Found a problem you'd rather not fix yourself? Open a [content issue](../../issues/new?template=content-issue.md) or [suggest a resource](../../issues/new?template=resource-suggestion.md).
 
-Code changes go through pull requests as usual.
+**Code:** open a pull request. Before you do:
+
+```bash
+npm run lint --prefix client     # oxlint, should report nothing
+npm run build --prefix client    # must build cleanly
+```
 
 ## License
 
-Content is shared for educational use by the MIC VIT Chennai community. Add a license file here if a specific one is required (e.g. CC-BY-4.0 for content, MIT for any code).
+Content is shared for educational use by the MIC VIT Chennai community. No open-source license has been chosen for the code yet; add a `LICENSE` file (for example MIT for code, CC BY 4.0 for content) if the club decides on one.
