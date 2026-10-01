@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="client/src/assets/hub-mark.png" alt="AIML Resource Hub logo" width="120" />
+<img src="docs/banner.jpg" alt="AIML Resource Hub" width="100%" />
 
 # AIML Resource Hub
 
@@ -11,7 +11,7 @@ Members-only, edited wiki-style by the whole club.
 
 [**Open the hub →**](https://mic-aiml-resource-hub.onrender.com)
 
-<img src="docs/screenshots/landing.png" alt="The AI/ML Resource Hub landing page" width="860" />
+<img src="docs/screenshots/landing.png" alt="The AIML Resource Hub landing page" width="860" />
 
 </div>
 

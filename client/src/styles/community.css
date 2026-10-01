@@ -1877,3 +1877,81 @@
     margin-right: 0.25rem;
   }
 }
+
+/* --- Landing decoration (the banner's design language) --------------------------- */
+.lp-decor {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.lpd-slab {
+  opacity: 0.9;
+}
+
+.lpd-line--blue,
+.lpd-outline {
+  stroke: #3b82f6;
+}
+
+.lpd-line--orange {
+  stroke: #ff8a3d;
+}
+
+.lpd-line--teal {
+  stroke: #18b6c8;
+}
+
+.lpd-lines,
+.lpd-outline {
+  opacity: 0.55;
+}
+
+.lpd-node--blue {
+  fill: #6aa8ff;
+}
+
+.lpd-node--orange {
+  fill: #ff8a3d;
+}
+
+.lpd-dots {
+  fill: var(--fg-lighter);
+  opacity: 0.35;
+}
+
+/* Dark theme: the same shapes as quiet colour at the edges, not glare. */
+:root[data-theme="dark"] .lpd-slab {
+  opacity: 0.22;
+}
+
+:root[data-theme="dark"] .lpd-lines,
+:root[data-theme="dark"] .lpd-outline {
+  opacity: 0.4;
+}
+
+:root[data-theme="dark"] .lpd-node {
+  opacity: 0.7;
+}
+
+/* Below desktop the hero stacks and fills the width, so only the corner slab
+   stays — anything else would sit behind text. */
+@media (max-width: 960px) {
+  .lpd-slab--orange,
+  .lpd-slab--teal,
+  .lpd-lines,
+  .lpd-node,
+  .lpd-outline,
+  .lpd-dots {
+    display: none;
+  }
+
+  .lpd-slab--blue {
+    opacity: 0.5;
+  }
+
+  :root[data-theme="dark"] .lpd-slab--blue {
+    opacity: 0.18;
+  }
+}

@@ -6,6 +6,7 @@ import ThemeToggle from "../components/ThemeToggle";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import hubMark from "../assets/hub-mark.png";
 import Wordmark from "../components/Wordmark";
+import LandingDecor from "../components/LandingDecor";
 
 // The learning path is the product, so the landing page shows the actual
 // sequence rather than describing it in prose.
@@ -251,10 +252,7 @@ export default function Login() {
   return (
     <div className="lp">
       <div className="lp-backdrop" aria-hidden="true">
-        <span className="lp-glow lp-glow--a" />
-        <span className="lp-glow lp-glow--b" />
-        <span className="lp-glow lp-glow--c" />
-        <span className="lp-grid" />
+        <LandingDecor />
       </div>
 
       <header className="lp-topbar">
