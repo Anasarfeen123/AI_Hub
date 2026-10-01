@@ -20,6 +20,7 @@ const structureRoutes = require("./routes/structure");
 const statsRoutes = require("./routes/stats");
 const libraryRoutes = require("./routes/library");
 const commentRoutes = require("./routes/comments");
+const adminRoutes = require("./routes/admin");
 const { ensureMember } = require("./middleware/ensureMember");
 
 const PORT = process.env.PORT || 4000;
@@ -83,9 +84,13 @@ async function main() {
   // Limits are per member, not per IP: a whole campus can sit behind one
   // address, and one person's burst shouldn't lock out their classmates.
   const keyGenerator = (req) => req.user?.email || ipKeyGenerator(req.ip);
+  // Off locally, where test runs and hot reloads would trip them constantly.
+  const skipInDev = () => process.env.NODE_ENV === "development";
+  // Only the sign-in steps themselves. /auth/me runs on every page load, and
+  // limiting it would make an active member look signed out.
   app.use(
-    "/auth",
-    rateLimit({ windowMs: 15 * 60 * 1000, limit: 100, keyGenerator, standardHeaders: "draft-8", legacyHeaders: false })
+    ["/auth/google", "/auth/dev-login"],
+    rateLimit({ windowMs: 15 * 60 * 1000, limit: 60, keyGenerator, skip: skipInDev, standardHeaders: "draft-8", legacyHeaders: false })
   );
   app.use(
     "/api",
@@ -93,6 +98,7 @@ async function main() {
       windowMs: 60 * 1000,
       limit: 300,
       keyGenerator,
+      skip: skipInDev,
       standardHeaders: "draft-8",
       legacyHeaders: false,
       message: { error: "Too many requests — wait a minute and try again." },
@@ -106,7 +112,7 @@ async function main() {
       windowMs: 10 * 60 * 1000,
       limit: 120,
       keyGenerator,
-      skip: (req) => req.method === "GET",
+      skip: (req) => req.method === "GET" || skipInDev(),
       standardHeaders: "draft-8",
       legacyHeaders: false,
       message: { error: "You're saving very quickly — wait a few minutes and try again." },
@@ -144,6 +150,7 @@ async function main() {
   app.use("/api", statsRoutes);
   app.use("/api", libraryRoutes);
   app.use("/api", commentRoutes);
+  app.use("/api", adminRoutes);
 
   // An unmatched /api/* must not fall through to the SPA fallback below —
   // fetch() would then parse index.html as JSON and fail with a syntax error

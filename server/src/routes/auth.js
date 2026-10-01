@@ -36,6 +36,7 @@ if (process.env.NODE_ENV === "development" && process.env.DEV_LOGIN === "1") {
       if (!member) return res.redirect(`${CLIENT_URL}/login?error=not_allowed`);
       req.login({ email: member.collegeEmail, name: member.name, role: member.role }, (err) => {
         if (err) return next(err);
+        require("../lib/recordLogin").recordLogin(member.collegeEmail);
         res.redirect(CLIENT_URL);
       });
     } catch (err) {

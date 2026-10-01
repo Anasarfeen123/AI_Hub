@@ -6,6 +6,7 @@ const Member = require("../models/Member");
 const { rankOf } = require("../models/Member");
 const { ensureMember } = require("../middleware/ensureMember");
 const { isSlug } = require("../lib/validate");
+const { audit } = require("../lib/audit");
 
 const router = express.Router();
 router.use(ensureMember);
@@ -128,9 +129,15 @@ router.delete("/comments/:id", async (req, res, next) => {
       return res.status(403).json({ error: "You can only delete your own comments." });
     }
 
+    const original = comment.body;
     comment.deleted = true;
     comment.body = "[deleted]";
     await comment.save();
+    // A member deleting their own comment is routine; a moderator removing
+    // someone else's is worth a record.
+    if (!isAuthor) {
+      await audit(req, "Removed a comment", `by ${comment.authorName || comment.authorEmail} on /${comment.slug}`, original.slice(0, 200));
+    }
     res.json({ ok: true });
   } catch (err) {
     next(err);

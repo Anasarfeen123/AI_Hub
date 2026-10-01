@@ -30,6 +30,11 @@ const memberSchema = new mongoose.Schema(
     role: { type: String, enum: ROLES, default: "member" },
     // Optional, purely informational — which vertical the member belongs to.
     department: { type: String, default: "", trim: true },
+    // When the member last used the hub — refreshed on sign-in and, at most
+    // hourly, on ordinary requests (sessions last 14 days, so sign-ins alone
+    // would undercount). Lets leads see who to nudge.
+    lastActiveAt: { type: Date, default: null },
+    loginCount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

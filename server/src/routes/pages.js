@@ -5,6 +5,7 @@ const Member = require("../models/Member");
 const Bookmark = require("../models/Bookmark");
 const Comment = require("../models/Comment");
 const { isSlug } = require("../lib/validate");
+const { audit } = require("../lib/audit");
 const { computeStats } = require("../lib/diffStats");
 const { ensureMember, ensureAdmin } = require("../middleware/ensureMember");
 
@@ -197,6 +198,7 @@ router.post("/revisions/:id/revert", ensureAdmin, async (req, res, next) => {
       excludeFromStats: true,
     });
 
+    await audit(req, "Restored a version", page.title, `version from ${new Date(revision.createdAt).toISOString().slice(0, 10)}`);
     res.json({ ok: true });
   } catch (err) {
     next(err);

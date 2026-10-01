@@ -18,6 +18,8 @@
  * missing from a re-run of the CSV are left untouched (not auto-removed);
  * deactivate someone by editing their `active` field directly in the DB,
  * or pass --replace to deactivate every existing member not in this CSV.
+ * Leads are never deactivated by --replace, since they usually aren't in the
+ * roster and doing so would lock the hub's own admins out.
  */
 
 require("dotenv").config();
@@ -71,7 +73,7 @@ async function main() {
   if (replace) {
     const emails = members.map((m) => m.collegeEmail);
     const { modifiedCount } = await Member.updateMany(
-      { collegeEmail: { $nin: emails } },
+      { collegeEmail: { $nin: emails }, role: { $ne: "superadmin" } },
       { $set: { active: false } }
     );
     console.log(`Deactivated ${modifiedCount} member(s) not present in this CSV.`);

@@ -5,9 +5,25 @@ import TopNav from "../components/TopNav";
 import AdminNav from "../components/AdminNav";
 import RoleBadge from "../components/RoleBadge";
 import { useAuth } from "../context/AuthContext";
-import { fetchMembers, addMember, bulkAddMembers, updateMember } from "../api";
+import { fetchMembers, addMember, bulkAddMembers, updateMember, removeMember, membersExportUrl } from "../api";
+import { relativeTime } from "../lib/format";
 import { isStaff, outranks } from "../lib/roles";
 import useDocumentTitle from "../hooks/useDocumentTitle";
+
+const DAY = 24 * 60 * 60 * 1000;
+
+// Filter tabs. Each is a predicate, so the counts and the list always agree.
+const VIEWS = {
+  all: { label: "Everyone", test: () => true },
+  active: { label: "Active", test: (m) => m.active },
+  never: { label: "Not signed in", test: (m) => m.active && !m.lastActiveAt },
+  recent: {
+    label: "Active this week",
+    test: (m) => Boolean(m.lastActiveAt) && Date.now() - new Date(m.lastActiveAt).getTime() < 7 * DAY,
+  },
+  staff: { label: "Admins & leads", test: (m) => m.role === "admin" || m.role === "superadmin" },
+  inactive: { label: "Deactivated", test: (m) => !m.active },
+};
 
 export default function MembersPage() {
   useDocumentTitle("Members");
@@ -18,6 +34,7 @@ export default function MembersPage() {
   const [error, setError] = useState(null);
   const [notice, setNotice] = useState(null);
   const [query, setQuery] = useState("");
+  const [view, setView] = useState("all");
   const [busyId, setBusyId] = useState(null);
 
   const [name, setName] = useState("");
@@ -50,15 +67,16 @@ export default function MembersPage() {
 
   const filtered = useMemo(() => {
     if (!members) return [];
+    const byView = members.filter((m) => VIEWS[view].test(m));
     const q = query.trim().toLowerCase();
-    if (!q) return members;
-    return members.filter(
+    if (!q) return byView;
+    return byView.filter(
       (m) =>
         m.name.toLowerCase().includes(q) ||
         m.collegeEmail.toLowerCase().includes(q) ||
         (m.department || "").toLowerCase().includes(q)
     );
-  }, [members, query]);
+  }, [members, query, view]);
 
   const stats = useMemo(() => {
     if (!members) return null;
@@ -67,6 +85,7 @@ export default function MembersPage() {
       active: members.filter((m) => m.active).length,
       admins: members.filter((m) => m.role === "admin" && m.active).length,
       leads: members.filter((m) => m.role === "superadmin" && m.active).length,
+      never: members.filter((m) => m.active && !m.lastActiveAt).length,
     };
   }, [members]);
 
@@ -140,12 +159,33 @@ export default function MembersPage() {
     }
   }
 
+  async function remove(m) {
+    if (
+      !window.confirm(
+        `Remove ${m.name} (${m.collegeEmail}) from the member list for good?\n\nThey lose access immediately. Their past edits and comments stay. To pause access instead, use Deactivate.`
+      )
+    )
+      return;
+    setBusyId(m._id);
+    setError(null);
+    setNotice(null);
+    try {
+      await removeMember(m._id);
+      setNotice(`Removed ${m.collegeEmail}.`);
+      await load();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   // Mirrors the server's rule exactly, so the UI never offers a button the API
-  // will refuse. The server remains the real gate — this is only about not
-  // showing dead controls.
+  // will refuse: you may act on anyone you outrank, and leads may also act on
+  // each other. The server remains the real gate.
   function canManage(m) {
     if (m.collegeEmail === user.email) return false;
-    return outranks(viewerRole, m.role ?? "member");
+    return outranks(viewerRole, m.role ?? "member") || viewerRole === "superadmin";
   }
 
   return (
@@ -159,8 +199,8 @@ export default function MembersPage() {
         {stats && (
           <p className="editor-note">
             {stats.total} on the list · {stats.active} active · {stats.admins} admin
-            {stats.admins === 1 ? "" : "s"} · {stats.leads} lead{stats.leads === 1 ? "" : "s"}.
-            Anyone active here can sign in and edit pages.
+            {stats.admins === 1 ? "" : "s"} · {stats.leads} lead{stats.leads === 1 ? "" : "s"} ·{" "}
+            {stats.never} not signed in yet. Anyone active here can sign in and edit pages.
           </p>
         )}
 
@@ -205,6 +245,9 @@ export default function MembersPage() {
           <button type="button" className="editor-cancel" onClick={() => setBulkOpen((o) => !o)}>
             {bulkOpen ? "Close bulk add" : "Bulk add"}
           </button>
+          <a className="editor-cancel member-export" href={membersExportUrl()} download>
+            Export CSV
+          </a>
         </form>
 
         {bulkOpen && (
@@ -233,6 +276,24 @@ export default function MembersPage() {
           </form>
         )}
 
+        {stats && (
+          <div className="member-views" role="tablist" aria-label="Filter members">
+            {Object.entries(VIEWS).map(([key, v]) => (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={view === key}
+                className={view === key ? "active" : ""}
+                onClick={() => setView(key)}
+              >
+                {v.label}
+                <span>{members.filter(v.test).length}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
         <input
           className="member-search"
           type="search"
@@ -245,7 +306,11 @@ export default function MembersPage() {
 
         {members && (
           <div className="member-table">
-            {filtered.length === 0 && <p className="md-status">No members match “{query}”.</p>}
+            {filtered.length === 0 && (
+              <p className="md-status member-empty">
+                {query ? `No members match “${query}”.` : "Nobody in this view."}
+              </p>
+            )}
             {filtered.map((m) => {
               const isSelf = m.collegeEmail === user.email;
               const manageable = canManage(m);
@@ -262,6 +327,12 @@ export default function MembersPage() {
                     <span className="member-email">
                       {m.collegeEmail}
                       {m.department ? ` · ${m.department}` : ""}
+                    </span>
+                    <span
+                      className={`member-seen${m.lastActiveAt ? "" : " is-never"}`}
+                      title={m.lastActiveAt ? new Date(m.lastActiveAt).toLocaleString() : ""}
+                    >
+                      {m.lastActiveAt ? `Active ${relativeTime(m.lastActiveAt)}` : "Hasn't signed in yet"}
                     </span>
                   </div>
                   <div className="member-actions">
@@ -283,8 +354,10 @@ export default function MembersPage() {
                       </button>
                     )}
 
-                    {/* Only a lead can hand out or take back the lead role. */}
-                    {viewerRole === "superadmin" && !isSelf && (
+                    {/* Only a lead can hand out or take back the lead role, and
+                        it's offered on admins only: promotion goes member →
+                        admin → lead, which keeps the list readable. */}
+                    {viewerRole === "superadmin" && !isSelf && role !== "member" && (
                       <button
                         type="button"
                         className="editor-cancel"
@@ -312,6 +385,19 @@ export default function MembersPage() {
                     >
                       {m.active ? "Deactivate" : "Reactivate"}
                     </button>
+
+                    {/* Permanent removal is lead-only; deactivating is the everyday tool. */}
+                    {viewerRole === "superadmin" && !isSelf && (
+                      <button
+                        type="button"
+                        className="editor-cancel member-remove"
+                        disabled={busyId === m._id}
+                        onClick={() => remove(m)}
+                        title="Remove from the list for good"
+                      >
+                        Remove
+                      </button>
+                    )}
                   </div>
                 </div>
               );

@@ -3,6 +3,7 @@ const Page = require("../models/Page");
 const Revision = require("../models/Revision");
 const RoadmapStage = require("../models/RoadmapStage");
 const { ensureMember, ensureAdmin } = require("../middleware/ensureMember");
+const { audit } = require("../lib/audit");
 
 const router = express.Router();
 router.use(ensureMember);
@@ -194,6 +195,7 @@ router.post("/pages", ensureAdmin, async (req, res, next) => {
       note: "Page created",
     });
 
+    await audit(req, "Created page", page.title, `/${page.slug}`);
     res.status(201).json({ page });
   } catch (err) {
     next(err);
@@ -225,7 +227,11 @@ router.patch("/pages/:id", ensureAdmin, async (req, res, next) => {
     }
     if (typeof req.body.hidden === "boolean") page.hidden = req.body.hidden;
 
+    const hiddenChanged = page.isModified("hidden");
+    const renamed = page.isModified("title");
     await page.save();
+    if (hiddenChanged) await audit(req, page.hidden ? "Hid page" : "Unhid page", page.title);
+    if (renamed) await audit(req, "Renamed page", page.title, `/${page.slug}`);
     res.json({ page });
   } catch (err) {
     next(err);
@@ -262,6 +268,7 @@ router.delete("/pages/:id", ensureAdmin, async (req, res, next) => {
     }
 
     await page.deleteOne();
+    await audit(req, "Deleted page", page.title, `/${page.slug}`);
     // Revisions are deliberately kept, so a deleted page can still be recovered
     // from its history if it turns out to have been a mistake.
     res.json({ ok: true });

@@ -182,3 +182,37 @@ export async function editComment(id, body) {
 export function deleteComment(id) {
   return request(`/api/comments/${id}`, { method: "DELETE" });
 }
+
+// --- Admin tools ------------------------------------------------------------
+
+export async function fetchAnnouncement() {
+  const data = await request("/api/announcement");
+  return data.announcement;
+}
+
+export function postAnnouncement(fields) {
+  return request("/api/announcements", { method: "POST", body: JSON.stringify(fields) });
+}
+
+export function clearAnnouncement() {
+  return request("/api/announcements/current", { method: "DELETE" });
+}
+
+export function fetchOverview() {
+  return request("/api/admin/overview");
+}
+
+export function fetchAudit(before) {
+  return request(`/api/admin/audit${before ? `?before=${encodeURIComponent(before)}` : ""}`);
+}
+
+export async function fetchAllComments() {
+  const data = await request("/api/admin/comments");
+  return data.comments;
+}
+
+export function removeMember(id) {
+  return request(`/api/members/${id}`, { method: "DELETE" });
+}
+
+export const membersExportUrl = () => `${API_URL}/api/members/export.csv`;

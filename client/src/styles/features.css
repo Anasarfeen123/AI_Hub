@@ -1622,3 +1622,456 @@ kbd {
 .empty-state-actions .btn {
   text-decoration: none !important;
 }
+
+/* --- Admin: shared ------------------------------------------------------------ */
+.editor-wrap--wide {
+  max-width: 72rem;
+}
+
+.admin-nav {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.admin-nav a {
+  white-space: nowrap;
+}
+
+/* --- Announcements ---------------------------------------------------------- */
+.announce {
+  --tone: var(--link);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 0.9rem 0.75rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--tone) 40%, transparent);
+  border-left: 3px solid var(--tone);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--tone) 8%, var(--surface));
+  color: var(--fg);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.announce--success {
+  --tone: var(--level-beginner);
+}
+
+.announce--warning {
+  --tone: var(--mic-orange);
+}
+
+.announce-icon {
+  flex: none;
+  font-size: 1.1rem;
+}
+
+.announce-text {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.announce-link {
+  margin-left: 0.6rem;
+  font-weight: 650;
+  white-space: nowrap;
+  color: var(--accent-text);
+  text-decoration: none;
+}
+
+.announce-close {
+  flex: none;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--fg-lighter);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.announce-close:hover {
+  background: var(--tint-2);
+  color: var(--fg);
+}
+
+/* --- Admin: overview ---------------------------------------------------------- */
+.ov-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 0.5rem 0 1.25rem;
+}
+
+.ov-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.ov-tile-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-lighter);
+}
+
+.ov-tile-value {
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+
+.ov-tile-sub {
+  font-size: 0.78rem;
+  color: var(--fg-light);
+}
+
+.ov-card {
+  margin-bottom: 1rem;
+  padding: 1.2rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.ov-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.ov-card-head h2 {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.ov-card-hint {
+  font-size: 0.78rem;
+  color: var(--fg-lighter);
+}
+
+.ov-card-hint--block {
+  display: block;
+  margin: -0.4rem 0 0.75rem;
+}
+
+.ov-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.ov-grid > .ov-card,
+.ov-stack > .ov-card:last-child {
+  margin-bottom: 0;
+}
+
+.ov-grid {
+  margin-bottom: 1rem;
+}
+
+.ov-current {
+  margin-bottom: 0.9rem;
+}
+
+.ov-announce-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ov-announce-form textarea,
+.ov-announce-form input,
+.ov-announce-form select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.88rem;
+}
+
+.ov-announce-form textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.ov-announce-form textarea:focus,
+.ov-announce-form input:focus,
+.ov-announce-form select:focus {
+  outline: none;
+  border-color: var(--mic-orange);
+}
+
+.ov-announce-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ov-announce-row input {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.ov-count {
+  font-size: 0.74rem;
+  color: var(--fg-lighter);
+}
+
+.ov-people,
+.ov-pages,
+.ov-audit {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ov-people li,
+.ov-pages li,
+.ov-audit li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.86rem;
+}
+
+.ov-people li:first-child,
+.ov-pages li:first-child,
+.ov-audit li:first-child {
+  border-top: 0;
+}
+
+.ov-people strong,
+.ov-pages a {
+  color: var(--fg);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ov-pages a:hover {
+  color: var(--accent-text);
+}
+
+.ov-people span,
+.ov-pages span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  color: var(--fg-lighter);
+}
+
+.ov-pages span {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.ov-audit-what {
+  min-width: 0;
+  color: var(--fg-light);
+  line-height: 1.45;
+}
+
+.ov-audit-what strong {
+  color: var(--fg);
+}
+
+.ov-audit-target {
+  color: var(--fg);
+}
+
+.ov-audit-details {
+  color: var(--fg-lighter);
+  overflow-wrap: anywhere;
+}
+
+.ov-audit time {
+  flex: none;
+  font-size: 0.76rem;
+  color: var(--fg-lighter);
+  white-space: nowrap;
+}
+
+.ov-more {
+  margin-top: 0.6rem;
+}
+
+/* --- Admin: comment moderation ------------------------------------------------ */
+.mod-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.mod-list:empty {
+  display: none;
+}
+
+.mod-item {
+  position: relative;
+  padding: 0.9rem 6.5rem 0.9rem 1rem;
+  background: var(--surface);
+}
+
+.mod-item + .mod-item {
+  border-top: 1px solid var(--border);
+}
+
+.mod-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--fg-lighter);
+}
+
+.mod-meta strong {
+  color: var(--fg);
+  font-size: 0.86rem;
+}
+
+.mod-meta a {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.mod-body {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--fg);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.mod-delete {
+  position: absolute;
+  top: 0.85rem;
+  right: 1rem;
+}
+
+.mod-delete:hover:not(:disabled) {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* --- Admin: members ---------------------------------------------------------- */
+.member-export {
+  text-decoration: none !important;
+}
+
+.member-views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1rem 0 0.75rem;
+}
+
+.member-views button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 2rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--fg-light);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.member-views button span {
+  padding: 0 0.4rem;
+  border-radius: var(--radius-full);
+  background: var(--tint-2);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.member-views button:hover {
+  color: var(--fg);
+  border-color: var(--border-strong);
+}
+
+.member-views button.active {
+  border-color: var(--mic-orange);
+  background: rgba(242, 113, 28, 0.1);
+  color: var(--accent-text);
+}
+
+.member-seen {
+  font-size: 0.74rem;
+  color: var(--fg-lighter);
+}
+
+.member-seen.is-never {
+  color: var(--accent-text);
+}
+
+.member-remove:hover:not(:disabled) {
+  border-color: var(--danger) !important;
+  color: var(--danger) !important;
+}
+
+.member-empty {
+  padding: 1rem;
+}
+
+@media (max-width: 720px) {
+  .ov-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ov-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ov-tile-value {
+    font-size: 1.5rem;
+  }
+
+  .mod-item {
+    padding-right: 1rem;
+  }
+
+  .mod-delete {
+    position: static;
+    margin-top: 0.6rem;
+  }
+
+  .ov-audit li {
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+}

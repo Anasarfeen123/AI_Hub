@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import TopNav from "../components/TopNav";
 import Roadmap from "../components/Roadmap";
+import AnnouncementBanner from "../components/AnnouncementBanner";
 import { useAuth } from "../context/AuthContext";
 import { fetchBookmarks } from "../api";
 import { useRoadmapProgress, useRoadmapStages, toRoute } from "../hooks/useRoadmap";
@@ -162,6 +163,7 @@ export default function Home() {
       <TopNav />
       <main id="main">
         <div className="hub-section home-top">
+          <AnnouncementBanner />
           <Welcome />
         </div>
 

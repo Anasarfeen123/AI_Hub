@@ -89,6 +89,9 @@ export default function UserMenu() {
           {staff && (
             <div className="usermenu-group">
               <p className="usermenu-label">Admin</p>
+              <Link role="menuitem" to="/admin/overview">
+                Overview
+              </Link>
               <Link role="menuitem" to="/admin">
                 Recent changes
               </Link>
@@ -97,6 +100,9 @@ export default function UserMenu() {
               </Link>
               <Link role="menuitem" to="/admin/members">
                 Members
+              </Link>
+              <Link role="menuitem" to="/admin/comments">
+                Comments
               </Link>
             </div>
           )}

@@ -16,6 +16,8 @@ const MembersPage = lazy(() => import("./pages/MembersPage"));
 const PagesAdmin = lazy(() => import("./pages/PagesAdmin"));
 const LeaderboardPage = lazy(() => import("./pages/LeaderboardPage"));
 const SavedPage = lazy(() => import("./pages/SavedPage"));
+const OverviewPage = lazy(() => import("./pages/OverviewPage"));
+const CommentsAdminPage = lazy(() => import("./pages/CommentsAdminPage"));
 
 function member(element) {
   return <ProtectedRoute>{element}</ProtectedRoute>;
@@ -34,6 +36,8 @@ export default function App() {
               <Route path="/admin" element={member(<ChangesPage />)} />
               <Route path="/admin/pages" element={member(<PagesAdmin />)} />
               <Route path="/admin/members" element={member(<MembersPage />)} />
+              <Route path="/admin/overview" element={member(<OverviewPage />)} />
+              <Route path="/admin/comments" element={member(<CommentsAdminPage />)} />
               <Route path="/contributors" element={member(<LeaderboardPage />)} />
               <Route path="/my-edits" element={member(<ChangesPage mine />)} />
               <Route path="/saved" element={member(<SavedPage />)} />
