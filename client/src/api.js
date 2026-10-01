@@ -11,6 +11,13 @@ export async function fetchMe() {
   return data.user;
 }
 
+// Page and topic counts for the signed-out landing page.
+export async function fetchPublicStats() {
+  const res = await fetch(`${API_URL}/api/public/stats`);
+  if (!res.ok) throw new Error("stats unavailable");
+  return res.json();
+}
+
 export function googleLoginUrl() {
   return `${API_URL}/auth/google`;
 }

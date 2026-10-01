@@ -117,6 +117,27 @@ async function main() {
 
   app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
+  // The only data the signed-out landing page sees: counts, never content.
+  // Cached briefly, since every visitor asks for the same three numbers.
+  let publicStats = { at: 0, body: null };
+  app.get("/api/public/stats", async (_req, res, next) => {
+    try {
+      if (!publicStats.body || Date.now() - publicStats.at > 5 * 60 * 1000) {
+        const Page = require("./models/Page");
+        const RoadmapStage = require("./models/RoadmapStage");
+        const [pages, topics, stages] = await Promise.all([
+          Page.countDocuments({ hidden: false }),
+          Page.countDocuments({ hidden: false, roadmapStage: { $ne: "" } }),
+          RoadmapStage.countDocuments(),
+        ]);
+        publicStats = { at: Date.now(), body: { pages, topics, stages } };
+      }
+      res.json(publicStats.body);
+    } catch (err) {
+      next(err);
+    }
+  });
+
   app.use("/api", pageRoutes);
   app.use("/api/members", memberRoutes);
   app.use("/api", structureRoutes);
