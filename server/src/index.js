@@ -4,8 +4,12 @@ const fs = require("fs");
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
+const compression = require("compression");
+const { rateLimit, ipKeyGenerator } = require("express-rate-limit");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+const mongoose = require("mongoose");
 
 const { connectDb } = require("./config/db");
 const passport = require("./config/passport");
@@ -14,6 +18,8 @@ const pageRoutes = require("./routes/pages");
 const memberRoutes = require("./routes/members");
 const structureRoutes = require("./routes/structure");
 const statsRoutes = require("./routes/stats");
+const libraryRoutes = require("./routes/library");
+const commentRoutes = require("./routes/comments");
 const { ensureMember } = require("./middleware/ensureMember");
 
 const PORT = process.env.PORT || 4000;
@@ -25,15 +31,43 @@ async function main() {
   const app = express();
   app.set("trust proxy", 1);
 
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'"],
+          // React sets style attributes (progress bar widths and the like).
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          // Page content embeds images from anywhere on the web.
+          imgSrc: ["'self'", "data:", "https:"],
+          fontSrc: ["'self'", "data:"],
+          connectSrc: ["'self'"],
+          frameAncestors: ["'none'"],
+          formAction: ["'self'"],
+          objectSrc: ["'none'"],
+          baseUri: ["'self'"],
+          // Production is HTTPS-only; locally the built app is served over
+          // plain http, where upgrading every request would break it.
+          upgradeInsecureRequests: process.env.NODE_ENV === "production" ? [] : null,
+        },
+      },
+      // Google's sign-in redirect needs the referrer origin.
+      referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+    })
+  );
+  app.use(compression());
   app.use(cors({ origin: CLIENT_URL, credentials: true }));
-  app.use(express.json());
+  // Long pages are well past the 100 KB default.
+  app.use(express.json({ limit: "1mb" }));
 
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
-      store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
+      // Reuse Mongoose's connection rather than opening a second pool.
+      store: MongoStore.create({ client: mongoose.connection.getClient() }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 14, // 14 days
         httpOnly: true,
@@ -46,6 +80,39 @@ async function main() {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // Limits are per member, not per IP: a whole campus can sit behind one
+  // address, and one person's burst shouldn't lock out their classmates.
+  const keyGenerator = (req) => req.user?.email || ipKeyGenerator(req.ip);
+  app.use(
+    "/auth",
+    rateLimit({ windowMs: 15 * 60 * 1000, limit: 100, keyGenerator, standardHeaders: "draft-8", legacyHeaders: false })
+  );
+  app.use(
+    "/api",
+    rateLimit({
+      windowMs: 60 * 1000,
+      limit: 300,
+      keyGenerator,
+      standardHeaders: "draft-8",
+      legacyHeaders: false,
+      message: { error: "Too many requests — wait a minute and try again." },
+    })
+  );
+  // Writes get a tighter budget, which is what actually stops a script from
+  // flooding comments or revisions.
+  app.use(
+    "/api",
+    rateLimit({
+      windowMs: 10 * 60 * 1000,
+      limit: 120,
+      keyGenerator,
+      skip: (req) => req.method === "GET",
+      standardHeaders: "draft-8",
+      legacyHeaders: false,
+      message: { error: "You're saving very quickly — wait a few minutes and try again." },
+    })
+  );
+
   app.use("/auth", authRoutes);
 
   app.get("/api/health", (_req, res) => res.json({ ok: true }));
@@ -54,6 +121,8 @@ async function main() {
   app.use("/api/members", memberRoutes);
   app.use("/api", structureRoutes);
   app.use("/api", statsRoutes);
+  app.use("/api", libraryRoutes);
+  app.use("/api", commentRoutes);
 
   // An unmatched /api/* must not fall through to the SPA fallback below —
   // fetch() would then parse index.html as JSON and fail with a syntax error
@@ -68,8 +137,16 @@ async function main() {
   // skipped — Vite serves the client on its own port instead.
   const clientDist = path.join(__dirname, "../../client/dist");
   if (fs.existsSync(path.join(clientDist, "index.html"))) {
-    app.use(express.static(clientDist));
+    // Vite fingerprints everything under /assets, so those can be cached
+    // forever; index.html must always be revalidated or a deploy wouldn't
+    // reach anyone with the old copy cached.
+    app.use(
+      "/assets",
+      express.static(path.join(clientDist, "assets"), { immutable: true, maxAge: "1y", index: false })
+    );
+    app.use(express.static(clientDist, { maxAge: "1h", index: false }));
     app.get("*", (_req, res) => {
+      res.set("Cache-Control", "no-cache");
       res.sendFile(path.join(clientDist, "index.html"));
     });
   }
@@ -82,6 +159,12 @@ async function main() {
     // A malformed :id is the caller's mistake, not a server failure.
     if (err.name === "CastError") {
       return res.status(400).json({ error: "Malformed id." });
+    }
+    if (err.type === "entity.too.large") {
+      return res.status(413).json({ error: "That's too large to save." });
+    }
+    if (err.type === "entity.parse.failed") {
+      return res.status(400).json({ error: "Malformed request body." });
     }
     if (err.name === "ValidationError") {
       return res.status(400).json({ error: err.message });

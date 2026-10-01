@@ -2,6 +2,9 @@ const express = require("express");
 const Page = require("../models/Page");
 const Revision = require("../models/Revision");
 const Member = require("../models/Member");
+const Bookmark = require("../models/Bookmark");
+const Comment = require("../models/Comment");
+const { isSlug } = require("../lib/validate");
 const { computeStats } = require("../lib/diffStats");
 const { ensureMember, ensureAdmin } = require("../middleware/ensureMember");
 
@@ -20,7 +23,7 @@ router.get("/page", async (req, res, next) => {
   try {
     // Without this a missing ?slug queries for undefined and reports "not
     // found", which sends the caller looking for a page that was never asked for.
-    if (!req.query.slug) return res.status(400).json({ error: "A slug is required." });
+    if (!isSlug(req.query.slug)) return res.status(400).json({ error: "A slug is required." });
 
     const page = await Page.findOne({ slug: req.query.slug });
     if (!page) return res.status(404).json({ error: "Page not found." });
@@ -30,12 +33,14 @@ router.get("/page", async (req, res, next) => {
     // falls back to the email if they have since left the club.
     let editorName = null;
     let editorRole = null;
-    if (page.updatedBy) {
-      const editor = await Member.findOne({ collegeEmail: page.updatedBy.toLowerCase() }).select("name role");
-      if (editor) {
-        editorName = editor.name;
-        editorRole = editor.role;
-      }
+    const [editor, saved, commentCount] = await Promise.all([
+      page.updatedBy ? Member.findOne({ collegeEmail: page.updatedBy.toLowerCase() }).select("name role") : null,
+      Bookmark.exists({ email: req.user.email, slug: page.slug }),
+      Comment.countDocuments({ slug: page.slug, deleted: false }),
+    ]);
+    if (editor) {
+      editorName = editor.name;
+      editorRole = editor.role;
     }
 
     res.json({
@@ -48,6 +53,8 @@ router.get("/page", async (req, res, next) => {
         updatedBy: page.updatedBy,
         editorName,
         editorRole,
+        saved: Boolean(saved),
+        commentCount,
       },
     });
   } catch (err) {
@@ -61,7 +68,10 @@ router.get("/page", async (req, res, next) => {
 // makes an admin revert possible after the fact.
 router.post("/edits", async (req, res, next) => {
   try {
-    const { slug, body, summary } = req.body;
+    const { slug, body, summary, baseUpdatedAt } = req.body;
+    // Without this check a missing slug becomes findOne({}) and the edit lands
+    // on whichever page Mongo happens to return first.
+    if (!isSlug(slug)) return res.status(400).json({ error: "A page slug is required." });
     if (typeof body !== "string" || !body.trim()) {
       return res.status(400).json({ error: "Page content cannot be empty." });
     }
@@ -70,6 +80,17 @@ router.post("/edits", async (req, res, next) => {
     if (!page) return res.status(404).json({ error: "Page not found." });
     if (body === page.body) {
       return res.status(400).json({ error: "No changes to save." });
+    }
+
+    // Two members editing the same page: the second save would silently wipe
+    // the first. The editor sends the version it started from, and a mismatch
+    // is refused so the member can copy their text and reload.
+    if (baseUpdatedAt && new Date(baseUpdatedAt).getTime() !== page.updatedAt.getTime()) {
+      const by = page.updatedBy ? await Member.findOne({ collegeEmail: page.updatedBy }).select("name") : null;
+      return res.status(409).json({
+        error: `${by?.name || "Someone"} saved this page while you were editing. Copy your changes, reload, and apply them again.`,
+        conflict: true,
+      });
     }
 
     // Measure against what was live a moment ago, before the page is updated.
@@ -89,7 +110,7 @@ router.post("/edits", async (req, res, next) => {
       ...stats,
     });
 
-    res.status(201).json({ revisionId: revision._id });
+    res.status(201).json({ revisionId: revision._id, updatedAt: page.updatedAt });
   } catch (err) {
     next(err);
   }
@@ -101,6 +122,7 @@ router.post("/edits", async (req, res, next) => {
 // to the club. Only reverting is restricted.
 router.get("/revisions", async (req, res, next) => {
   try {
+    if (!isSlug(req.query.slug)) return res.status(400).json({ error: "A slug is required." });
     const revisions = await Revision.find({ slug: req.query.slug })
       .sort({ createdAt: -1 })
       .limit(100);
@@ -170,6 +192,9 @@ router.post("/revisions/:id/revert", ensureAdmin, async (req, res, next) => {
       publishedBy: req.user.email,
       note: `Reverted to the version from ${new Date(revision.createdAt).toISOString().slice(0, 10)}`,
       ...stats,
+      // The original author was already credited when they wrote this text;
+      // counting the restore again would score the same words twice.
+      excludeFromStats: true,
     });
 
     res.json({ ok: true });

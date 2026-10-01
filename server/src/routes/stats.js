@@ -88,7 +88,7 @@ router.get("/leaderboard", async (_req, res, next) => {
 // admin.
 router.get("/stats/me", async (req, res, next) => {
   try {
-    const email = (req.query.email || req.user.email).toLowerCase();
+    const email = (typeof req.query.email === "string" && req.query.email ? req.query.email : req.user.email).toLowerCase();
 
     const rows = await Revision.aggregate([
       { $match: { ...REAL_EDITS, authorEmail: email } },
@@ -114,9 +114,11 @@ router.get("/stats/me", async (req, res, next) => {
       { wordsAdded: 0, linesAdded: 0, edits: 0, pagesTouched: 0 }
     );
 
-    // Rank is the member's position on the same ordering the board uses.
+    // Rank is the member's position on the same ordering the board uses,
+    // which only lists active members — so only they count as being ahead.
+    const activeEmails = (await Member.find({ active: true }).select("collegeEmail").lean()).map((m) => m.collegeEmail);
     const ahead = await Revision.aggregate([
-      { $match: REAL_EDITS },
+      { $match: { ...REAL_EDITS, authorEmail: { $in: activeEmails } } },
       { $group: { _id: "$authorEmail", wordsAdded: { $sum: "$wordsAdded" } } },
       { $match: { wordsAdded: { $gt: totals.wordsAdded } } },
       { $count: "n" },
