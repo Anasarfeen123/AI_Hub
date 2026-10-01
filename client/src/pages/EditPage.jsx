@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Markdown from "../components/Markdown";
 import Header from "../components/Header";
-import { fetchPage, savePage } from "../api";
+import { fetchPage, savePage, suggestEdit, uploadImage } from "../api";
 import { useNav } from "../context/NavContext";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 
@@ -27,6 +27,12 @@ export default function EditPage() {
   const [status, setStatus] = useState({ loading: true, error: null, submitting: false, conflict: false });
   const { nav } = useNav();
   const textareaRef = useRef(null);
+  const fileRef = useRef(null);
+  // "publish" goes live now; "review" sends it to an admin first, for anyone
+  // who'd rather not change the live page directly.
+  const [submitMode, setSubmitMode] = useState("publish");
+  const [uploading, setUploading] = useState(0);
+  const [done, setDone] = useState(null);
   const formRef = useRef(null);
 
   useDocumentTitle(page ? `Editing ${page.title}` : "Editing");
@@ -97,6 +103,13 @@ export default function EditPage() {
       if (!dirty || status.submitting) return;
       setStatus((s) => ({ ...s, submitting: true, error: null, conflict: false }));
       try {
+        if (submitMode === "review") {
+          await suggestEdit(slug, body, summary, page.updatedAt);
+          setPage((p) => ({ ...p, body }));
+          setStatus((s) => ({ ...s, submitting: false }));
+          setDone("review");
+          return;
+        }
         await savePage(slug, body, summary, page.updatedAt);
         // Mark clean first so the unsaved-changes guard doesn't fire on the way out.
         setPage((p) => ({ ...p, body }));
@@ -106,8 +119,48 @@ export default function EditPage() {
         setStatus((s) => ({ ...s, submitting: false, error: err.message, conflict }));
       }
     },
-    [dirty, status.submitting, slug, body, summary, page, navigate]
+    [dirty, status.submitting, slug, body, summary, page, navigate, submitMode]
   );
+
+  // Images: picked with the button, pasted, or dropped onto the editor. A
+  // placeholder goes in at the cursor straight away and is swapped for the
+  // real link once the upload finishes.
+  async function addImages(files) {
+    const images = [...files].filter((f) => f.type.startsWith("image/"));
+    if (!images.length) return;
+    for (const file of images) {
+      const token = `![Uploading ${file.name || "image"}…]()`;
+      const el = textareaRef.current;
+      const at = el ? el.selectionStart : body.length;
+      setBody((b) => `${b.slice(0, at)}${token}\n${b.slice(at)}`);
+      setUploading((n) => n + 1);
+      try {
+        const url = await uploadImage(file, slug);
+        const alt = (file.name || "image").replace(/\.[a-z0-9]+$/i, "").replace(/[-_]+/g, " ").slice(0, 80) || "image";
+        setBody((b) => b.replace(token, `![${alt}](${url})`));
+      } catch (err) {
+        setBody((b) => b.replace(`${token}\n`, "").replace(token, ""));
+        setStatus((st) => ({ ...st, error: err.message }));
+      } finally {
+        setUploading((n) => n - 1);
+      }
+    }
+  }
+
+  function onPaste(e) {
+    const files = e.clipboardData?.files;
+    if (files?.length && [...files].some((f) => f.type.startsWith("image/"))) {
+      e.preventDefault();
+      addImages(files);
+    }
+  }
+
+  function onDrop(e) {
+    if (e.dataTransfer?.files?.length) {
+      e.preventDefault();
+      addImages(e.dataTransfer.files);
+    }
+  }
 
   // Ctrl/⌘+S saves instead of opening the browser's "Save page as".
   useEffect(() => {
@@ -150,6 +203,36 @@ export default function EditPage() {
           <Link className="btn btn--ghost" to="/">
             Back to the homepage
           </Link>
+        </main>
+      </>
+    );
+  }
+
+  if (done === "review") {
+    return (
+      <>
+        <Header />
+        <main id="main" className="editor-wrap">
+          <div className="empty-state empty-state--boxed editor-sent">
+            <p className="editor-sent-icon" aria-hidden="true">
+              ✉️
+            </p>
+            <p>
+              <strong>Sent for review — thank you!</strong>
+            </p>
+            <p className="md-status">
+              An admin will look at your edit to “{page.title}”. You'll get a notification when it's approved or if they have
+              feedback.
+            </p>
+            <div className="empty-state-actions">
+              <Link className="btn btn--primary" to={`/${slug}`}>
+                Back to the page
+              </Link>
+              <Link className="btn" to="/me">
+                Your suggestions
+              </Link>
+            </div>
+          </div>
         </main>
       </>
     );
@@ -228,6 +311,29 @@ export default function EditPage() {
                 ))}
               </select>
             )}
+            {showWrite && (
+              <>
+                <button
+                  type="button"
+                  className="editor-image-btn"
+                  onClick={() => fileRef.current?.click()}
+                  title="Add an image (or paste / drop one into the editor)"
+                >
+                  🖼 {uploading ? "Uploading…" : "Image"}
+                </button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/gif,image/webp"
+                  multiple
+                  hidden
+                  onChange={(e) => {
+                    addImages(e.target.files);
+                    e.target.value = "";
+                  }}
+                />
+              </>
+            )}
           </div>
 
           <div className="editor-panes">
@@ -237,6 +343,9 @@ export default function EditPage() {
                 className="editor-textarea"
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
+                onPaste={onPaste}
+                onDrop={onDrop}
+                onDragOver={(e) => e.dataTransfer?.types?.includes("Files") && e.preventDefault()}
                 spellCheck="false"
                 aria-label="Page content (Markdown)"
               />
@@ -259,9 +368,33 @@ export default function EditPage() {
             />
           </label>
 
+          <fieldset className="editor-mode">
+            <legend className="sr-only">How should this change go out?</legend>
+            <label className={submitMode === "publish" ? "active" : ""}>
+              <input
+                type="radio"
+                name="submit-mode"
+                checked={submitMode === "publish"}
+                onChange={() => setSubmitMode("publish")}
+              />
+              <strong>Publish now</strong>
+              <span>Goes live straight away. Every save is versioned.</span>
+            </label>
+            <label className={submitMode === "review" ? "active" : ""}>
+              <input
+                type="radio"
+                name="submit-mode"
+                checked={submitMode === "review"}
+                onChange={() => setSubmitMode("review")}
+              />
+              <strong>Send for review</strong>
+              <span>An admin checks it first. You'll get a notification either way.</span>
+            </label>
+          </fieldset>
+
           <div className="editor-actions">
-            <button type="submit" className="editor-btn" disabled={!dirty || status.submitting}>
-              {status.submitting ? "Saving…" : "Save changes"}
+            <button type="submit" className="editor-btn" disabled={!dirty || status.submitting || uploading > 0}>
+              {status.submitting ? "Saving…" : submitMode === "review" ? "Send for review" : "Publish changes"}
             </button>
             <span className="md-status">
               {dirty ? (

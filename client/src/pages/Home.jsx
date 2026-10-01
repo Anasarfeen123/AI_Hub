@@ -4,8 +4,10 @@ import Header from "../components/Header";
 import TopNav from "../components/TopNav";
 import Roadmap from "../components/Roadmap";
 import AnnouncementBanner from "../components/AnnouncementBanner";
+import ContinueReading from "../components/ContinueReading";
+import PeersCard from "../components/PeersCard";
 import { useAuth } from "../context/AuthContext";
-import { fetchBookmarks } from "../api";
+import { fetchBookmarks, fetchProfile } from "../api";
 import { useRoadmapProgress, useRoadmapStages, toRoute } from "../hooks/useRoadmap";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 
@@ -44,11 +46,15 @@ function Welcome() {
   const stages = useRoadmapStages();
   const { progress } = useRoadmapProgress();
   const [saved, setSaved] = useState(null);
+  const [streak, setStreak] = useState(0);
 
   useEffect(() => {
     fetchBookmarks()
       .then(setSaved)
       .catch(() => setSaved([]));
+    fetchProfile()
+      .then((p) => setStreak(p.streak || 0))
+      .catch(() => {});
   }, []);
 
   // The first topic not yet ticked, in roadmap order, is the natural next step.
@@ -70,7 +76,14 @@ function Welcome() {
     <section className="home-welcome">
       <div className="home-welcome-glow" aria-hidden="true" />
       <div className="home-welcome-main">
-        <p className="home-kicker">Microsoft Innovations Club · AI/ML</p>
+        <p className="home-kicker">
+          Microsoft Innovations Club · AI/ML
+          {streak >= 2 && (
+            <Link to="/me" className="streak-chip" title="Weeks in a row you've used the hub">
+              🔥 {streak}-week streak
+            </Link>
+          )}
+        </p>
         <h1>
           {greeting()}
           {firstName ? `, ${firstName}` : ""}.
@@ -165,6 +178,10 @@ export default function Home() {
         <div className="hub-section home-top">
           <AnnouncementBanner />
           <Welcome />
+          <div className="home-cards">
+            <ContinueReading />
+            <PeersCard />
+          </div>
         </div>
 
         <div className="hub-section">
@@ -175,8 +192,8 @@ export default function Home() {
             </span>
           </div>
           <p className="hub-section-sub">
-            Designed by the AI/ML Vertical Lead. Open any topic, or tick it off to track your progress —
-            saved in this browser.
+            Designed by the AI/ML Vertical Lead. Open any topic, or tick it off as you go — your progress
+            follows you to any device you sign in on.
           </p>
           <Roadmap />
         </div>

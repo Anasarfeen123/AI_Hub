@@ -203,6 +203,9 @@ export default function SearchPalette() {
                 <span>
                   <kbd>Esc</kbd> to close
                 </span>
+                <span className="search-foot-more">
+                  <kbd>?</kbd> all shortcuts
+                </span>
               </div>
             </div>
           </div>,

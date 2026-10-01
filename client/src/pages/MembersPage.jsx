@@ -5,7 +5,16 @@ import TopNav from "../components/TopNav";
 import AdminNav from "../components/AdminNav";
 import RoleBadge from "../components/RoleBadge";
 import { useAuth } from "../context/AuthContext";
-import { fetchMembers, addMember, bulkAddMembers, updateMember, removeMember, membersExportUrl } from "../api";
+import {
+  fetchMembers,
+  addMember,
+  bulkAddMembers,
+  updateMember,
+  removeMember,
+  membersExportUrl,
+  fetchAccessRequests,
+  decideAccessRequest,
+} from "../api";
 import { relativeTime } from "../lib/format";
 import { isStaff, outranks } from "../lib/roles";
 import useDocumentTitle from "../hooks/useDocumentTitle";
@@ -24,6 +33,71 @@ const VIEWS = {
   staff: { label: "Admins & leads", test: (m) => m.role === "admin" || m.role === "superadmin" },
   inactive: { label: "Deactivated", test: (m) => !m.active },
 };
+
+// People who asked to join from the landing page. Approving adds them to the
+// list (and emails them, if email is set up).
+function AccessRequests({ onChange }) {
+  const [requests, setRequests] = useState(null);
+  const [busyId, setBusyId] = useState(null);
+  const [msg, setMsg] = useState(null);
+
+  useEffect(() => {
+    fetchAccessRequests()
+      .then(setRequests)
+      .catch(() => setRequests([]));
+  }, []);
+
+  async function decide(r, decision) {
+    setBusyId(r._id);
+    setMsg(null);
+    try {
+      const res = await decideAccessRequest(r._id, decision);
+      setRequests((list) => list.filter((x) => x._id !== r._id));
+      if (decision === "approve") {
+        setMsg(`Added ${r.email}.${res.emailed ? " They've been emailed." : " Let them know they can sign in."}`);
+        onChange();
+      }
+    } catch (err) {
+      setMsg(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  if (!requests?.length && !msg) return null;
+
+  return (
+    <section className="ov-card requests" id="requests">
+      <div className="ov-card-head">
+        <h2>
+          {requests?.length ? `${requests.length} ${requests.length === 1 ? "person wants" : "people want"} to join` : "Access requests"}
+        </h2>
+        <span className="ov-card-hint">From the “Request access” form on the landing page</span>
+      </div>
+      {msg && <p className="admin-notice">{msg}</p>}
+      <ul className="requests-list">
+        {requests?.map((r) => (
+          <li key={r._id}>
+            <div>
+              <strong>{r.name}</strong>
+              <span className="member-email">{r.email}</span>
+              {r.note && <span className="requests-note">“{r.note}”</span>}
+              <span className="member-seen">asked {relativeTime(r.createdAt)}</span>
+            </div>
+            <div className="member-actions">
+              <button type="button" className="editor-cancel" disabled={busyId === r._id} onClick={() => decide(r, "decline")}>
+                Decline
+              </button>
+              <button type="button" className="editor-btn" disabled={busyId === r._id} onClick={() => decide(r, "approve")}>
+                Approve
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 export default function MembersPage() {
   useDocumentTitle("Members");
@@ -210,6 +284,8 @@ export default function MembersPage() {
           lock the board out.
           {viewerRole === "admin" && " You're an admin, so lead accounts are read-only for you."}
         </p>
+
+        <AccessRequests onChange={load} />
 
         {error && (
           <p className="login-error" role="alert">

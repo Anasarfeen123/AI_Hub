@@ -14,6 +14,22 @@ export default function UserMenu() {
   // Remembering which page the menu was opened on closes it after navigating
   // without an effect: on any other page it simply reads as closed.
   const [openOn, setOpenOn] = useState(null);
+  const [installable, setInstallable] = useState(() => typeof window !== "undefined" && Boolean(window.__aihubInstall));
+
+  useEffect(() => {
+    const on = () => setInstallable(true);
+    window.addEventListener("aihub:installable", on);
+    return () => window.removeEventListener("aihub:installable", on);
+  }, []);
+
+  async function install() {
+    const prompt = window.__aihubInstall;
+    if (!prompt) return;
+    prompt.prompt();
+    await prompt.userChoice.catch(() => null);
+    window.__aihubInstall = null;
+    setInstallable(false);
+  }
   const open = openOn === pathname;
   const setOpen = (value) => setOpenOn((prev) => ((typeof value === "function" ? value(prev === pathname) : value) ? pathname : null));
 
@@ -75,8 +91,17 @@ export default function UserMenu() {
           </div>
 
           <div className="usermenu-group">
+            <Link role="menuitem" to="/me">
+              Your profile
+            </Link>
             <Link role="menuitem" to="/saved">
               Saved pages
+            </Link>
+            <Link role="menuitem" to="/notes">
+              My notes
+            </Link>
+            <Link role="menuitem" to="/help-wanted">
+              Help wanted
             </Link>
             <Link role="menuitem" to="/my-edits">
               My edits
@@ -101,13 +126,35 @@ export default function UserMenu() {
               <Link role="menuitem" to="/admin/members">
                 Members
               </Link>
+              <Link role="menuitem" to="/admin/suggestions">
+                Suggestions
+              </Link>
               <Link role="menuitem" to="/admin/comments">
                 Comments
+              </Link>
+              <Link role="menuitem" to="/admin/analytics">
+                Analytics
+              </Link>
+              <Link role="menuitem" to="/admin/links">
+                Link checker
               </Link>
             </div>
           )}
 
           <div className="usermenu-group">
+            {installable && (
+              <button type="button" role="menuitem" className="usermenu-signout" onClick={install}>
+                Install as an app
+              </button>
+            )}
+            <button
+              type="button"
+              role="menuitem"
+              className="usermenu-signout"
+              onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "?" }))}
+            >
+              Keyboard shortcuts <kbd>?</kbd>
+            </button>
             <button type="button" role="menuitem" className="usermenu-signout" onClick={logout}>
               Sign out
             </button>

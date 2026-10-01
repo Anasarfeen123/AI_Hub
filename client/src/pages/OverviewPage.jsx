@@ -1,7 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import StaffPage from "../components/StaffPage";
-import { fetchOverview, fetchAudit, fetchAnnouncement, postAnnouncement, clearAnnouncement } from "../api";
+import {
+  fetchOverview,
+  fetchAudit,
+  fetchAnnouncement,
+  postAnnouncement,
+  clearAnnouncement,
+  fetchAnnouncementHistory,
+  fetchReminders,
+  sendReminders,
+} from "../api";
 import { relativeTime } from "../lib/format";
 
 function Tile({ label, value, sub }) {
@@ -23,10 +32,15 @@ function AnnouncementCard() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
 
+  const [history, setHistory] = useState([]);
+
   const load = useCallback(() => {
     fetchAnnouncement()
       .then(setCurrent)
       .catch(() => setCurrent(null));
+    fetchAnnouncementHistory()
+      .then(setHistory)
+      .catch(() => setHistory([]));
   }, []);
 
   useEffect(load, [load]);
@@ -117,6 +131,99 @@ function AnnouncementCard() {
           </p>
         )}
       </form>
+
+      {history.length > 0 && (
+        <details className="ov-history">
+          <summary>Past announcements ({history.length})</summary>
+          <ul>
+            {history.map((h) => (
+              <li key={h._id}>
+                <span className="ov-history-text">{h.text}</span>
+                <span className="ov-history-meta">
+                  {h.createdByName} · {relativeTime(h.createdAt)}
+                  {h.active ? " · live now" : ""}
+                </span>
+                <button
+                  type="button"
+                  className="link-btn"
+                  onClick={() => {
+                    setText(h.text);
+                    setLink(h.link || "");
+                    setTone(h.tone || "info");
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                >
+                  Reuse
+                </button>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </section>
+  );
+}
+
+// Nudges for members who haven't visited in two weeks. Needs email set up on
+// the server; until then it explains how instead of failing.
+function RemindersCard() {
+  const [data, setData] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchReminders()
+      .then(setData)
+      .catch((err) => setError(err.message));
+  }, []);
+
+  async function send() {
+    if (!window.confirm(`Email ${data.eligible.length} member${data.eligible.length === 1 ? "" : "s"} a friendly reminder?`)) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const r = await sendReminders();
+      setResult(r);
+      setData(await fetchReminders());
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!data && !error) return null;
+
+  return (
+    <section className="ov-card">
+      <div className="ov-card-head">
+        <h2>Reminder emails</h2>
+        <span className="ov-card-hint">
+          Members quiet for {data?.quietDays || 14}+ days · at most one per person per fortnight · weekly once scheduled
+        </span>
+      </div>
+      {error && <p className="comment-error">{error}</p>}
+      {data && !data.configured && (
+        <p className="md-status">
+          Email isn't set up yet. Add <code>SMTP_HOST</code>, <code>SMTP_PORT</code>, <code>SMTP_USER</code>, <code>SMTP_PASS</code> and{" "}
+          <code>MAIL_FROM</code> to the server's environment (a Gmail App Password works) and this switches on. {data.eligible.length} member
+          {data.eligible.length === 1 ? " is" : "s are"} due a reminder.
+        </p>
+      )}
+      {data?.configured && (
+        <div className="links-bar">
+          <button type="button" className="btn btn--primary" onClick={send} disabled={busy || !data.eligible.length}>
+            {busy ? "Sending…" : `Send to ${data.eligible.length} member${data.eligible.length === 1 ? "" : "s"}`}
+          </button>
+          {result && (
+            <span className="md-status">
+              Sent {result.sent}
+              {result.failed?.length ? ` · ${result.failed.length} failed` : ""}.
+            </span>
+          )}
+        </div>
+      )}
     </section>
   );
 }
@@ -277,6 +384,7 @@ export default function OverviewPage() {
           </div>
 
           <AnnouncementCard />
+          <RemindersCard />
 
           <div className="ov-grid">
             <NeverSignedIn people={data.neverSignedIn} />

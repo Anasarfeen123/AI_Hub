@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import Markdown from "../components/Markdown";
 import Header from "../components/Header";
@@ -9,9 +9,13 @@ import RoadmapTree from "../components/RoadmapTree";
 import BookmarkButton from "../components/BookmarkButton";
 import TableOfContents from "../components/TableOfContents";
 import Comments from "../components/Comments";
+import NotesPanel from "../components/NotesPanel";
+import FlagPanel from "../components/FlagPanel";
+import { PageContext } from "../context/PageContext";
+import useReadingTracker from "../hooks/useReadingTracker";
 import { useNav } from "../context/NavContext";
 import { findInNav } from "../lib/nav";
-import { fetchPage } from "../api";
+import { fetchPage, fetchRatings, rateLink, fetchReadingPosition } from "../api";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 
 function PageSkeleton() {
@@ -65,6 +69,63 @@ export default function ContentPage() {
     if (el) requestAnimationFrame(() => el.scrollIntoView());
   }, [page, location.hash]);
 
+  useReadingTracker(slug, Boolean(page));
+
+  // "Continue where you left off": if they'd read part of this page before,
+  // offer to jump back — unless a #link already says where to go.
+  const [resume, setResume] = useState({ slug: null, at: 0 });
+  useEffect(() => {
+    if (!page || location.hash) return undefined;
+    let cancelled = false;
+    fetchReadingPosition(slug)
+      .then((r) => !cancelled && r.scroll > 0.08 && r.scroll < 0.97 && setResume({ slug, at: r.scroll }))
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [page, slug, location.hash]);
+  const resumeAt = resume.slug === slug ? resume.at : 0;
+
+  function jumpBack() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    window.scrollTo({ top: max * resumeAt });
+    setResume({ slug: null, at: 0 });
+  }
+
+  // Resource ratings for the "helped me" buttons, shared with the renderer.
+  const [ratings, setRatings] = useState({ slug: null, map: {} });
+  useEffect(() => {
+    if (!page) return undefined;
+    let cancelled = false;
+    fetchRatings(slug)
+      .then((map) => !cancelled && setRatings({ slug, map }))
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [page, slug]);
+  const rate = useCallback(
+    async (url, helpful) => {
+      const r = await rateLink(slug, url, helpful);
+      setRatings((prev) => ({ slug, map: { ...prev.map, [url]: { count: r.count, mine: r.mine } } }));
+    },
+    [slug]
+  );
+  const pageContext = useMemo(
+    () => ({ slug, ratings: ratings.slug === slug ? ratings.map : {}, rate }),
+    [slug, ratings, rate]
+  );
+
+  const [notesOpen, setNotesOpen] = useState({ slug: null });
+  const showNotes = notesOpen.slug === slug;
+
+  // ~220 words a minute, ignoring code and link targets.
+  const minutes = useMemo(() => {
+    if (!page) return 0;
+    const words = page.body.replace(/```[\s\S]*?```/g, " ").replace(/\]\([^)]*\)/g, "]").split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.round(words / 220));
+  }, [page]);
+
   const onCountChange = useCallback((n) => setCommentCount({ slug, n }), [slug]);
   const shownCount = commentCount.slug === slug ? commentCount.n : page?.commentCount ?? 0;
 
@@ -77,6 +138,7 @@ export default function ContentPage() {
         <main id="main" className="content-main">
           <article
             ref={articleRef}
+            data-page-slug={page ? slug : undefined}
             className={`md-content${slug === "roadmap" ? " md-content--wide" : ""}`}
           >
             {loading && <PageSkeleton />}
@@ -112,6 +174,19 @@ export default function ContentPage() {
                 <div className="md-content-head">
                   <h1>{page.title || match?.page?.title || slug}</h1>
                   <div className="md-actions">
+                    <button
+                      type="button"
+                      className={`md-action-btn${showNotes ? " is-on" : ""}`}
+                      onClick={() => setNotesOpen({ slug: showNotes ? null : slug })}
+                      aria-expanded={showNotes}
+                      title="Private notes on this page"
+                    >
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z" />
+                        <path d="M14 3v5h5M8 13h8M8 17h5" />
+                      </svg>
+                      Notes
+                    </button>
                     <BookmarkButton key={slug} slug={slug} initial={page.saved} />
                     <Link className="md-action-btn" to={`/edit/${slug}`} title="Edit this page">
                       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
@@ -124,18 +199,33 @@ export default function ContentPage() {
                 </div>
                 <div className="page-meta">
                   <PageByline page={page} />
-                  <a className="page-meta-comments" href="#discussion">
-                    {shownCount === 0 ? "No comments yet" : `${shownCount} comment${shownCount === 1 ? "" : "s"}`}
-                  </a>
+                  <span className="page-meta-right">
+                    <span className="page-meta-time">{minutes} min read</span>
+                    <a className="page-meta-comments" href="#discussion">
+                      {shownCount === 0 ? "No comments yet" : `${shownCount} comment${shownCount === 1 ? "" : "s"}`}
+                    </a>
+                  </span>
                 </div>
+
+                {resumeAt > 0 && (
+                  <button type="button" className="resume-pill" onClick={jumpBack}>
+                    ↓ Continue where you left off ({Math.round(resumeAt * 100)}% through)
+                  </button>
+                )}
+
+                {showNotes && <NotesPanel slug={slug} onClose={() => setNotesOpen({ slug: null })} />}
 
                 {/* The roadmap page leads with the interactive tree; the
                     written version below it stays editable like any other page. */}
                 {slug === "roadmap" && <RoadmapTree />}
 
-                <div className="md-body">
-                  <Markdown body={page.body} linkBase={page.linkBase} />
-                </div>
+                <PageContext.Provider value={pageContext}>
+                  <div className="md-body">
+                    <Markdown body={page.body} linkBase={page.linkBase} />
+                  </div>
+                </PageContext.Provider>
+
+                <FlagPanel key={`flags-${slug}`} slug={slug} />
 
                 <Comments key={slug} slug={slug} onCountChange={onCountChange} />
               </>

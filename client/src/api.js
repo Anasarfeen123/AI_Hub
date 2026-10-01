@@ -216,3 +216,160 @@ export function removeMember(id) {
 }
 
 export const membersExportUrl = () => `${API_URL}/api/members/export.csv`;
+
+// --- Personal: progress, reading, notes, profile -----------------------------
+
+export async function fetchProgress() {
+  return (await request("/api/me/progress")).done;
+}
+
+export async function saveProgress(body) {
+  return (await request("/api/me/progress", { method: "PUT", body: JSON.stringify(body) })).done;
+}
+
+// keepalive lets the last scroll position save even as the tab closes.
+export function recordReading(slug, scroll, view = false) {
+  return fetch(`${API_URL}/api/me/reading`, {
+    method: "POST",
+    credentials: "include",
+    keepalive: true,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(scroll === null ? { slug, view } : { slug, scroll, view }),
+  }).catch(() => {});
+}
+
+export async function fetchRecent() {
+  return (await request("/api/me/recent")).recent;
+}
+
+export function fetchReadingPosition(slug) {
+  return request(`/api/me/reading?slug=${encodeURIComponent(slug)}`);
+}
+
+export async function fetchNote(slug) {
+  return (await request(`/api/me/notes?slug=${encodeURIComponent(slug)}`)).note;
+}
+
+export async function fetchNotes() {
+  return (await request("/api/me/notes")).notes;
+}
+
+export async function saveNote(slug, body) {
+  return (await request("/api/me/notes", { method: "PUT", body: JSON.stringify({ slug, body }) })).note;
+}
+
+export function fetchProfile() {
+  return request("/api/me/profile");
+}
+
+export async function saveSettings(changes) {
+  return (await request("/api/me/settings", { method: "PATCH", body: JSON.stringify(changes) })).settings;
+}
+
+export function fetchPeers() {
+  return request("/api/peers");
+}
+
+// --- Notifications ----------------------------------------------------------------
+
+export function fetchNotifications() {
+  return request("/api/me/notifications");
+}
+
+export async function fetchUnreadCount() {
+  return (await request("/api/me/notifications/count")).unread;
+}
+
+export function markNotificationsRead(id) {
+  return request("/api/me/notifications/read", { method: "POST", body: JSON.stringify(id ? { id } : {}) });
+}
+
+// --- Community: ratings, flags, suggestions, access ---------------------------------
+
+export async function fetchRatings(slug) {
+  return (await request(`/api/ratings?slug=${encodeURIComponent(slug)}`)).ratings;
+}
+
+export function rateLink(slug, url, helpful) {
+  return request("/api/ratings", { method: "POST", body: JSON.stringify({ slug, url, helpful }) });
+}
+
+export async function fetchFlags(slug) {
+  return (await request(`/api/flags${slug ? `?slug=${encodeURIComponent(slug)}` : ""}`)).flags;
+}
+
+export function raiseFlag(slug, kind, note) {
+  return request("/api/flags", { method: "POST", body: JSON.stringify({ slug, kind, note }) });
+}
+
+export function resolveFlag(id) {
+  return request(`/api/flags/${id}/resolve`, { method: "POST" });
+}
+
+export function suggestEdit(slug, body, summary, baseUpdatedAt) {
+  return request("/api/suggestions", { method: "POST", body: JSON.stringify({ slug, body, summary, baseUpdatedAt }) });
+}
+
+export async function fetchMySuggestions() {
+  return (await request("/api/suggestions/mine")).suggestions;
+}
+
+export async function fetchSuggestions(status = "pending") {
+  return (await request(`/api/suggestions?status=${status}`)).suggestions;
+}
+
+export function reviewSuggestion(id, decision, note) {
+  return request(`/api/suggestions/${id}/${decision}`, { method: "POST", body: JSON.stringify({ note }) });
+}
+
+export function requestAccess(fields) {
+  return request("/api/access-requests", { method: "POST", body: JSON.stringify(fields) });
+}
+
+export async function fetchAccessRequests() {
+  return (await request("/api/access-requests")).requests;
+}
+
+export function decideAccessRequest(id, decision) {
+  return request(`/api/access-requests/${id}/${decision}`, { method: "POST" });
+}
+
+// --- Images ----------------------------------------------------------------------------
+
+export async function uploadImage(file, slug) {
+  const res = await fetch(`${API_URL}/api/images?slug=${encodeURIComponent(slug || "")}`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": file.type || "application/octet-stream" },
+    body: file,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Upload failed (${res.status})`);
+  return data.url;
+}
+
+// --- Admin: analytics, links, reminders, history ------------------------------------------
+
+export function fetchAnalytics(days = 30) {
+  return request(`/api/admin/analytics?days=${days}`);
+}
+
+export function fetchLinkReport() {
+  return request("/api/admin/links");
+}
+
+export function startLinkCheck() {
+  return request("/api/admin/links/check", { method: "POST" });
+}
+
+export function fetchReminders() {
+  return request("/api/admin/reminders");
+}
+
+export function sendReminders() {
+  return request("/api/admin/reminders/send", { method: "POST" });
+}
+
+export async function fetchAnnouncementHistory() {
+  return (await request("/api/announcements")).announcements;
+}

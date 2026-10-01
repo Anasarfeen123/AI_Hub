@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Navigate } from "react-router-dom";
-import { googleLoginUrl, fetchPublicStats } from "../api";
+import { googleLoginUrl, fetchPublicStats, requestAccess } from "../api";
 import { useAuth } from "../context/AuthContext";
 import ThemeToggle from "../components/ThemeToggle";
 import useDocumentTitle from "../hooks/useDocumentTitle";
@@ -160,11 +160,83 @@ function HubPreview({ stats }) {
   );
 }
 
+// "Request access" for people not on the list yet. Goes to the leads, who
+// approve it from the Members page. The hidden "website" field is a trap for
+// bots; people never see it.
+function RequestAccess({ initialEmail, onClose }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState(initialEmail || "");
+  const [note, setNote] = useState("");
+  const [website, setWebsite] = useState("");
+  const [state, setState] = useState({ busy: false, done: false, error: null });
+
+  async function submit(e) {
+    e.preventDefault();
+    setState({ busy: true, done: false, error: null });
+    try {
+      await requestAccess({ name, email, note, website });
+      setState({ busy: false, done: true, error: null });
+    } catch (err) {
+      setState({ busy: false, done: false, error: err.message });
+    }
+  }
+
+  if (state.done) {
+    return (
+      <div className="lp-request lp-request--done" role="status">
+        <strong>Request sent ✉️</strong>
+        <p>
+          A lead will review it soon. Once you're approved, sign in with Google using <b>{email}</b>.
+        </p>
+        <button type="button" className="link-btn" onClick={onClose}>
+          Close
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form className="lp-request" onSubmit={submit}>
+      <div className="lp-request-head">
+        <strong>Request access</strong>
+        <button type="button" className="lp-request-close" onClick={onClose} aria-label="Close">
+          ×
+        </button>
+      </div>
+      <p className="lp-request-hint">For MIC members not on the list yet. Use the Google account you'll sign in with — ideally your VIT email.</p>
+      <label>
+        <span>Your name</span>
+        <input value={name} onChange={(e) => setName(e.target.value)} required maxLength={100} autoComplete="name" />
+      </label>
+      <label>
+        <span>Email</span>
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={200} autoComplete="email" placeholder="you@vitstudent.ac.in" />
+      </label>
+      <label>
+        <span>
+          Anything we should know? <em>(optional)</em>
+        </span>
+        <input value={note} onChange={(e) => setNote(e.target.value)} maxLength={500} placeholder="e.g. 1st year, joined the AI/ML vertical this semester" />
+      </label>
+      <label className="lp-request-trap" aria-hidden="true">
+        Website
+        <input tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
+      </label>
+      {state.error && <p className="comment-error">{state.error}</p>}
+      <button type="submit" className="btn btn--primary" disabled={state.busy}>
+        {state.busy ? "Sending…" : "Send request"}
+      </button>
+    </form>
+  );
+}
+
 export default function Login() {
   useDocumentTitle("");
   const { user, loading } = useAuth();
   const [params] = useSearchParams();
   const denied = params.get("error") === "not_allowed";
+  const deniedEmail = params.get("email") || "";
+  const [requesting, setRequesting] = useState(false);
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
@@ -227,10 +299,13 @@ export default function Login() {
                   <path d="M12 8v5M12 16h.01" />
                 </svg>
                 <div>
-                  <strong>That account isn't on the member list.</strong>
+                  <strong>{deniedEmail ? `${deniedEmail} isn't on the member list.` : "That account isn't on the member list."}</strong>
                   <p>
-                    Sign in with the email you registered with MIC. If you're a member and it still
-                    doesn't work, ask a lead to add your address.
+                    Try the Google account you registered with MIC — often your VIT email. Still stuck?{" "}
+                    <button type="button" className="link-btn" onClick={() => setRequesting(true)}>
+                      Request access
+                    </button>{" "}
+                    and a lead will add you.
                   </p>
                 </div>
               </div>
@@ -243,8 +318,12 @@ export default function Login() {
                   <rect x="4" y="11" width="16" height="10" rx="2" />
                   <path d="M8 11V7a4 4 0 0 1 8 0v4" />
                 </svg>
-                Use your MIC-registered Google account
+                Use your MIC-registered Google account ·{" "}
+                <button type="button" className="link-btn" onClick={() => setRequesting(true)}>
+                  Not on the list?
+                </button>
               </p>
+              {requesting && <RequestAccess initialEmail={deniedEmail} onClose={() => setRequesting(false)} />}
             </div>
 
             {/* Real counts from the server; the row simply stays hidden if

@@ -11,7 +11,14 @@ export default function TableOfContents({ containerRef, page }) {
     const root = containerRef.current;
     if (!root) return undefined;
     const headings = [...root.querySelectorAll(".md-body h2[id], .md-body h3[id]")];
-    setItems(headings.map((h) => ({ id: h.id, text: h.textContent, level: h.tagName === "H3" ? 3 : 2 })));
+    // The heading's own text, leaving out its "copy link" button.
+    const textOf = (h) =>
+      [...h.childNodes]
+        .filter((n) => !(n.nodeType === 1 && n.classList.contains("heading-link")))
+        .map((n) => n.textContent)
+        .join("")
+        .trim();
+    setItems(headings.map((h) => ({ id: h.id, text: textOf(h), level: h.tagName === "H3" ? 3 : 2 })));
     if (headings.length === 0) return undefined;
 
     const observer = new IntersectionObserver(

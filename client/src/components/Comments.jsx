@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useAuth } from "../context/AuthContext";
@@ -213,6 +213,22 @@ export default function Comments({ slug, onCountChange }) {
   useEffect(() => {
     if (comments) onCountChange?.(count);
   }, [comments, count, onCountChange]);
+
+  // A notification links to "#comment-<id>"; comments load after the page, so
+  // the browser can't jump there itself. Do it once they're in.
+  const jumped = useRef(false);
+  useEffect(() => {
+    if (!comments || jumped.current) return;
+    const hash = window.location.hash;
+    if (!hash.startsWith("#comment-")) return;
+    jumped.current = true;
+    const el = document.getElementById(hash.slice(1));
+    if (el) {
+      el.scrollIntoView({ block: "center" });
+      el.classList.add("is-highlighted");
+      setTimeout(() => el.classList.remove("is-highlighted"), 2500);
+    }
+  }, [comments]);
 
   async function add(text, parentId = null) {
     const created = await postComment(slug, text, parentId);

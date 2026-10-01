@@ -27,6 +27,7 @@ export default function BookmarkButton({ slug, initial }) {
     <button
       type="button"
       className={`md-action-btn${saved ? " is-on" : ""}`}
+      data-shortcut="bookmark"
       onClick={toggle}
       disabled={busy}
       aria-pressed={saved}

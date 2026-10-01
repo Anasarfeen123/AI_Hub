@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import ThemeToggle from "./ThemeToggle";
 import SearchPalette from "./SearchPalette";
 import UserMenu from "./UserMenu";
+import NotificationBell from "./NotificationBell";
 import micLogo from "../assets/mic-logo.png";
 
 export default function Header() {
@@ -23,6 +24,7 @@ export default function Header() {
         {user && <SearchPalette />}
         <div className="hub-header-user">
           <ThemeToggle />
+          {user && <NotificationBell />}
           <UserMenu />
         </div>
       </div>

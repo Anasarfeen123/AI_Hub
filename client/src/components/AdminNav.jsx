@@ -5,7 +5,10 @@ const LINKS = [
   ["/admin", "Recent changes"],
   ["/admin/pages", "Pages"],
   ["/admin/members", "Members"],
+  ["/admin/suggestions", "Suggestions"],
   ["/admin/comments", "Comments"],
+  ["/admin/analytics", "Analytics"],
+  ["/admin/links", "Links"],
   ["/contributors", "Contributors"],
 ];
 
