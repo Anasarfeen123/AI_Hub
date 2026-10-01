@@ -112,7 +112,8 @@
   display: block;
 }
 
-.lp-topbar-brand span {
+/* Only the brand's own text column, not the spans inside the wordmark. */
+.lp-topbar-brand > span {
   display: flex;
   flex-direction: column;
   line-height: 1.15;

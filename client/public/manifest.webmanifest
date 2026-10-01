@@ -1,12 +1,12 @@
 {
-  "name": "AI/ML Resource Hub — MIC VIT Chennai",
-  "short_name": "AI/ML Hub",
+  "name": "AIML Resource Hub — MIC VIT Chennai",
+  "short_name": "AIML Hub",
   "description": "The Microsoft Innovations Club's AI/ML learning hub: a guided roadmap, wiki pages and discussion.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#08090b",
-  "theme_color": "#08090b",
+  "background_color": "#06080c",
+  "theme_color": "#06080c",
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },

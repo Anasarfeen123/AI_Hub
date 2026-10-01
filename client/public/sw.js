@@ -6,7 +6,7 @@
 //   Sign-in and everything else    never touched — always straight to the network
 //
 // Cached page data is members-only, so the app deletes it on sign-out.
-const VERSION = "v1";
+const VERSION = "v2";
 const SHELL = `aihub-shell-${VERSION}`;
 const ASSETS = `aihub-assets-${VERSION}`;
 const DATA = "aihub-data";

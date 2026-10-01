@@ -1775,3 +1775,105 @@
     display: none;
   }
 }
+
+/* --- Brand: mark + wordmark ----------------------------------------------------- */
+/* The brand spectrum, from the hexagons: red-orange, yellow, green, cyan-blue. */
+:root {
+  --brand-gradient: linear-gradient(100deg, #ff4d1c 0%, #ffb41f 28%, #c7f03a 46%, #2fe07a 64%, #18c8f0 82%, #2f6bff 100%);
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  color: var(--fg-strong);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.wordmark-aiml {
+  height: 0.82em;
+  width: auto;
+  fill: currentColor;
+  flex: none;
+}
+
+.wordmark-sub {
+  font-weight: 300;
+  font-size: 0.74em;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-light);
+}
+
+.hub-brand {
+  gap: 0.65rem;
+  font-size: 1.15rem;
+}
+
+.hub-brand img,
+.lp-topbar-brand img {
+  height: 30px;
+  width: auto;
+}
+
+.lp-topbar-words {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.lp-topbar-brand .wordmark {
+  font-size: 1.05rem;
+}
+
+.lp-topbar-brand small {
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+  color: var(--fg-lighter);
+}
+
+.lp-final img {
+  height: 64px;
+  width: auto;
+}
+
+/* Headline accent in the brand spectrum. The light theme uses deeper stops so
+   every part of the word stays readable on white. */
+.lp-accent {
+  background-image: var(--brand-gradient);
+}
+
+:root[data-theme="light"] .lp-accent {
+  background-image: linear-gradient(100deg, #c2330b 0%, #b86e00 35%, #1d8a3f 65%, #1155c2 100%);
+}
+
+@media (max-width: 720px) {
+  .wordmark-sub {
+    display: none;
+  }
+
+  .hub-brand img {
+    height: 26px;
+  }
+}
+
+@media (max-width: 640px) {
+  .lp-topbar-brand small {
+    display: none;
+  }
+
+  /* The cta note: centred, wrapping as a whole line rather than leaving the
+     "Not on the list?" link stranded at the side. */
+  .lp-cta-note {
+    display: block;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .lp-cta-note svg {
+    vertical-align: -2px;
+    margin-right: 0.25rem;
+  }
+}

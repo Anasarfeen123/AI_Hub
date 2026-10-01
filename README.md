@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="client/src/assets/mic-logo.png" alt="MIC logo" width="84" />
+<img src="client/src/assets/hub-mark.png" alt="AIML Resource Hub logo" width="120" />
 
-# AI/ML Resource Hub
+# AIML Resource Hub
 
 **Microsoft Innovations Club (MIC) · VIT Chennai**
 

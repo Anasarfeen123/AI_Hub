@@ -4,7 +4,8 @@ import { googleLoginUrl, fetchPublicStats, requestAccess } from "../api";
 import { useAuth } from "../context/AuthContext";
 import ThemeToggle from "../components/ThemeToggle";
 import useDocumentTitle from "../hooks/useDocumentTitle";
-import micLogo from "../assets/mic-logo.png";
+import hubMark from "../assets/hub-mark.png";
+import Wordmark from "../components/Wordmark";
 
 // The learning path is the product, so the landing page shows the actual
 // sequence rather than describing it in prose.
@@ -257,11 +258,11 @@ export default function Login() {
       </div>
 
       <header className="lp-topbar">
-        <a className="lp-topbar-brand" href="#top" aria-label="AI/ML Resource Hub">
-          <img src={micLogo} alt="" width="36" height="26" />
-          <span>
-            <strong>AI/ML Resource Hub</strong>
-            <small>Microsoft Innovations Club</small>
+        <a className="lp-topbar-brand" href="#top" aria-label="AIML Resource Hub">
+          <img src={hubMark} alt="" width="40" height="30" />
+          <span className="lp-topbar-words">
+            <Wordmark />
+            <small>by Microsoft Innovations Club · VIT Chennai</small>
           </span>
         </a>
         <div className="lp-topbar-actions">
@@ -382,7 +383,7 @@ export default function Login() {
 
         {/* --- Closing call to action ------------------------------------- */}
         <section className="lp-final">
-          <img src={micLogo} alt="" width="66" height="48" />
+          <img src={hubMark} alt="" width="96" height="72" />
           <h2>Ready when you are.</h2>
           <p>Sign in with your MIC Google account and pick up right where you left off.</p>
           <GoogleButton large />

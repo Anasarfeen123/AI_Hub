@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const SITE = "AI/ML Resource Hub";
+const SITE = "AIML Resource Hub";
 
 // Tabs and history entries named after the page rather than all reading the
 // same site title.
