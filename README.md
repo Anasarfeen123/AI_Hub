@@ -8,6 +8,13 @@ A members-only knowledge base for MIC's AI/ML learning track — a single place 
 
 Members sign in with Google, read and edit every page wiki-style, and track their own progress through the roadmap. Leads can review every change and restore earlier versions.
 
+What members get:
+
+- **Search** — press `/` or `Ctrl K` anywhere to search every page's title and text.
+- **Saved pages** — bookmark any page; saved pages show on the home page and at `/saved`.
+- **Discussion** — a comment thread with replies under every page. Authors can edit or delete their own comments; admins and leads can remove any.
+- **Safe editing** — split write/preview view, `Ctrl S` to save, a warning before leaving with unsaved changes, and a refusal (instead of a silent overwrite) when someone else saved the page while you were editing.
+
 **Live site:** https://mic-ai-ml-resource-hub.onrender.com
 
 ## Stack
@@ -45,6 +52,23 @@ node scripts/seedPages.js              # loads client/src/content/*.md into Mong
 npm run import-members -- members.csv  # your own CSV of name,email
 node scripts/setRole.js you@example.com admin
 ```
+
+### Without Google credentials or Atlas
+
+To try the app with no Google OAuth client and no Atlas cluster, run MongoDB locally and turn on the dev-only login:
+
+```bash
+podman run -d --name aihub-mongo -p 27017:27017 docker.io/library/mongo:7   # or docker
+```
+
+In `server/.env` set `MONGODB_URI=mongodb://127.0.0.1:27017/ai-hub`, any placeholder for the two `GOOGLE_*` values, and:
+
+```bash
+NODE_ENV=development
+DEV_LOGIN=1
+```
+
+Seed as above, then sign in by visiting `http://localhost:4000/auth/dev-login?email=you@example.com` (any active member's email). The route only exists when **both** `NODE_ENV=development` and `DEV_LOGIN=1` are set, so it can't appear in production.
 
 Then run both halves, in separate terminals:
 
@@ -84,6 +108,8 @@ Hosted on Render, deploying automatically on every push to `main`.
 - **Start:** `node server/src/index.js`
 
 `--include=dev` is required because `NODE_ENV=production` otherwise makes npm skip the dev dependencies that Vite needs to build.
+
+The server sends security headers (Helmet, including a Content-Security-Policy), gzips responses, caches the fingerprinted `/assets` files for a year, and rate-limits the API per member. Don't set `VITE_API_URL` on Render: the client must call its own origin, and the CSP blocks requests to any other.
 
 Environment variables: `MONGODB_URI`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `SESSION_SECRET`, `SERVER_URL`, `CLIENT_URL`, `NODE_ENV`. Set `SERVER_URL` and `CLIENT_URL` to the same deployed URL, and register `<that URL>/auth/google/callback` as an authorised redirect URI in Google Cloud Console.
 
