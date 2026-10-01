@@ -34,12 +34,22 @@ Members-only, edited wiki-style by the whole club.
 
 | | |
 |---|---|
-| **A learning roadmap** | Three stages and their topics in order. Tick topics off as you go; the home page shows your progress and what's **up next**. |
+| **A learning roadmap** | Three stages and their topics in order. Tick topics off as you go; progress is saved to your account, so it follows you to any device. The home page shows what's **up next**. |
+| **Continue reading** | The home page lists the pages you read last and how far through you got; reopening one offers to jump back to where you stopped. |
+| **Streaks and badges** | Weekly streaks (miss a day, keep the streak) and ten milestones, on your profile at `/me`. |
+| **Learning alongside you** | Opt in to see who else is on the same stage — name and stage only, never without consent. |
 | **Search** | Press <kbd>/</kbd> or <kbd>Ctrl</kbd> <kbd>K</kbd> anywhere to search every page's title and text. |
-| **Wiki editing** | Any member can edit any page. Split write/preview view, <kbd>Ctrl</kbd> <kbd>S</kbd> to save, a warning before leaving unsaved work, and a refusal (not a silent overwrite) if someone else saved the page while you were editing. |
+| **Notifications** | A bell for replies to your comments, updates to pages you saved, announcements, and how your suggested edits went. |
+| **Private notes** | Notes on any page, saved as you type, visible only to you; all of them at `/notes`. |
+| **"Helped me"** | 👍 on any resource link, so the best course or video for a topic surfaces. |
+| **Wiki editing** | Any member can edit any page: publish straight away or **send for review** first. Split write/preview, paste or drop images in, <kbd>Ctrl</kbd> <kbd>S</kbd> to save, and a refusal (not a silent overwrite) if someone else saved while you were editing. |
+| **Help wanted** | Flag a page as out of date, incomplete or broken; flagged pages collect at `/help-wanted` for contributors to pick up. |
 | **Discussion** | A comment thread with replies under every page. Comments support a safe subset of Markdown. |
 | **Saved pages** | Bookmark pages to come back to; they show on your home page and at `/saved`. |
 | **Contributors board** | Ranks members by words written, not by how often they hit save. |
+| **Reading extras** | Reading time, a copy button on code, a link to any section, and a clean print / save-as-PDF layout. |
+| **Install and offline** | Install the hub as an app on a phone or laptop; pages you've opened stay readable without a connection. |
+| **Keyboard shortcuts** | Press <kbd>?</kbd> for the list — <kbd>g</kbd> <kbd>r</kbd> for the roadmap, <kbd>e</kbd> to edit, <kbd>b</kbd> to save a page, and more. |
 | **Light and dark themes** | Follows your system by default; the toggle in the header overrides it. |
 
 <table>
@@ -74,7 +84,12 @@ Everything lives under the account menu → **Admin**.
 | **Recent changes** `/admin` | Every edit across the hub, with diffs and one-click restore. |
 | **Pages** `/admin/pages` | Create, reorder, hide or delete pages and place them on the roadmap. Deleting a page that others link to asks first and names the links that would break. |
 | **Members** `/admin/members` | Add members one at a time or in bulk, filter by *not signed in* / *active this week* / *deactivated*, see when each person was last active, change roles, deactivate, and export the list as CSV. |
+| **Suggestions** `/admin/suggestions` | Edits members sent for review, each with a diff and a warning if the page changed since. Approving publishes it under the author's name; they're notified either way. |
 | **Comments** `/admin/comments` | The latest comments from every page in one feed, with delete. |
+| **Analytics** `/admin/analytics` | Readers per day, most-read and never-opened pages, and a roadmap funnel showing where members stop. |
+| **Link checker** `/admin/links` | Checks every external link in the hub and lists the dead ones with the pages they're on. Runs weekly once scheduled. |
+| **Access requests** (on Members) | People not on the list can ask to join from the landing page; approve or decline in one click. |
+| **Reminder emails** (on Overview) | A friendly nudge to members quiet for two weeks — at most one per person per fortnight, and members can turn them off. Needs email set up (below). |
 
 Every administrative action (role changes, deactivations, removals, page deletions, restores, comment removals, announcements, exports) is written to an **audit log** shown on the Overview, so leads can always see who did what.
 
@@ -123,7 +138,9 @@ In production the Express server also serves the built React app, so the site an
 - **Structure is data, not code.** The nav and roadmap are derived from the pages themselves: a page's `section` and `order` place it in the nav, and an optional `roadmapStage` puts it on the roadmap. There's no separate nav table to fall out of sync.
 - **Contributions are measured, not counted.** Each save is diffed against the previous version (line-level LCS) and the word and line counts are stored on the revision, so the leaderboard is a cheap aggregation. The original Markdown import, blank-line reformatting and restores don't count. Restoring someone's words credits them once, not again.
 - **Bylines follow people.** "Last edited by" looks the editor up live, so it shows their current name and falls back to their email if they've left.
-- **Progress is per-browser.** Roadmap ticks live in `localStorage` and sync live across tabs; nothing about a member's learning pace is stored on the server.
+- **Progress follows the account.** Roadmap ticks are stored per member and cached in the browser, so the roadmap paints instantly and works offline; ticks made before this existed are merged in once, and merging only ever adds.
+- **Images live in the database.** Uploads are capped at 1.5 MB and checked by their actual bytes (PNG, JPEG, GIF, WebP — never SVG), so the hub needs no separate file storage.
+- **The link checker can't be aimed inward.** Every hop, redirects included, is resolved first and private or internal addresses are refused.
 - **Small bundles.** Each screen is its own chunk, so a member reading a page never downloads the admin tools.
 
 </details>
@@ -139,8 +156,13 @@ client/
   src/styles/       theme tokens + per-area stylesheets
   src/content/      the original Markdown, used only to seed a new database
 server/
-  src/routes/       auth, pages, members, structure, stats, library (search + bookmarks), comments, admin
-  src/models/       Member, Page, Revision, Comment, Bookmark, Announcement, AuditLog, RoadmapStage
+  src/routes/       auth, pages, members, structure, stats, library (search + bookmarks), comments,
+                    me (progress, reading, notes, profile, notifications), community (ratings,
+                    flags, suggestions, access requests), media (images), ops (analytics, links,
+                    reminders, scheduled jobs), admin
+  src/models/       Member, Page, Revision, Comment, Bookmark, Note, Progress, ReadingHistory,
+                    PageView, Notification, Rating, PageFlag, Suggestion, AccessRequest,
+                    Image, LinkCheck, Announcement, AuditLog, RoadmapStage
   scripts/          seeding and member-management tools (see below)
 docs/screenshots/   images used in this README
 ```
@@ -249,6 +271,23 @@ The live hub runs on **Render** as a Web Service connected to this repo, and red
 | `SERVER_URL` and `CLIENT_URL` | Both the site's own URL, no trailing slash |
 
 Don't set `DEV_LOGIN` or `VITE_API_URL` in production.
+
+**Optional — email** (reminders, and a welcome email when an access request is approved). Without these the hub works the same and says email isn't set up:
+
+| Environment variable | Value |
+|---|---|
+| `SMTP_HOST` / `SMTP_PORT` | e.g. `smtp.gmail.com` / `465` |
+| `SMTP_USER` / `SMTP_PASS` | The sending account; for Gmail, an **App Password** (Google Account → Security → App passwords), not the real password |
+| `MAIL_FROM` | e.g. `MIC AI/ML Hub <you@gmail.com>` |
+
+**Optional — weekly jobs** (reminder emails and the link check). Render's free tier sleeps, so a GitHub Actions schedule ([`.github/workflows/weekly.yml`](.github/workflows/weekly.yml)) wakes the site every Monday and asks it to run them:
+
+1. In Render, add `CRON_SECRET` — any long random string.
+2. In GitHub → Settings → Secrets and variables → Actions, add `SITE_URL` (the site's address) and the same `CRON_SECRET`.
+
+Until both are set, the workflow skips itself and the endpoint doesn't exist.
+
+> ⚠️ Keep `server/.env` pointed at a **local** database for development. To run a script against the real database, set it for that one command instead — `MONGODB_URI='…' node scripts/…` — so nothing else picks it up, and never combine the real database with `DEV_LOGIN`.
 
 Two things outside Render have to be set up too:
 
