@@ -24,40 +24,33 @@ function systemPrefersDark() {
 
 export function ThemeProvider({ children }) {
   const [mode, setMode] = useState(readStored);
-  const [resolved, setResolved] = useState(() =>
-    readStored() === "system" ? (systemPrefersDark() ? "dark" : "light") : readStored()
-  );
+  // Tracked separately so "system" can follow the OS live; the effective
+  // theme is then derived during render rather than mirrored into state.
+  const [systemDark, setSystemDark] = useState(systemPrefersDark);
+  const resolved = mode === "system" ? (systemDark ? "dark" : "light") : mode;
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => setSystemDark(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   // Stamp the root element so CSS can select on it, and keep `color-scheme` in
   // step so form controls and scrollbars match.
   useEffect(() => {
-    const effective = mode === "system" ? (systemPrefersDark() ? "dark" : "light") : mode;
-    setResolved(effective);
-
     const root = document.documentElement;
-    root.setAttribute("data-theme", effective);
-    root.style.colorScheme = effective;
+    root.setAttribute("data-theme", resolved);
+    root.style.colorScheme = resolved;
+  }, [resolved]);
 
+  useEffect(() => {
     try {
       if (mode === "system") localStorage.removeItem(STORAGE_KEY);
       else localStorage.setItem(STORAGE_KEY, mode);
     } catch {
       // Storage is a convenience here; the theme still applies without it.
     }
-  }, [mode]);
-
-  // Follow the OS live, but only while the member hasn't chosen for themselves.
-  useEffect(() => {
-    if (mode !== "system") return undefined;
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = () => {
-      const effective = mq.matches ? "dark" : "light";
-      setResolved(effective);
-      document.documentElement.setAttribute("data-theme", effective);
-      document.documentElement.style.colorScheme = effective;
-    };
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
   }, [mode]);
 
   // The toggle walks light -> dark -> system, so "follow my OS" stays reachable

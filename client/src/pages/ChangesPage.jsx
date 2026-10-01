@@ -7,9 +7,17 @@ import { fetchChanges, fetchDiff, revertRevision } from "../api";
 import DiffView from "../components/DiffView";
 import AdminNav from "../components/AdminNav";
 import { isStaff } from "../lib/roles";
+import { useNav } from "../context/NavContext";
+import { findInNav } from "../lib/nav";
+import { relativeTime } from "../lib/format";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
-function when(date) {
-  return new Date(date).toLocaleString();
+// "+120 / −8 words" — how big the change was, at a glance.
+function sizeOf(rev) {
+  const parts = [];
+  if (rev.wordsAdded) parts.push(`+${rev.wordsAdded}`);
+  if (rev.wordsRemoved) parts.push(`−${rev.wordsRemoved}`);
+  return parts.length ? `${parts.join(" / ")} words` : null;
 }
 
 // Shared by /admin (everything) and /my-edits (just yours). Reverting is only
@@ -23,6 +31,8 @@ export default function ChangesPage({ mine = false }) {
   const [busyId, setBusyId] = useState(null);
 
   const isAdmin = isStaff(user?.role);
+  const { nav } = useNav();
+  useDocumentTitle(mine ? "Your edits" : "Recent changes");
 
   async function load() {
     setError(null);
@@ -76,7 +86,7 @@ export default function ChangesPage({ mine = false }) {
     <>
       <Header />
       <TopNav />
-      <div className="editor-wrap">
+      <div id="main" className="editor-wrap">
         <h1>{mine ? "Your edits" : "Recent changes"}</h1>
         {!mine && isAdmin && <AdminNav />}
         <p className="editor-note">
@@ -109,22 +119,32 @@ export default function ChangesPage({ mine = false }) {
           changes.map((rev) => (
             <div className="review-card" key={rev._id}>
               <div className="review-head">
-                <div>
-                  <Link to={`/${rev.slug}`} className="review-slug">
-                    {rev.slug}
+                <div className="review-who">
+                  <Link to={`/${rev.slug}`} className="review-title">
+                    {findInNav(nav, rev.slug)?.page?.title || rev.slug}
                   </Link>
                   <p className="review-meta">
-                    {rev.authorName || rev.authorEmail || "—"} · {when(rev.createdAt)}
+                    {rev.seeded ? "Initial import" : rev.authorName || rev.authorEmail || "—"} ·{" "}
+                    <time dateTime={rev.createdAt} title={new Date(rev.createdAt).toLocaleString()}>
+                      {relativeTime(rev.createdAt)}
+                    </time>
+                    {sizeOf(rev) && (
+                      <>
+                        {" · "}
+                        <span className="review-size">{sizeOf(rev)}</span>
+                      </>
+                    )}
+                    <span className="review-slug-path">/{rev.slug}</span>
                   </p>
                 </div>
                 <div className="review-head-actions">
-                  <button type="button" className="editor-cancel" onClick={() => toggleDiff(rev._id)}>
+                  <button type="button" className="btn btn--sm" onClick={() => toggleDiff(rev._id)}>
                     {openId === rev._id ? "Hide changes" : "View changes"}
                   </button>
                   {isAdmin && (
                     <button
                       type="button"
-                      className="editor-cancel"
+                      className="btn btn--sm"
                       disabled={busyId === rev._id}
                       onClick={() => handleRevert(rev._id)}
                     >
@@ -134,7 +154,7 @@ export default function ChangesPage({ mine = false }) {
                 </div>
               </div>
 
-              {rev.note && <p className="review-summary">“{rev.note}”</p>}
+              {rev.note && !rev.seeded && <p className="review-summary">“{rev.note}”</p>}
 
               {openId === rev._id && (
                 <>

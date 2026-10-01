@@ -7,8 +7,10 @@ import { useAuth } from "../context/AuthContext";
 import { useNav } from "../context/NavContext";
 import { fetchAllPages, fetchStages, createPage, updatePageMeta, deletePage } from "../api";
 import { isStaff } from "../lib/roles";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 export default function PagesAdmin() {
+  useDocumentTitle("Pages");
   const { user, loading: authLoading } = useAuth();
   const { refresh: refreshNav } = useNav();
 
@@ -53,7 +55,7 @@ export default function PagesAdmin() {
       <>
         <Header />
         <TopNav />
-        <div className="editor-wrap">
+        <div id="main" className="editor-wrap">
           <h1>Admins only</h1>
           <p className="md-status">This page is for MIC leads.</p>
         </div>
@@ -174,8 +176,8 @@ Their links will 404 until someone fixes them.`);
           <span className="prow-slug">/{page.slug}</span>
         </div>
         <div className="prow-tags">
-          {page.roadmapStage && <span className="page-badge">{page.roadmapStage}</span>}
-          {page.hidden && <span className="page-badge page-badge--off">hidden</span>}
+          {page.roadmapStage && <span className={`hub-level-badge ${page.roadmapStage}`}>{page.roadmapStage}</span>}
+          {page.hidden && <span className="hub-level-badge page-badge--off">hidden</span>}
         </div>
         <div className="prow-actions">
           <button type="button" className="iconbtn" disabled={busy || index === 0} onClick={() => move(page, -1, "order")} title="Move up">
@@ -239,7 +241,7 @@ Their links will 404 until someone fixes them.`);
     <>
       <Header />
       <TopNav />
-      <div className="editor-wrap">
+      <div id="main" className="editor-wrap">
         <h1>Pages</h1>
         <AdminNav />
 

@@ -37,10 +37,12 @@ export async function fetchPage(slug) {
   return data.page;
 }
 
-export function savePage(slug, body, summary) {
+// `baseUpdatedAt` is the version the editor started from; the server refuses
+// the save if someone else has published since.
+export function savePage(slug, body, summary, baseUpdatedAt) {
   return request("/api/edits", {
     method: "POST",
-    body: JSON.stringify({ slug, body, summary }),
+    body: JSON.stringify({ slug, body, summary, baseUpdatedAt }),
   });
 }
 
@@ -133,4 +135,43 @@ export async function fetchLeaderboard() {
 // Omit `email` for the signed-in member's own numbers.
 export async function fetchMyStats(email) {
   return request(`/api/stats/me${email ? `?email=${encodeURIComponent(email)}` : ""}`);
+}
+
+// --- Search, bookmarks, comments ------------------------------------------
+
+export async function searchPages(q, signal) {
+  return request(`/api/search?q=${encodeURIComponent(q)}`, { signal });
+}
+
+export async function fetchBookmarks() {
+  const data = await request("/api/bookmarks");
+  return data.bookmarks;
+}
+
+export function setBookmark(slug, saved) {
+  return saved
+    ? request("/api/bookmarks", { method: "PUT", body: JSON.stringify({ slug }) })
+    : request(`/api/bookmarks?slug=${encodeURIComponent(slug)}`, { method: "DELETE" });
+}
+
+export async function fetchComments(slug) {
+  const data = await request(`/api/comments?slug=${encodeURIComponent(slug)}`);
+  return data.comments;
+}
+
+export async function postComment(slug, body, parentId = null) {
+  const data = await request("/api/comments", {
+    method: "POST",
+    body: JSON.stringify({ slug, body, parentId }),
+  });
+  return data.comment;
+}
+
+export async function editComment(id, body) {
+  const data = await request(`/api/comments/${id}`, { method: "PATCH", body: JSON.stringify({ body }) });
+  return data.comment;
+}
+
+export function deleteComment(id) {
+  return request(`/api/comments/${id}`, { method: "DELETE" });
 }

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
@@ -34,10 +35,17 @@ function MarkdownLink({ href = "", children, ...props }) {
 
 const components = { a: MarkdownLink };
 
-export default function Markdown({ body, linkBase }) {
+const remarkPlugins = [remarkGfm];
+const rehypePlugins = [rehypeSlug];
+
+// Memoised: re-parsing a long article whenever an unrelated piece of page
+// state changes (a comment posted, a bookmark toggled) is wasted work.
+function Markdown({ body, linkBase }) {
   return (
-    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSlug]} components={components}>
+    <ReactMarkdown remarkPlugins={remarkPlugins} rehypePlugins={rehypePlugins} components={components}>
       {renderBody(body, linkBase)}
     </ReactMarkdown>
   );
 }
+
+export default memo(Markdown);

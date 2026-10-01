@@ -3,6 +3,7 @@ import { googleLoginUrl } from "../api";
 import { useAuth } from "../context/AuthContext";
 import ThemeToggle from "../components/ThemeToggle";
 import micLogo from "../assets/mic-logo.png";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 // The learning path is the product, so the landing page shows the actual
 // sequence rather than describing it in prose.
@@ -79,6 +80,7 @@ function GoogleButton() {
 }
 
 export default function Login() {
+  useDocumentTitle("");
   const { user, loading } = useAuth();
   const [params] = useSearchParams();
   const denied = params.get("error") === "not_allowed";
@@ -91,7 +93,7 @@ export default function Login() {
 
       <header className="lp-topbar">
         <div className="lp-topbar-brand">
-          <img src={micLogo} alt="" width="26" />
+          <img src={micLogo} alt="" width="30" height="22" />
           <span>Microsoft Innovations Club</span>
         </div>
         <div className="lp-topbar-actions">
@@ -102,12 +104,14 @@ export default function Login() {
         </div>
       </header>
 
-      <main className="lp-main">
+      <main id="main" className="lp-main">
         {/* --- Hero ------------------------------------------------------- */}
         <section className="lp-hero">
           <p className="lp-eyebrow">AI/ML Vertical · VIT Chennai</p>
           <h1>
-            Learn AI in the order
+            {/* The space matters: phones hide the <br>, and without it the two
+                lines would run together as "orderit". */}
+            Learn AI in the order{" "}
             <br />
             it actually makes sense.
           </h1>

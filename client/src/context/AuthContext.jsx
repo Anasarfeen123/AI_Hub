@@ -8,15 +8,25 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
-    setLoading(true);
-    const u = await fetchMe();
+    const u = await fetchMe().catch(() => null);
     setUser(u);
     setLoading(false);
   }, []);
 
+  // Loading starts true, so the first check doesn't need to set it.
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    let cancelled = false;
+    fetchMe()
+      .catch(() => null)
+      .then((u) => {
+        if (cancelled) return;
+        setUser(u);
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const logout = async () => {
     await apiLogout();

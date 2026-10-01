@@ -7,8 +7,10 @@ import RoleBadge from "../components/RoleBadge";
 import { useAuth } from "../context/AuthContext";
 import { fetchMembers, addMember, bulkAddMembers, updateMember } from "../api";
 import { isStaff, outranks } from "../lib/roles";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 export default function MembersPage() {
+  useDocumentTitle("Members");
   const { user, loading: authLoading } = useAuth();
 
   const [members, setMembers] = useState(null);
@@ -75,7 +77,7 @@ export default function MembersPage() {
       <>
         <Header />
         <TopNav />
-        <div className="editor-wrap">
+        <div id="main" className="editor-wrap">
           <h1>Admins only</h1>
           <p className="md-status">This page is for MIC leads.</p>
         </div>
@@ -150,7 +152,7 @@ export default function MembersPage() {
     <>
       <Header />
       <TopNav />
-      <div className="editor-wrap">
+      <div id="main" className="editor-wrap">
         <h1>Members</h1>
         <AdminNav />
 

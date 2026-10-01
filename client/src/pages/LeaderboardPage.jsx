@@ -1,16 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import Header from "../components/Header";
 import TopNav from "../components/TopNav";
 import RoleBadge from "../components/RoleBadge";
 import { useAuth } from "../context/AuthContext";
 import { fetchLeaderboard, fetchMyStats } from "../api";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 function num(n) {
   return (n || 0).toLocaleString();
 }
 
 export default function LeaderboardPage() {
+  useDocumentTitle("Contributors");
   const { user, loading: authLoading } = useAuth();
 
   const [data, setData] = useState(null);
@@ -31,11 +33,6 @@ export default function LeaderboardPage() {
   // the rest read as a share of it.
   const top = data?.leaders?.[0]?.wordsAdded || 0;
 
-  const myRow = useMemo(
-    () => data?.leaders?.find((l) => l.email?.toLowerCase() === user?.email?.toLowerCase()),
-    [data, user]
-  );
-
   if (authLoading) return <div className="hub-loading">Loading…</div>;
   if (!user) return <Navigate to="/login" replace />;
 
@@ -43,7 +40,7 @@ export default function LeaderboardPage() {
     <>
       <Header />
       <TopNav />
-      <div className="editor-wrap">
+      <div id="main" className="editor-wrap">
         <h1>Contributors</h1>
         <p className="editor-note">
           Ranked by how much writing each member has added to the hub — words, not saves. The

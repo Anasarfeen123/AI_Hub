@@ -4,39 +4,7 @@
    first-class target rather than a fallback.
    -------------------------------------------------------------------------- */
 @media (max-width: 720px) {
-  /* The header wraps to two rows instead of squeezing every control onto one. */
-  .hub-header-inner {
-    flex-wrap: wrap;
-    gap: 0.5rem 0.75rem;
-    padding-top: 0.6rem;
-    padding-bottom: 0.6rem;
-  }
-
-  .hub-brand span {
-    font-size: 0.92rem;
-  }
-
-  .hub-header-user {
-    width: 100%;
-    order: 3;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
-
-  /* The signed-in name is the first thing to go — the avatar and role badge
-     already identify the member, and the links matter more. */
-  .hub-header-name {
-    display: none;
-  }
-
-  .hub-header-link {
-    font-size: 0.82rem;
-  }
-
   /* Tap targets: 44px is the accessibility floor for a finger. */
-  .hub-header-link,
-  .hub-header-signout,
   .md-edit-btn,
   .editor-btn,
   .editor-cancel {

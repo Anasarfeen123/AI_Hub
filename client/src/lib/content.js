@@ -13,26 +13,6 @@ const ADMONITION_EMOJI = {
   question: "❓",
 };
 
-// The raw path keeps "index" segments (e.g. "foundations/index") so its
-// *directory* can still be recovered — routes collapse "index" away, which
-// would otherwise make an index page's own directory look like "" instead
-// of e.g. "foundations".
-function fileKeyToRawPath(key) {
-  return key.replace(/^.*\/content\//, "").replace(/\.md$/, "");
-}
-
-function rawPathToRoute(rawPath) {
-  let p = rawPath;
-  if (p.endsWith("/index")) p = p.slice(0, -"/index".length);
-  if (p === "index") p = "";
-  return p;
-}
-
-function dirOfRawPath(rawPath) {
-  const idx = rawPath.lastIndexOf("/");
-  return idx === -1 ? "" : rawPath.slice(0, idx);
-}
-
 function resolveRelativeLink(fromDir, target) {
   const hashIdx = target.indexOf("#");
   const pathPart = hashIdx === -1 ? target : target.slice(0, hashIdx);
@@ -90,10 +70,6 @@ function preprocessAdmonitions(md) {
   }
 
   return out.join("\n");
-}
-
-function stripLeadingH1(body) {
-  return body.replace(/^\s*#\s+.+\n+/, "");
 }
 
 // Turns stored markdown into what react-markdown should render. Applied at
