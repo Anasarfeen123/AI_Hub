@@ -104,15 +104,22 @@ export default function ChangesPage({ mine = false }) {
         {!changes && !error && <p className="md-status">Loading…</p>}
 
         {changes && changes.length === 0 && (
-          <p className="md-status">
-            {mine ? (
+          <div className="empty-state empty-state--boxed">
+            <p>
+              <strong>{mine ? "You haven't edited anything yet." : "No changes recorded yet."}</strong>
+            </p>
+            {mine && (
               <>
-                You haven't edited anything yet. Open any page and hit <strong>Edit</strong>.
+                <p className="md-status">
+                  Spotted a gap or a better resource? Open any page and hit Edit — it goes live straight
+                  away, and it counts towards the contributors board.
+                </p>
+                <Link className="btn" to="/roadmap">
+                  Find a page to improve
+                </Link>
               </>
-            ) : (
-              "No changes recorded yet."
             )}
-          </p>
+          </div>
         )}
 
         {changes &&

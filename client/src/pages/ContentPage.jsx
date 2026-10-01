@@ -82,14 +82,28 @@ export default function ContentPage() {
             {loading && <PageSkeleton />}
 
             {error && (
-              <div className="empty-state">
-                <h1>Page not available</h1>
-                <p className="md-status">{error}</p>
-                <p>
-                  <Link className="btn btn--ghost" to="/">
-                    Back to the homepage
-                  </Link>
+              <div className="empty-state empty-state--page">
+                <p className="empty-state-code" aria-hidden="true">
+                  {/not found/i.test(error) ? "404" : "Oops"}
                 </p>
+                <h1>{/not found/i.test(error) ? "This page doesn't exist" : "Page not available"}</h1>
+                <p className="md-status">
+                  {/not found/i.test(error)
+                    ? `Nothing lives at /${slug}. It may have been moved or renamed — try searching for it.`
+                    : error}
+                </p>
+                <div className="empty-state-actions">
+                  <button
+                    type="button"
+                    className="btn btn--primary"
+                    onClick={() => window.dispatchEvent(new Event("aihub:open-search"))}
+                  >
+                    Search the hub
+                  </button>
+                  <Link className="btn" to="/">
+                    Go home
+                  </Link>
+                </div>
               </div>
             )}
 

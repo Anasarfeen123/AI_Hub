@@ -1310,3 +1310,315 @@ kbd {
 .hub-topnav-inner {
   padding-right: 2.5rem;
 }
+
+/* --- Home: welcome banner ---------------------------------------------------- */
+.home-top {
+  padding-top: 2rem;
+  padding-bottom: 1rem;
+}
+
+.home-welcome {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.5rem 2rem;
+  padding: 2rem 2rem 1.75rem;
+  border: 1px solid var(--border);
+  border-radius: 1.1rem;
+  background: var(--surface);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.home-welcome-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse 45% 90% at 0% 0%, rgba(242, 113, 28, 0.13), transparent 70%),
+    radial-gradient(ellipse 40% 80% at 100% 0%, rgba(28, 95, 168, 0.14), transparent 70%);
+}
+
+.home-kicker {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+.home-welcome h1 {
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--fg-strong);
+}
+
+.home-sub {
+  margin: 0 0 1.5rem;
+  max-width: 40rem;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--fg-light);
+}
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.85rem;
+}
+
+.home-next {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: min(22rem, 100%);
+  max-width: 28rem;
+  padding: 0.9rem 3rem 0.95rem 1.1rem;
+  border: 1px solid rgba(242, 113, 28, 0.4);
+  border-radius: var(--radius-lg);
+  background: rgba(242, 113, 28, 0.08);
+  color: var(--fg);
+  text-decoration: none;
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+
+.home-next:hover {
+  border-color: var(--mic-orange);
+  background: rgba(242, 113, 28, 0.13);
+  color: var(--fg);
+  transform: translateY(-1px);
+}
+
+.home-next-stage {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+.home-next-stage--beginner { color: var(--level-beginner); }
+.home-next-stage--intermediate { color: var(--level-intermediate); }
+.home-next-stage--advanced { color: var(--level-advanced); }
+
+.home-next strong {
+  font-size: 1.08rem;
+  letter-spacing: -0.01em;
+}
+
+.home-next-desc {
+  font-size: 0.84rem;
+  color: var(--fg-light);
+}
+
+.home-next-go {
+  position: absolute;
+  right: 1.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: var(--accent-text);
+  transition: transform var(--transition-fast);
+}
+
+.home-next:hover .home-next-go {
+  transform: translate(3px, -50%);
+}
+
+.home-quick {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  gap: 0.5rem;
+}
+
+.home-quick-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 0.95rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.home-quick-item svg {
+  color: var(--fg-lighter);
+}
+
+.home-quick-item:hover {
+  border-color: var(--mic-orange);
+  color: var(--accent-text);
+}
+
+.home-progress {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  align-self: start;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+}
+
+.home-progress div {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-progress strong {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+
+.home-progress span {
+  font-size: 0.8rem;
+  color: var(--fg-lighter);
+}
+
+.home-ring-track {
+  fill: none;
+  stroke: var(--tint-3);
+  stroke-width: 7;
+}
+
+.home-ring-fill {
+  fill: none;
+  stroke: var(--mic-orange);
+  stroke-width: 7;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 40px 40px;
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.home-ring-text {
+  fill: var(--fg);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.home-saved {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.home-saved-label {
+  margin-right: 0.35rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-lighter);
+}
+
+.home-saved .saved-chip {
+  padding: 0.38rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.hub-section-hint {
+  font-size: 0.8rem;
+  color: var(--fg-lighter);
+}
+
+@media (max-width: 720px) {
+  .home-top {
+    padding-top: 1.25rem;
+  }
+
+  .home-welcome {
+    grid-template-columns: 1fr;
+    padding: 1.4rem 1.2rem;
+  }
+
+  .home-progress {
+    padding: 0.75rem 1rem;
+  }
+
+  .home-progress .home-ring {
+    width: 56px;
+    height: 56px;
+  }
+
+  .home-next {
+    min-width: 100%;
+  }
+
+  .hub-section-hint {
+    display: none;
+  }
+}
+
+/* --- Roadmap topic links ----------------------------------------------------- */
+/* Topic titles read as headings that happen to be links, not as link-blue
+   text; the stage colour appears on hover. */
+.roadmap-node-title,
+.tree-node-title {
+  color: var(--fg) !important;
+}
+
+.roadmap-node-title:hover,
+.tree-node-title:hover {
+  color: var(--stage-color, var(--accent-text)) !important;
+}
+
+/* --- Empty and error states -------------------------------------------------- */
+.empty-state--page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 1rem;
+  text-align: center;
+}
+
+.md-content .empty-state-code {
+  margin: 0 0 0.5rem;
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  background: linear-gradient(100deg, var(--mic-orange), var(--mic-yellow));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.md-content .empty-state--page h1 {
+  margin: 0 0 0.5rem;
+}
+
+.empty-state--page .md-status {
+  max-width: 28rem;
+  margin: 0 0 1.5rem;
+  font-size: 0.95rem;
+}
+
+.empty-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.empty-state-actions .btn {
+  text-decoration: none !important;
+}

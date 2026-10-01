@@ -45,8 +45,15 @@ export default function SearchPalette() {
         setOpen(true);
       }
     }
+    // Anything can open search (e.g. the "not found" page) by dispatching
+    // this event, without needing a ref to the palette.
+    const onOpen = () => setOpen(true);
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("aihub:open-search", onOpen);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("aihub:open-search", onOpen);
+    };
   }, []);
 
   useEffect(() => {

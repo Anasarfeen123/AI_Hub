@@ -1,44 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { fetchRoadmap } from "../api";
-
-const STORAGE_KEY = "aihub-roadmap-progress";
-
-// roadmap.json hrefs look like "foundations/python/" — strip the trailing
-// slash and add a leading one to match this app's own content routes.
-function toRoute(href) {
-  return "/" + href.replace(/\/+$/, "");
-}
-
-function loadProgress() {
-  try {
-    return JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || {};
-  } catch {
-    return {};
-  }
-}
-
-function saveProgress(progress) {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-  } catch {
-    // localStorage unavailable (private mode, disabled storage, etc.) — progress just won't persist
-  }
-}
-
-function countDone(nodes, progress) {
-  return nodes.reduce((n, node) => n + (progress[node.id] ? 1 : 0), 0);
-}
+import { useRoadmapProgress, useRoadmapStages, countDone, toRoute } from "../hooks/useRoadmap";
 
 export default function Roadmap() {
-  const [progress, setProgress] = useState(loadProgress);
-  const [stages, setStages] = useState(null);
-
-  useEffect(() => {
-    fetchRoadmap()
-      .then(setStages)
-      .catch(() => setStages([]));
-  }, []);
+  const { progress, setDone, reset } = useRoadmapProgress();
+  const stages = useRoadmapStages();
 
   const { totalNodes, totalDone } = useMemo(() => {
     let totalNodes = 0;
@@ -50,16 +16,6 @@ export default function Roadmap() {
     return { totalNodes, totalDone };
   }, [progress, stages]);
 
-  const toggleNode = (id, checked) => {
-    const next = { ...progress, [id]: checked };
-    setProgress(next);
-    saveProgress(next);
-  };
-
-  const reset = () => {
-    setProgress({});
-    saveProgress({});
-  };
 
   if (!stages) return <p className="md-status">Loading roadmap…</p>;
   if (stages.length === 0) {
@@ -122,7 +78,7 @@ export default function Roadmap() {
                             type="checkbox"
                             checked={isDone}
                             aria-label={`Mark "${node.title}" as done`}
-                            onChange={(e) => toggleNode(node.id, e.target.checked)}
+                            onChange={(e) => setDone(node.id, e.target.checked)}
                           />
                           <span className="roadmap-checkmark" aria-hidden="true">
                             ✓
