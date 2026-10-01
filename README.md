@@ -9,7 +9,7 @@
 One maintained path to learn AI, from your first line of Python to reading and writing research papers.<br />
 Members-only, edited wiki-style by the whole club.
 
-[**Open the hub →**](https://mic-ai-ml-resource-hub-g66e.onrender.com)
+[**Open the hub →**](https://mic-aiml-resource-hub.onrender.com)
 
 <img src="docs/screenshots/landing.png" alt="The AI/ML Resource Hub landing page" width="860" />
 

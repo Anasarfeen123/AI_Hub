@@ -3,7 +3,7 @@
 # own timer; this wakes it and asks it to run them.
 #
 # Enable by adding two repository secrets (Settings → Secrets → Actions):
-#   SITE_URL     the hub's address, e.g. https://mic-ai-ml-resource-hub-g66e.onrender.com
+#   SITE_URL     the hub's address, e.g. https://mic-aiml-resource-hub.onrender.com
 #   CRON_SECRET  the same long random value as CRON_SECRET in Render's environment
 name: Weekly jobs
 
