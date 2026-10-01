@@ -10,7 +10,11 @@ router.use(ensureMember);
 // Strips the markdown syntax a snippet would otherwise show raw.
 function plainText(md) {
   return (md || "")
+    .replace(/\r\n?/g, "\n")
     .replace(/```[\s\S]*?```/g, " ")
+    // Headings are section labels; in a snippet they run into the sentence
+    // after them ("Explanation The transformer…"). Matching still sees them.
+    .replace(/^#{1,6}\s.*$/gm, " ")
     .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
     .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
     .replace(/^(!!!|\?\?\?).*$/gm, " ")

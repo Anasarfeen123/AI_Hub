@@ -29,7 +29,7 @@ const FEATURES = [
   },
   {
     title: "Track your progress",
-    body: "Tick topics off as you finish them and watch each stage fill up — right on the roadmap.",
+    body: "Tick topics off as you finish them and watch each stage fill up, right on the roadmap.",
     icon: icon(<><circle cx="12" cy="12" r="9" /><path d="m8 12 3 3 5-6" /></>),
   },
   {
@@ -44,7 +44,7 @@ const FEATURES = [
   },
   {
     title: "Anyone can improve it",
-    body: "Spot a gap? Hit Edit and publish. No pull request, no approval queue — every member can write.",
+    body: "Spot a gap? Hit Edit and publish. No pull requests, no approval queue. Every member can write.",
     icon: icon(<><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" /></>),
   },
   {
@@ -206,7 +206,7 @@ export default function Login() {
           <div className="lp-hero-copy">
             <p className="lp-pill">
               <span className="lp-pill-dot" aria-hidden="true" />
-              AI/ML Vertical · VIT Chennai · Members only
+              MIC AI/ML · VIT Chennai · Members only
             </p>
             <h1>
               {/* The space matters: phones hide the <br>, and without it the two
@@ -216,8 +216,8 @@ export default function Login() {
               it <span className="lp-accent">actually makes sense.</span>
             </h1>
             <p className="lp-lede">
-              One maintained path from your first line of Python to reading — and writing — research
-              papers. Curated by MIC leads, improved by every member.
+              One clear path from your first line of Python to reading (and writing) research
+              papers. Put together by MIC leads, made better by every member.
             </p>
 
             {denied && (
@@ -288,7 +288,7 @@ export default function Login() {
         <section className="lp-section" aria-labelledby="lp-features-title">
           <p className="lp-kicker">Why this exists</p>
           <h2 className="lp-h2" id="lp-features-title">
-            Everything you need to actually learn it — in one place.
+            Everything you need to actually learn it, in one place.
           </h2>
           <div className="lp-features">
             {FEATURES.map((f) => (
@@ -304,8 +304,8 @@ export default function Login() {
         {/* --- Closing call to action ------------------------------------- */}
         <section className="lp-final">
           <img src={micLogo} alt="" width="66" height="48" />
-          <h2>Ready to start your path?</h2>
-          <p>Sign in with your MIC Google account — it takes five seconds.</p>
+          <h2>Ready when you are.</h2>
+          <p>Sign in with your MIC Google account and pick up right where you left off.</p>
           <GoogleButton large />
         </section>
       </main>

@@ -25,47 +25,43 @@
   z-index: -1;
 }
 
+/* Plain radial gradients rather than blurred blobs: same soft light, without
+   a large blur filter for the browser to repaint on scroll. */
 .lp-glow {
   position: absolute;
-  width: 34rem;
-  height: 34rem;
+  width: 46rem;
+  height: 46rem;
   border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.16;
-}
-
-.lp-glow--a {
-  top: -12rem;
-  left: -8rem;
-  background: var(--mic-orange);
-}
-
-.lp-glow--b {
-  top: -6rem;
-  right: -10rem;
-  background: var(--mic-blue);
-  opacity: 0.2;
-}
-
-.lp-glow--c {
-  top: 18rem;
-  left: 40%;
-  width: 26rem;
-  height: 26rem;
-  background: var(--mic-green);
   opacity: 0.1;
 }
 
+.lp-glow--a {
+  top: -20rem;
+  left: -16rem;
+  background: radial-gradient(circle, var(--mic-orange), transparent 65%);
+}
+
+.lp-glow--b {
+  top: -18rem;
+  right: -18rem;
+  background: radial-gradient(circle, var(--mic-blue), transparent 65%);
+  opacity: 0.14;
+}
+
+.lp-glow--c {
+  display: none;
+}
+
 :root[data-theme="light"] .lp-glow {
-  opacity: 0.12;
+  opacity: 0.08;
 }
 
 /* Fades out downwards so it reads as light on the hero, not wallpaper. */
 .lp-grid {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(var(--tint-2) 1px, transparent 1px),
-    linear-gradient(90deg, var(--tint-2) 1px, transparent 1px);
+  background-image: linear-gradient(var(--tint-1) 1px, transparent 1px),
+    linear-gradient(90deg, var(--tint-1) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 30%, transparent 75%);
@@ -94,8 +90,7 @@
   position: absolute;
   inset: 0 calc(50% - 50vw);
   z-index: -1;
-  background: color-mix(in srgb, var(--bg) 78%, transparent);
-  backdrop-filter: saturate(1.4) blur(12px);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
   border-bottom: 1px solid var(--border);
 }
 
@@ -307,13 +302,13 @@
   padding: 0 1.5rem;
   border-radius: var(--radius-md);
   font-size: 0.98rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 10px 30px -12px rgba(242, 113, 28, 0.55);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px -14px rgba(242, 113, 28, 0.5);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
 .google-signin-btn--lg:hover {
   transform: translateY(-1px);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 16px 36px -12px rgba(242, 113, 28, 0.65);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 12px 28px -14px rgba(242, 113, 28, 0.6);
 }
 
 :root[data-theme="light"] .google-signin-btn--lg {
@@ -345,16 +340,9 @@
   position: relative;
   border: 1px solid var(--border-strong);
   border-radius: 1rem;
-  background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
-  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--tint-1) inset;
-  backdrop-filter: blur(6px);
+  background: var(--surface-raised);
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.55);
   overflow: hidden;
-  transform: perspective(1400px) rotateY(-6deg) rotateX(2deg);
-  transition: transform 0.5s ease;
-}
-
-.lp-preview:hover {
-  transform: none;
 }
 
 :root[data-theme="light"] .lp-preview {
@@ -750,7 +738,6 @@
 
   .lp-preview {
     max-width: 30rem;
-    transform: none;
   }
 
   .lp-path {
@@ -790,6 +777,11 @@
 
   .lp-lede {
     font-size: 1.02rem;
+  }
+
+  .lp-preview-comment,
+  .lp-preview-stage--advanced {
+    display: none;
   }
 
   .lp-cta {
