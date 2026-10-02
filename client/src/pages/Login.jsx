@@ -7,8 +7,9 @@ import useDocumentTitle from "../hooks/useDocumentTitle";
 import hubMark from "../assets/hub-mark.png";
 import Wordmark from "../components/Wordmark";
 import LandingDecor from "../components/LandingDecor";
-import { HeroShot, RoadmapOutline, ProductTour, HowItWorks, Faq } from "../components/LandingSections";
+import { HeroShot, TopicMarquee, RoadmapOutline, ProductTour, HowItWorks, Faq, CountUp } from "../components/LandingSections";
 import useReveal from "../hooks/useReveal";
+import useLandingMotion from "../hooks/useLandingMotion";
 
 const icon = (d) => (
   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -85,9 +86,9 @@ const SOCIALS = [
   },
 ];
 
-function GoogleButton({ large = false }) {
+function GoogleButton({ large = false, tabIndex }) {
   return (
-    <a className={`google-signin-btn${large ? " google-signin-btn--lg" : ""}`} href={googleLoginUrl()}>
+    <a className={`google-signin-btn${large ? " google-signin-btn--lg" : ""}`} href={googleLoginUrl()} tabIndex={tabIndex}>
       <svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true">
         <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.9 5.1 29.7 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.7-.4-3.5z" />
         <path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 16 19 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.9 5.1 29.7 3 24 3c-7.4 0-13.8 4-17.3 9.9z" />
@@ -97,6 +98,26 @@ function GoogleButton({ large = false }) {
       Continue with Google
     </a>
   );
+}
+
+// True while neither the hero's sign-in button nor the closing one is on
+// screen, and the reader has scrolled past the hero.
+function useSignInBar() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (!("IntersectionObserver" in window)) return undefined;
+    const targets = [document.querySelector(".lp-cta"), document.querySelector(".lp-final")].filter(Boolean);
+    if (targets.length < 2) return undefined;
+    const seen = new Map();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) seen.set(e.target, e.isIntersecting);
+      const past = targets[0].getBoundingClientRect().bottom < 0;
+      setShow(past && !targets.some((t) => seen.get(t)));
+    });
+    targets.forEach((t) => io.observe(t));
+    return () => io.disconnect();
+  }, []);
+  return show;
 }
 
 // "Request access" for people not on the list yet. Goes to the leads, who
@@ -177,7 +198,9 @@ export default function Login() {
   const deniedEmail = params.get("email") || "";
   const [requesting, setRequesting] = useState(false);
   const [stats, setStats] = useState(null);
+  const signInBar = useSignInBar();
   useReveal();
+  useLandingMotion();
 
   useEffect(() => {
     fetchPublicStats()
@@ -274,14 +297,14 @@ export default function Login() {
               <ul className="lp-facts">
                 {stats.members > 0 && (
                   <li>
-                    <strong>{stats.members}</strong> members
+                    <CountUp value={stats.members} /> members
                   </li>
                 )}
                 <li>
-                  <strong>{stats.topics}</strong> roadmap topics
+                  <CountUp value={stats.topics} /> roadmap topics
                 </li>
                 <li>
-                  <strong>{stats.pages}</strong> pages to learn from
+                  <CountUp value={stats.pages} /> pages to learn from
                 </li>
               </ul>
             )}
@@ -289,6 +312,8 @@ export default function Login() {
 
           <HeroShot />
         </section>
+
+        <TopicMarquee />
 
         {/* --- The path: the real roadmap ------------------------------- */}
         <section className="lp-section" id="path" aria-labelledby="lp-path-title">
@@ -328,7 +353,7 @@ export default function Login() {
           </div>
           <div className="lp-features reveal">
             {FEATURES.map((f) => (
-              <div className="lp-feature" key={f.title}>
+              <div className="lp-feature lp-spot" key={f.title}>
                 <span className="lp-feature-icon">{f.icon}</span>
                 <h3>{f.title}</h3>
                 <p>{f.body}</p>
@@ -362,13 +387,19 @@ export default function Login() {
         </section>
 
         {/* --- Closing call to action ------------------------------------- */}
-        <section className="lp-final reveal">
+        <section className="lp-final lp-spot reveal">
           <img src={hubMark} alt="" width="96" height="72" />
           <h2>Ready when you are.</h2>
           <p>Sign in with your MIC Google account and pick up right where you left off.</p>
           <GoogleButton large />
         </section>
       </main>
+
+      {/* Phones only: once the hero's button has scrolled away, a way in stays
+          at the bottom of the screen until the closing one comes into view. */}
+      <div className={`lp-signin-bar${signInBar ? " is-shown" : ""}`} aria-hidden={!signInBar}>
+        <GoogleButton tabIndex={signInBar ? 0 : -1} />
+      </div>
 
       <footer className="lp-footer">
         <div className="lp-footer-inner">

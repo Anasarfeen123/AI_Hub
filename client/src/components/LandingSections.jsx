@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { fetchPublicRoadmap } from "../api";
 import homeDark from "../assets/landing/home-dark.webp";
@@ -20,9 +20,15 @@ const SHOTS = {
   discuss: { dark: discussDark, light: discussLight },
 };
 
-function BrowserFrame({ src, alt, eager = false }) {
+// On a phone the frames are cropped closer so the UI is readable; this is the
+// part of each screenshot worth keeping in view.
+const FOCUS = { home: "0% 0%", topic: "42% 0%", search: "50% 45%", discuss: "50% 100%" };
+
+const motionOk = () => typeof window !== "undefined" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function BrowserFrame({ src, alt, focus = "50% 0%", eager = false }) {
   return (
-    <div className="lp-frame">
+    <div className="lp-frame" style={{ "--focus": focus }}>
       <div className="lp-frame-bar" aria-hidden="true">
         <span className="lp-frame-dots">
           <i />
@@ -42,7 +48,7 @@ export function HeroShot() {
   const { resolved } = useTheme();
   return (
     <div className="lp-hero-shot">
-      <BrowserFrame src={SHOTS.home[resolved]} alt="The hub's home page: progress, what's up next, and pages to continue" eager />
+      <BrowserFrame src={SHOTS.home[resolved]} focus={FOCUS.home} alt="The hub's home page: progress, what's up next, and pages to continue" eager />
       <div className="lp-chip lp-chip--streak" aria-hidden="true">
         <span>🔥</span>
         <span>
@@ -76,19 +82,55 @@ const FALLBACK = [
   { title: "Specialize & Research", label: "Stage 3 · Advanced", level: "advanced", duration: "Open-ended", goal: "Go from using models to understanding — and contributing to — the frontier.", topics: ["Generative AI", "Reinforcement Learning", "Specializations", "Research"].map((title) => ({ title })) },
 ];
 
-export function RoadmapOutline() {
-  const [stages, setStages] = useState(FALLBACK);
+// Fetched once and shared by the marquee and the roadmap section.
+let roadmapRequest;
 
+function useLandingRoadmap() {
+  const [stages, setStages] = useState(FALLBACK);
   useEffect(() => {
-    fetchPublicRoadmap()
-      .then((d) => d.stages?.length && setStages(d.stages))
-      .catch(() => {});
+    let live = true;
+    roadmapRequest ??= fetchPublicRoadmap()
+      .then((d) => (d.stages?.length ? d.stages : null))
+      .catch(() => null);
+    roadmapRequest.then((s) => live && s && setStages(s));
+    return () => {
+      live = false;
+    };
   }, []);
+  return stages;
+}
+
+// Every topic on the path, drifting past in one line. The second copy only
+// exists to make the loop seamless, so assistive tech skips it.
+export function TopicMarquee() {
+  const stages = useLandingRoadmap();
+  const topics = stages.flatMap((s) => s.topics.map((t) => ({ title: t.title, level: s.level })));
+  const row = (hidden) => (
+    <ul className="lp-marquee-row" aria-hidden={hidden || undefined}>
+      {topics.map((t) => (
+        <li key={t.title} className={`lp-marquee-item lp-marquee-item--${t.level}`}>
+          {t.title}
+        </li>
+      ))}
+    </ul>
+  );
+  return (
+    <div className="lp-marquee" aria-label="Topics on the roadmap">
+      <div className="lp-marquee-track">
+        {row(false)}
+        {row(true)}
+      </div>
+    </div>
+  );
+}
+
+export function RoadmapOutline() {
+  const stages = useLandingRoadmap();
 
   return (
     <ol className="lp-roadmap">
       {stages.map((s, i) => (
-        <li key={s.title} className={`lp-stage lp-stage--${s.level} reveal`} style={{ "--delay": `${i * 90}ms` }}>
+        <li key={s.title} className={`lp-stage lp-stage--${s.level} lp-spot reveal`} style={{ "--delay": `${i * 90}ms` }}>
           <div className="lp-stage-head">
             <span className="lp-stage-label">{s.label}</span>
             {s.duration && <span className="lp-stage-time">{s.duration}</span>}
@@ -97,7 +139,7 @@ export function RoadmapOutline() {
           {s.goal && <p className="lp-stage-goal">{s.goal}</p>}
           <ul className="lp-stage-topics">
             {s.topics.map((t, j) => (
-              <li key={t.title}>
+              <li key={t.title} style={{ "--i": j }}>
                 <span className="lp-stage-n">{j + 1}</span>
                 <span>
                   <strong>{t.title}</strong>
@@ -149,19 +191,52 @@ export function ProductTour() {
   const { resolved } = useTheme();
   const [active, setActive] = useState("home");
   const item = TOUR.find((t) => t.key === active);
+  const index = TOUR.findIndex((t) => t.key === active);
+  const nextKey = TOUR[(index + 1) % TOUR.length].key;
+
+  // Plays through the tabs on its own while it's on screen, pausing under the
+  // pointer, and stops for good once someone picks a tab themselves. The
+  // progress bar's own animation drives it, so pausing and resuming line up.
+  const root = useRef(null);
+  const [auto, setAuto] = useState(motionOk);
+  const [inView, setInView] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    if (!auto || !root.current || !("IntersectionObserver" in window)) return undefined;
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.35 });
+    io.observe(root.current);
+    return () => io.disconnect();
+  }, [auto]);
+
+  // Fetch the next screenshot ahead of time so the switch never shows a blank frame.
+  useEffect(() => {
+    if (auto && inView) new Image().src = SHOTS[nextKey][resolved];
+  }, [auto, inView, nextKey, resolved]);
+
+  function choose(key) {
+    setAuto(false);
+    setActive(key);
+  }
 
   function onKey(e) {
-    const i = TOUR.findIndex((t) => t.key === active);
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
       e.preventDefault();
-      const next = TOUR[(i + (e.key === "ArrowRight" ? 1 : TOUR.length - 1)) % TOUR.length];
-      setActive(next.key);
+      const next = TOUR[(index + (e.key === "ArrowRight" ? 1 : TOUR.length - 1)) % TOUR.length];
+      choose(next.key);
       document.getElementById(`lp-tab-${next.key}`)?.focus();
     }
   }
 
+  const running = auto && inView && !hovered;
+
   return (
-    <div className="lp-tour">
+    <div
+      className="lp-tour"
+      ref={root}
+      onPointerEnter={(e) => e.pointerType === "mouse" && setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+    >
       <div className="lp-tour-tabs" role="tablist" aria-label="Parts of the hub" onKeyDown={onKey}>
         {TOUR.map((t) => (
           <button
@@ -173,9 +248,16 @@ export function ProductTour() {
             aria-controls="lp-tour-panel"
             tabIndex={active === t.key ? 0 : -1}
             className={active === t.key ? "active" : ""}
-            onClick={() => setActive(t.key)}
+            onClick={() => choose(t.key)}
           >
             {t.tab}
+            {auto && active === t.key && (
+              <span
+                className={`lp-tab-progress${running ? " is-running" : ""}`}
+                aria-hidden="true"
+                onAnimationEnd={() => setActive(nextKey)}
+              />
+            )}
           </button>
         ))}
       </div>
@@ -190,7 +272,7 @@ export function ProductTour() {
           </ul>
         </div>
         <div className="lp-tour-shot" key={`shot-${active}-${resolved}`}>
-          <BrowserFrame src={SHOTS[active][resolved]} alt={`${item.tab}: ${item.title}`} />
+          <BrowserFrame src={SHOTS[active][resolved]} focus={FOCUS[active]} alt={`${item.tab}: ${item.title}`} />
         </div>
       </div>
     </div>
@@ -209,7 +291,7 @@ export function HowItWorks() {
   return (
     <ol className="lp-steps">
       {STEPS.map((s, i) => (
-        <li key={s.n} className="lp-step reveal" style={{ "--delay": `${i * 90}ms` }}>
+        <li key={s.n} className="lp-step lp-spot reveal" style={{ "--delay": `${i * 90}ms` }}>
           <span className="lp-step-n">{s.n}</span>
           <h3>{s.title}</h3>
           <p>{s.body}</p>
@@ -243,5 +325,43 @@ export function Faq() {
         </details>
       ))}
     </div>
+  );
+}
+
+// --- Numbers that count up the first time they're seen ------------------------------
+
+export function CountUp({ value }) {
+  const ref = useRef(null);
+  const animate = motionOk() && typeof IntersectionObserver !== "undefined";
+  const [shown, setShown] = useState(animate ? 0 : value);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !animate) return undefined;
+    let frame;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      const start = performance.now();
+      const tick = (now) => {
+        const t = Math.min(1, (now - start) / 1100);
+        setShown(Math.round(value * (1 - Math.pow(1 - t, 3))));
+        if (t < 1) frame = requestAnimationFrame(tick);
+      };
+      frame = requestAnimationFrame(tick);
+    });
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(frame);
+    };
+  }, [value, animate]);
+
+  // The final number is what's announced, never the ticking ones.
+  return (
+    <strong ref={ref}>
+      <span aria-hidden="true">{shown}</span>
+      <span className="sr-only">{value}</span>
+    </strong>
   );
 }
